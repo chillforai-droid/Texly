@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@layer base {
+  .prose h1 {
+    @apply text-4xl font-black text-slate-900 mb-8 tracking-tight;
+  }
+  .prose h2 {
+    @apply text-2xl font-bold text-slate-800 mt-12 mb-6;
+  }
+  .prose h3 {
+    @apply text-xl font-bold text-slate-800 mt-8 mb-4;
+  }
+  .prose p {
+    @apply text-slate-600 leading-relaxed mb-6 text-lg;
+  }
+  .prose ul, .prose ol {
+    @apply mb-8 ml-6 space-y-3;
+  }
+  .prose li {
+    @apply text-slate-600 text-lg;
+  }
+  .prose strong {
+    @apply text-slate-900 font-semibold;
+  }
+}
+
