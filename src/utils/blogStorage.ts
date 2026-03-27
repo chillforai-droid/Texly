@@ -14,7 +14,7 @@ export interface BlogPost {
   tags: string[];
 }
 
-// ✅ Supabase data को website format में convert करने वाला function
+// ✅ Supabase → Website mapping (FINAL FIXED)
 const mapFromSupabase = (data: any): BlogPost => ({
   id: data.id,
   title: data.title,
@@ -22,16 +22,16 @@ const mapFromSupabase = (data: any): BlogPost => ({
   excerpt: data.excerpt,
   content: data.content,
 
-  // 🔥 FIXED FIELDS
-  date: data.created_at, // पहले date था
+  // 🔥 IMPORTANT FIX
+  date: data.created_at, // ✅ सही column
   author: data.author || 'Admin',
-  image: data.cover_image, // पहले image था
+  image: data.cover_image, // ✅ सही column
   category: data.category || 'General',
   readTime: data.read_time || 5,
   tags: data.tags || []
 });
 
-// ✅ सभी blogs fetch करना
+// ✅ सभी blogs fetch
 export const getAllBlogs = async (): Promise<BlogPost[]> => {
   const { data, error } = await supabase
     .from('blogs')
@@ -43,10 +43,12 @@ export const getAllBlogs = async (): Promise<BlogPost[]> => {
     return [];
   }
 
-  return data.map(mapFromSupabase);
+  console.log("Fetched Blogs:", data); // 🔍 debug
+
+  return data ? data.map(mapFromSupabase) : [];
 };
 
-// ✅ slug से single blog fetch करना
+// ✅ single blog fetch
 export const getBlogBySlug = async (slug: string): Promise<BlogPost | null> => {
   const { data, error } = await supabase
     .from('blogs')
