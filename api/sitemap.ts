@@ -132,15 +132,16 @@ export default async function handler(req, res) {
 
     // 🔹 BLOG XML (dynamic)
     const blogXml = (data || []).map(
-      (item) => `
-      <url>
-        <loc>https://www.texly.online/blog/${item.slug}</loc>
-        <lastmod>${item.updated_at || new Date().toISOString()}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-      </url>`
-    );
-
+  (item) => `
+  <url>
+    <loc>https://www.texly.online/blog/${item.slug}</loc>
+    <lastmod>${item.updated_at 
+      ? new Date(item.updated_at).toISOString() 
+      : new Date().toISOString()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`
+);
     // 🔹 FINAL XML
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
