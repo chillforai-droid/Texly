@@ -3,4 +3,4 @@ Allow: /
 
 Disallow: /admin/
 
-Sitemap: https://texly.online/sitemap.xml
+Sitemap: https://www.texly.online/sitemap.xml
