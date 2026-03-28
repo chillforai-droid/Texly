@@ -4,16 +4,18 @@ export default async function handler(req, res) {
   try {
     const supabase = createClient(
       process.env.VITE_SUPABASE_URL,
-      process.env.VITE_SUPABASE_KEY
+      process.env.VITE_SUPABASE_ANON_KEY
     );
 
     const { data, error } = await supabase
       .from("articles")
       .select("slug");
 
-    if (error) throw error;
+    if (error) {
+      return res.status(500).send("Supabase Error: " + error.message);
+    }
 
-    const urls = data.map(
+    const urls = (data || []).map(
       (item) => `
       <url>
         <loc>https://www.texly.online/${item.slug}</loc>
@@ -32,6 +34,6 @@ export default async function handler(req, res) {
     res.status(200).send(xml);
 
   } catch (err) {
-    res.status(500).send("Error generating sitemap");
+    res.status(500).send("Crash: " + err.message);
   }
 }
