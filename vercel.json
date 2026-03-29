@@ -1,17 +1,8 @@
 {
   "version": 2,
   "rewrites": [
-    {
-      "source": "/sitemap.xml",
-      "destination": "/api/sitemap"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index.ts"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/api/(.*)", "destination": "/api/index.ts" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap.tx" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
