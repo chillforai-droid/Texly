@@ -31,10 +31,17 @@ const ContactUs = () => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message');
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || data.message || 'Failed to send message');
+        }
+      } else {
+        const text = await response.text();
+        if (!response.ok) {
+          throw new Error(`Server Error: ${response.status}. ${text.slice(0, 100)}`);
+        }
       }
 
       setSubmitted(true);
