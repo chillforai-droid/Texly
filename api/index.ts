@@ -29,42 +29,46 @@ app.post("/api/send-otp", async (req, res) => {
 
   otps.set(email, { code: otp, expires });
 
-  // Setup nodemailer
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
-  const mailOptions = {
-    from: `"Texly CMS" <${process.env.EMAIL_USER}>`,
-    to: email,
-    subject: "Article Deletion Verification Code",
-    html: `
-      <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 500px; margin: auto;">
-        <h2 style="color: #2563eb; text-align: center;">Texly Verification</h2>
-        <p>You requested to delete an article. Please use the following 6-digit code to confirm this action:</p>
-        <div style="background: #f1f5f9; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; border-radius: 10px; margin: 20px 0;">
-          ${otp}
-        </div>
-        <p style="color: #64748b; font-size: 14px;">This code will expire in 5 minutes. If you didn't request this, please ignore this email.</p>
-      </div>
-    `,
-  };
-
+  // Setup nodemailer only if credentials are set
   try {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
       console.log("OTP for", email, "is", otp, "(Email credentials not set)");
-      return res.json({ success: true, message: "OTP generated (Check console since email credentials are not set)" });
+      return res.json({ 
+        success: true, 
+        message: "OTP generated (Check console since email credentials are not set)",
+        otp: process.env.NODE_ENV !== 'production' ? otp : undefined // For debugging in dev
+      });
     }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Texly CMS" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Article Deletion Verification Code",
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 500px; margin: auto;">
+          <h2 style="color: #2563eb; text-align: center;">Texly Verification</h2>
+          <p>You requested to delete an article. Please use the following 6-digit code to confirm this action:</p>
+          <div style="background: #f1f5f9; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; border-radius: 10px; margin: 20px 0;">
+            ${otp}
+          </div>
+          <p style="color: #64748b; font-size: 14px;">This code will expire in 5 minutes. If you didn't request this, please ignore this email.</p>
+        </div>
+      `,
+    };
 
     await transporter.sendMail(mailOptions);
     res.json({ success: true, message: "OTP sent to your email" });
   } catch (error: any) {
     console.error("Error sending email:", error);
-    res.status(500).json({ error: "Failed to send OTP email" });
+    res.status(500).json({ error: "Failed to send OTP email", details: error.message });
   }
 });
 
@@ -92,43 +96,43 @@ app.post("/api/contact", async (req, res) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
-  const mailOptions = {
-    from: `"Texly Contact" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_USER, // Send to the owner's email
-    replyTo: email, // Reply to the user who filled the form
-    subject: `Contact Form: ${subject || "General Inquiry"}`,
-    html: `
-      <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 600px; margin: auto;">
-        <h2 style="color: #2563eb;">New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Subject:</strong> ${subject || "N/A"}</p>
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
-        <p><strong>Message:</strong></p>
-        <p style="white-space: pre-wrap;">${message}</p>
-      </div>
-    `,
-  };
-
   try {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
       console.log("Contact form from", email, "received (Email credentials not set)");
       return res.json({ success: true, message: "Form received (Email credentials not set)" });
     }
 
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Texly Contact" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER, // Send to the owner's email
+      replyTo: email, // Reply to the user who filled the form
+      subject: `Contact Form: ${subject || "General Inquiry"}`,
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 600px; margin: auto;">
+          <h2 style="color: #2563eb;">New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Subject:</strong> ${subject || "N/A"}</p>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
+          <p><strong>Message:</strong></p>
+          <p style="white-space: pre-wrap;">${message}</p>
+        </div>
+      `,
+    };
+
     await transporter.sendMail(mailOptions);
     res.json({ success: true, message: "Message sent successfully" });
   } catch (error: any) {
     console.error("Error sending contact email:", error);
-    res.status(500).json({ error: "Failed to send message" });
+    res.status(500).json({ error: "Failed to send message", details: error.message });
   }
 });
 
@@ -209,6 +213,16 @@ app.get("/sitemap.xml", async (req, res) => {
 app.get("/robots.txt", (req, res) => {
   res.type("text/plain");
   res.send("User-agent: *\nAllow: /\n\nSitemap: https://texly.online/sitemap.xml");
+});
+
+// Global Error Handler
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error("Global Error Handler:", err);
+  res.status(500).json({ 
+    error: "Internal Server Error", 
+    message: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  });
 });
 
 export default app;
