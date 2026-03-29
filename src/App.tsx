@@ -29,6 +29,38 @@ function ScrollToTop() {
   return null;
 }
 
+// PageViewTracker Component for analytics
+function PageViewTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const trackPageView = async () => {
+      if (!supabase) {
+        console.warn('Supabase not initialized');
+        return;
+      }
+
+      try {
+        await supabase.from('page_views').insert([
+          { 
+            path: location.pathname, 
+            referrer: document.referrer || 'direct',
+            browser: navigator.userAgent,
+            timestamp: new Date().toISOString()
+          }
+        ]);
+        console.log('Page view tracked:', location.pathname);
+      } catch (err) {
+        console.error('Analytics Error:', err);
+      }
+    };
+
+    trackPageView();
+  }, [location]);
+
+  return null;
+}
+
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -188,6 +220,7 @@ function AppContent() {
       <script type="application/ld+json">
         {JSON.stringify(directorySchema)}
       </script>
+      <PageViewTracker /> {/* Analytics tracker added here */}
       <Navbar />
 
       {/* Main Content */}
