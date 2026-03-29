@@ -116,8 +116,15 @@ const AdminPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email }),
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Failed to send OTP');
+      
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || data.message || 'Failed to send OTP');
+      } else {
+        const text = await response.text();
+        if (!response.ok) throw new Error(`Server Error: ${response.status}. ${text.slice(0, 100)}`);
+      }
     } catch (err: any) {
       setOtpError(err.message);
     } finally {
@@ -137,9 +144,17 @@ const AdminPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email, otp: otpCode }),
       });
-      const data = await response.json();
       
-      if (!response.ok) throw new Error(data.error || 'Invalid verification code');
+      const contentType = response.headers.get("content-type");
+      let data: any = {};
+      
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        data = await response.json();
+        if (!response.ok) throw new Error(data.error || data.message || 'Invalid verification code');
+      } else {
+        const text = await response.text();
+        if (!response.ok) throw new Error(`Server Error: ${response.status}. ${text.slice(0, 100)}`);
+      }
       
       // If OTP is verified, proceed with deletion
       setIsLoading(true);
