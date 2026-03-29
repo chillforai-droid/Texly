@@ -139,11 +139,27 @@ export const saveBlog = async (blog: BlogPost): Promise<boolean> => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
+    const blogData = mapToSupabase(blog, user.id);
     const { error } = await supabase
       .from('articles')
-      .upsert(mapToSupabase(blog, user.id));
+      .upsert(blogData);
 
     if (error) {
+      // If it's a "column does not exist" error, try again without content_type
+      if (error.message.includes('column') && error.message.includes('content_type')) {
+        console.warn('content_type column missing, retrying without it');
+        const { content_type, ...rest } = blogData;
+        const { error: retryError } = await supabase
+          .from('articles')
+          .upsert(rest);
+        
+        if (retryError) {
+          console.error('Supabase Save Retry Error:', retryError.message);
+          return false;
+        }
+        return true;
+      }
+      
       console.error('Supabase Save Error:', error.message, error.details, error.hint);
       return false;
     }
