@@ -22,7 +22,7 @@ import * as LucideIcons from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { Language } from './data/translations';
 
-// 1. Supabase Client Setup
+// 1. Supabase Client Setup (Using Vite Environment Variables)
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -119,7 +119,7 @@ function Navbar() {
           <Link to="/blog" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">{t.navbar.blog}</Link>
           
           <div className="relative group">
-            <button className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+            <button className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" aria-haspopup="true">
               {t.navbar.tools}
             </button>
             <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
@@ -138,6 +138,7 @@ function Navbar() {
             <button 
               onClick={() => setIsLangOpen(!isLangOpen)}
               className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors"
+              aria-expanded={isLangOpen}
             >
               <Languages className="w-4 h-4" />
               <span>{languages.find(l => l.code === language)?.name}</span>
@@ -179,6 +180,7 @@ function Navbar() {
 function AppContent() {
   const { t } = useLanguage();
   const [directorySearch, setDirectorySearch] = useState('');
+  
   const filteredTools = useMemo(() => {
     if (!directorySearch) return ALL_TOOLS;
     return ALL_TOOLS.filter(t => 
@@ -215,14 +217,8 @@ function AppContent() {
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:slug" element={<BlogDetail />} />
           <Route path="/auth" element={<AuthPage />} />
-          <Route 
-            path="/admin-9823hdjfsdf" 
-            element={<ProtectedRoute><AdminPage /></ProtectedRoute>} 
-          />
-          <Route 
-            path="/profile" 
-            element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} 
-          />
+          <Route path="/admin-9823hdjfsdf" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/about-us" element={<AboutUs />} />
@@ -230,8 +226,157 @@ function AppContent() {
         </Routes>
       </main>
 
-      {/* Directory and Footer implementation remains identical to previous version but without spans */}
-      {/* ... (Your rest of the UI code) ... */}
+      {/* --- Full Tools Directory Section --- */}
+      <section aria-labelledby="directory-heading" className="bg-white border-t border-slate-200 py-24">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-16 max-w-3xl mx-auto">
+            <h2 id="directory-heading" className="text-4xl font-black tracking-tight text-slate-900 mb-6">
+              {t.directory.title}
+            </h2>
+            <p className="text-lg text-slate-600 leading-relaxed mb-10">
+              {t.directory.description}
+            </p>
+
+            <div className="relative max-w-md mx-auto group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
+              <input 
+                type="text"
+                placeholder={t.directory.searchPlaceholder}
+                className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                value={directorySearch}
+                onChange={(e) => setDirectorySearch(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-16">
+            {CATEGORIES.map(category => {
+              const categoryTools = filteredTools.filter(t => t.category === category.id);
+              if (categoryTools.length === 0) return null;
+              
+              const CategoryIcon = {
+                cleaning: Trash2,
+                converter: RefreshCw,
+                analysis: BarChart3,
+                utility: Wrench
+              }[category.id] || Zap;
+
+              return (
+                <div key={category.id} className="space-y-8">
+                  <div className="flex items-center gap-3 pb-4 border-b-2 border-slate-100">
+                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
+                      <CategoryIcon className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-black text-slate-900 text-xl uppercase tracking-widest">
+                      {(t.categories as any)[category.id]}
+                    </h3>
+                  </div>
+                  <ul className="space-y-6" role="list">
+                    {categoryTools.map(toolItem => {
+                      const ToolIcon = (LucideIcons as any)[toolItem.icon] || FileText;
+                      return (
+                        <li key={toolItem.id}>
+                          <Link to={`/tool/${toolItem.slug}`} className="group block">
+                            <div className="flex items-center justify-between mb-1">
+                              <div className="flex items-center gap-2">
+                                <ToolIcon className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                                <span className="font-bold text-slate-800 group-hover:text-blue-600 transition-colors">
+                                  {t.toolNames[toolItem.id] || toolItem.name}
+                                </span>
+                              </div>
+                              <ArrowRight className="w-4 h-4 text-slate-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-blue-600 transition-all" />
+                            </div>
+                            <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed group-hover:text-slate-600 transition-colors pl-6">
+                              {t.toolDescriptions[toolItem.id] || toolItem.shortDescription}
+                            </p>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Directory SEO Footer */}
+          <div className="mt-24 pt-16 border-t border-slate-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              <div className="text-left">
+                <h4 className="text-xl font-bold text-slate-900 mb-4">{t.directory.whyTitle}</h4>
+                <p className="text-sm text-slate-600 leading-relaxed mb-4">{t.directory.whyDesc1}</p>
+                <p className="text-sm text-slate-600 leading-relaxed">{t.directory.whyDesc2}</p>
+              </div>
+              <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+                <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">{t.directory.popularTools}</h4>
+                <div className="flex flex-wrap gap-2">
+                  {ALL_TOOLS.slice(0, 15).map(toolItem => (
+                    <Link key={toolItem.id} to={`/tool/${toolItem.slug}`} className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:border-blue-500 hover:text-blue-600 transition-all">
+                      {t.toolNames[toolItem.id] || toolItem.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- Full Footer Section --- */}
+      <footer className="bg-white border-t border-slate-200 pt-16 pb-8">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            <div className="col-span-1">
+              <Link to="/" className="flex items-center gap-2 mb-6">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                  <Zap className="w-5 h-5 fill-current" />
+                </div>
+                <span className="text-xl font-black tracking-tighter text-slate-900">TEXLY</span>
+              </Link>
+              <p className="text-sm text-slate-500 leading-relaxed">{t.footer.description}</p>
+            </div>
+            
+            <div>
+              <h4 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-widest">{t.footer.cleaning}</h4>
+              <ul className="space-y-4">
+                {ALL_TOOLS.filter(t => t.category === 'cleaning').slice(0, 5).map(tool => (
+                  <li key={tool.id}><Link to={`/tool/${tool.slug}`} className="text-sm text-slate-500 hover:text-blue-600">{t.toolNames[tool.id] || tool.name}</Link></li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-widest">{t.footer.resources}</h4>
+              <ul className="space-y-4">
+                <li><Link to="/blog" className="text-sm text-slate-500 hover:text-blue-600">{t.navbar.blog}</Link></li>
+                <li><Link to="/about-us" className="text-sm text-slate-500 hover:text-blue-600">{t.footer.aboutUs}</Link></li>
+                <li><Link to="/contact-us" className="text-sm text-slate-500 hover:text-blue-600">{t.footer.contactUs}</Link></li>
+                <li><a href="/sitemap.xml" className="text-sm text-slate-500 hover:text-blue-600">Sitemap</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-bold text-slate-900 mb-6 uppercase text-xs tracking-widest">{t.footer.connect}</h4>
+              <div className="flex gap-4 mb-6">
+                <a href="#" className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-all"><Twitter className="w-5 h-5" /></a>
+                <a href="#" className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-900 hover:text-white transition-all"><Github className="w-5 h-5" /></a>
+                <a href="#" className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-600 transition-all"><Mail className="w-5 h-5" /></a>
+              </div>
+              <p className="text-xs text-slate-400">{t.footer.rights}</p>
+            </div>
+          </div>
+          
+          <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex gap-6">
+              <Link to="/privacy-policy" className="text-xs text-slate-400 hover:text-slate-600">{t.footer.privacyPolicy}</Link>
+              <Link to="/terms-and-conditions" className="text-xs text-slate-400 hover:text-slate-600">{t.footer.termsOfService}</Link>
+              <Link to="/about-us" className="text-xs text-slate-400 hover:text-slate-600">{t.footer.aboutUs}</Link>
+              <Link to="/contact-us" className="text-xs text-slate-400 hover:text-slate-600">{t.footer.contactUs}</Link>
+            </div>
+            <p className="text-xs text-slate-400 italic">{t.footer.madeWith}</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
