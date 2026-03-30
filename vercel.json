@@ -1,9 +1,7 @@
 {
-  "version": 2,
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.ts" },
-    { "source": "/sitemap.xml", "destination": "/api/index.ts" },
-    { "source": "/robots.txt", "destination": "/api/index.ts" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/sitemap.xml", "dest": "/api/sitemap" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
