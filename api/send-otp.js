@@ -1,6 +1,10 @@
 import nodemailer from "nodemailer";
+import { createClient } from "@supabase/supabase-js";
 
-let otpStore = {}; // temporary memory
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -13,9 +17,32 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Email required" });
   }
 
-  const otp = Math.floor(100000 + Math.random() * 900000);
+  const now = new Date();
 
-  otpStore[email] = otp;
+  // 🚫 Rate limit (1 min)
+  const { data: recent } = await supabase
+    .from("otp_codes")
+    .select("*")
+    .eq("email", email)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (recent.length && (now - new Date(recent[0].created_at)) < 60000) {
+    return res.status(429).json({ error: "Wait 1 minute before requesting again" });
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 min
+
+  // 💾 Save to DB
+  await supabase.from("otp_codes").insert([
+    {
+      email,
+      otp,
+      expires_at: expiresAt,
+    },
+  ]);
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -31,21 +58,16 @@ export default async function handler(req, res) {
       to: email,
       subject: "🔐 Texly Verification Code",
       html: `
-        <div style="font-family:sans-serif;text-align:center">
-          <h2>🔐 Texly Verification</h2>
-          <p>Your OTP code is:</p>
-          <h1 style="letter-spacing:5px">${otp}</h1>
-          <p>This code will expire soon.</p>
+        <div style="text-align:center;font-family:sans-serif">
+          <h2>Texly Verification</h2>
+          <h1>${otp}</h1>
+          <p>Expires in 5 minutes</p>
         </div>
       `,
     });
 
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "OTP send failed" });
+    return res.status(500).json({ error: "Email failed" });
   }
 }
-
-// ⚠️ IMPORTANT: same store export करना होगा
-export { otpStore };
