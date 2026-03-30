@@ -7,21 +7,21 @@ const supabase = createClient(
 
 export default async function handler(req, res) {
   try {
-    // 🔥 Latest blogs
+    // 🔥 Latest Blogs
     const { data: blogs } = await supabase
       .from("articles")
       .select("slug")
       .order("created_at", { ascending: false })
       .limit(5);
 
-    // 🔥 Latest tools
+    // 🔥 Latest Tools
     const { data: tools } = await supabase
       .from("tools")
       .select("slug")
       .order("created_at", { ascending: false })
       .limit(5);
 
-    // 🔗 URLs बनाओ
+    // 🔗 URLs
     const blogUrls = (blogs || []).map(
       (b) => `https://texlyonline.in/blog/${b.slug}`
     );
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
 
     const urls = [...blogUrls, ...toolUrls];
 
-    // 🚀 IndexNow submit
+    // 🚀 IndexNow submit (Bing)
     await fetch("https://api.indexnow.org/indexnow", {
       method: "POST",
       headers: {
@@ -47,7 +47,16 @@ export default async function handler(req, res) {
       }),
     });
 
-    return res.json({ success: true, urls });
+    // 🚀 Google Ping (IMPORTANT)
+    await fetch(
+      "https://www.google.com/ping?sitemap=https://texlyonline.in/sitemap.xml"
+    );
+
+    return res.json({
+      success: true,
+      indexed: urls.length,
+    });
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Auto index failed" });
