@@ -7,6 +7,97 @@ import { getBlogs, getBlogBySlug } from '../utils/blogStorage';
 import { Calendar, User, Clock, ArrowLeft, Share2, Twitter, Facebook, Linkedin, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
+import { useState as useStateH, useEffect as useEffectH } from "react";
+import { supabase } from "../lib/supabase";
+
+// Comments Component
+function Comments({ slug }: { slug: string }) {
+  const [comments, setComments] = useState<any[]>([]);
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+
+  const fetchComments = async () => {
+    const { data } = await supabase
+      .from("comments")
+      .select("*")
+      .eq("blog_slug", slug)
+      .order("created_at", { ascending: false });
+
+    setComments(data || []);
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, [slug]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!name || !message) return alert("Fill all fields");
+
+    await supabase.from("comments").insert([
+      {
+        blog_slug: slug,
+        name,
+        message,
+      },
+    ]);
+
+    setName("");
+    setMessage("");
+    fetchComments();
+  };
+
+  return (
+    <div className="mt-16 pt-8 border-t border-slate-100">
+      <h2 className="text-2xl font-black text-slate-900 mb-6 tracking-tight">Comments</h2>
+
+      <form onSubmit={handleSubmit} className="mb-12 space-y-4">
+        <div>
+          <input
+            placeholder="Your Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-6 py-4 bg-white border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+          />
+        </div>
+        <div>
+          <textarea
+            placeholder="Your Comment"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            rows={4}
+            className="w-full px-6 py-4 bg-white border border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all resize-none"
+          />
+        </div>
+        <button 
+          type="submit" 
+          className="px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20"
+        >
+          Post Comment
+        </button>
+      </form>
+
+      <div className="space-y-6">
+        {comments.length === 0 ? (
+          <p className="text-slate-400 text-center py-8">No comments yet. Be the first to comment!</p>
+        ) : (
+          comments.map((c) => (
+            <div key={c.id} className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+              <strong className="text-slate-900 font-bold block mb-2">{c.name}</strong>
+              <p className="text-slate-600 leading-relaxed">{c.message}</p>
+              {c.created_at && (
+                <p className="text-xs text-slate-400 mt-3">
+                  {new Date(c.created_at).toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
 
 const BlogDetail: React.FC = () => {
   const { t } = useLanguage();
@@ -153,6 +244,9 @@ const BlogDetail: React.FC = () => {
             </ReactMarkdown>
           )}
         </article>
+
+        {/* Comments Section */}
+        <Comments slug={slug || ''} />
 
         {/* Recent Posts Section */}
         <section className="mt-24 pt-16 border-t border-slate-100">
