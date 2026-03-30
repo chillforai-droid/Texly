@@ -21,14 +21,16 @@ export default async function handler(req, res) {
 
   try {
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `"Texly Contact" <${process.env.EMAIL_USER}>`,
       to: "chillforai@gmail.com",
-      subject: "New Contact Message",
+      subject: "📩 New Contact Message - Texly",
       html: `
-        <h3>New Message from Texly</h3>
-        <p><b>Name:</b> ${name}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Message:</b> ${message}</p>
+        <div style="font-family:sans-serif">
+          <h2>📩 New Message from Texly</h2>
+          <p><b>Name:</b> ${name}</p>
+          <p><b>Email:</b> ${email}</p>
+          <p><b>Message:</b><br/> ${message}</p>
+        </div>
       `,
     });
 
