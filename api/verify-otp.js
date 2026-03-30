@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
-  process.env.VITE_SUPABASE_SERVICE_ROLE_KEY
+  process.env.VITE_SUPABASE_ANON_KEY
 );
 
 export default async function handler(req, res) {
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     const { email, otp } = req.body;
 
     if (!email || !otp) {
-      return res.status(400).json({ error: "Email and OTP required" });
+      return res.status(400).json({ error: "Missing fields" });
     }
 
     const { data, error } = await supabase
@@ -25,11 +25,7 @@ export default async function handler(req, res) {
       .order("created_at", { ascending: false })
       .limit(1);
 
-    if (error) {
-      return res.status(500).json({ error: "Database error" });
-    }
-
-    if (!data || data.length === 0) {
+    if (error || !data || data.length === 0) {
       return res.status(400).json({ error: "Invalid OTP" });
     }
 
@@ -39,16 +35,10 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "OTP expired" });
     }
 
-    // ✅ delete OTP
-    await supabase
-      .from("otp_codes")
-      .delete()
-      .eq("id", record.id);
-
     return res.status(200).json({ success: true });
 
   } catch (err) {
-    console.error("VERIFY OTP ERROR:", err);
-    return res.status(500).json({ error: "Internal server error" });
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
   }
 }
