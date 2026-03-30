@@ -28,6 +28,58 @@
 <meta name="twitter:title" content="Texly - Free Text Tools Online" />
 <meta name="twitter:description" content="Fast, free and powerful text tools for developers, writers and marketers." />
 <meta name="twitter:image" content="https://texly.online/og-image.png" />
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-60WQBHB35M"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-60WQBHB35M');
+</script>
+<!-- 2. यहाँ डालें: Admin Panel Tracking Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      (function() {
+        const SUPABASE_URL = '%VITE_SUPABASE_URL%';
+        const SUPABASE_ANON_KEY = '%VITE_SUPABASE_ANON_KEY%';
+
+        // अगर Vercel में वेरिएबल्स सेट नहीं हैं, तो कोड रुक जाए
+        if (!SUPABASE_URL || SUPABASE_URL.startsWith('%')) return;
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function trackView() {
+          try {
+            await supabaseClient.from('page_views').insert([
+              { 
+                path: window.location.pathname + window.location.search, 
+                referrer: document.referrer || 'direct',
+                browser: navigator.userAgent 
+              }
+            ]);
+            console.log("Admin Tracking: Visit recorded!");
+          } catch (err) {}
+        }
+
+        // पेज लोड पर ट्रैक करें
+        trackView();
+
+        // React SPA के लिए URL बदलाव ट्रैक करें
+        const originalPushState = history.pushState;
+        history.pushState = function() {
+          originalPushState.apply(this, arguments);
+          trackView();
+        };
+        const originalReplaceState = history.replaceState;
+        history.replaceState = function() {
+          originalReplaceState.apply(this, arguments);
+          trackView();
+        };
+        window.addEventListener('popstate', trackView);
+      })();
+    </script>
+    <!-- 👆 यहाँ तक पेस्ट करें -->
   </head>
   <body>
     <div id="root"></div>
