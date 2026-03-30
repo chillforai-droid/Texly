@@ -1,8 +1,12 @@
 import nodemailer from "nodemailer";
 
-let otpStore = {}; // temporary (memory)
+let otpStore = {}; // temporary memory
 
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).end();
+  }
+
   const { email } = req.body;
 
   if (!email) {
@@ -23,14 +27,25 @@ export default async function handler(req, res) {
 
   try {
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `"Texly Verification" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "Your OTP Code",
-      html: `<h2>Your OTP is: ${otp}</h2>`,
+      subject: "🔐 Texly Verification Code",
+      html: `
+        <div style="font-family:sans-serif;text-align:center">
+          <h2>🔐 Texly Verification</h2>
+          <p>Your OTP code is:</p>
+          <h1 style="letter-spacing:5px">${otp}</h1>
+          <p>This code will expire soon.</p>
+        </div>
+      `,
     });
 
-    res.status(200).json({ success: true });
+    return res.status(200).json({ success: true });
   } catch (err) {
-    res.status(500).json({ error: "OTP send failed" });
+    console.error(err);
+    return res.status(500).json({ error: "OTP send failed" });
   }
 }
+
+// ⚠️ IMPORTANT: same store export करना होगा
+export { otpStore };
