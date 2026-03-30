@@ -7,7 +7,6 @@ import { getBlogs, getBlogBySlug } from '../utils/blogStorage';
 import { Calendar, User, Clock, ArrowLeft, Share2, Twitter, Facebook, Linkedin, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
-import { hybridLink } from '../utils/hybridLink';
 
 const BlogDetail: React.FC = () => {
   const { t } = useLanguage();
@@ -16,7 +15,6 @@ const BlogDetail: React.FC = () => {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [linkedContent, setLinkedContent] = useState("");
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -51,21 +49,6 @@ const BlogDetail: React.FC = () => {
         metaDesc.setAttribute('content', post.excerpt);
       }
     }
-  }, [post]);
-
-  useEffect(() => {
-    const runLinking = async () => {
-      if (!post) return;
-
-      const updated = await hybridLink(
-        post.content,
-        post.category || "text"
-      );
-
-      setLinkedContent(updated);
-    };
-
-    runLinking();
   }, [post]);
 
   if (loading) {
@@ -159,11 +142,7 @@ const BlogDetail: React.FC = () => {
 
         <article className="prose prose-slate prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-3xl prose-img:shadow-xl">
           {post.contentType === 'html' ? (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: linkedContent || post.content
-              }}
-            />
+            <div dangerouslySetInnerHTML={{ __html: post.content }} />
           ) : post.contentType === 'text' ? (
             <div className="whitespace-pre-wrap font-serif leading-loose text-slate-800 bg-slate-50/50 p-10 rounded-[2.5rem] border border-slate-100 shadow-sm text-xl">
               {post.content}
