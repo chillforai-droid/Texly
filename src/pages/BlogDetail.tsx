@@ -7,7 +7,7 @@ import { getBlogs, getBlogBySlug } from '../utils/blogStorage';
 import { Calendar, User, Clock, ArrowLeft, Share2, Twitter, Facebook, Linkedin, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
-import { supabase } from "../lib/supabase";
+import { supabase } from '../lib/supabase';
 
 // Comments Component
 function Comments({ slug }: { slug: string }) {
@@ -114,13 +114,68 @@ const BlogDetail: React.FC = () => {
         setLoading(true);
         setError(null);
         
-        // Fetch the specific post
-        const foundPost = await getBlogBySlug(slug);
-        setPost(foundPost);
+        // Fetch the specific post from Supabase with status filter
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('slug', slug)
+          .eq('status', 'approved')
+          .single();
         
-        // Fetch other blogs for "Recent Posts" section
-        const allBlogs = await getBlogs();
-        setBlogs(allBlogs);
+        if (error) throw error;
+        
+        if (data) {
+          // Transform to BlogPost format
+          const formattedPost: BlogPost = {
+            id: data.id,
+            slug: data.slug,
+            title: data.title,
+            excerpt: data.excerpt,
+            content: data.content,
+            contentType: data.content_type || 'markdown',
+            author: data.author,
+            date: new Date(data.created_at).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }),
+            readTime: data.read_time,
+            category: data.category,
+            image: data.image_url,
+            status: data.status
+          };
+          setPost(formattedPost);
+        } else {
+          setPost(null);
+        }
+        
+        // Fetch other blogs for "Recent Posts" section (only approved ones)
+        const { data: allArticles } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('status', 'approved')
+          .order('created_at', { ascending: false });
+        
+        const formattedBlogs = allArticles?.map(article => ({
+          id: article.id,
+          slug: article.slug,
+          title: article.title,
+          excerpt: article.excerpt,
+          content: article.content,
+          contentType: article.content_type || 'markdown',
+          author: article.author,
+          date: new Date(article.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }),
+          readTime: article.read_time,
+          category: article.category,
+          image: article.image_url,
+          status: article.status
+        })) || [];
+        
+        setBlogs(formattedBlogs);
       } catch (err: any) {
         console.error('Failed to fetch blog post:', err);
         setError(err.message || 'Failed to load blog post');
