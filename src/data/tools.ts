@@ -2,7 +2,7 @@ export interface Tool {
   id: string;
   name: string;
   slug: string;
-  category: 'cleaning' | 'converter' | 'analysis' | 'utility';
+  category: 'cleaning' | 'converter' | 'analysis' | 'utility' | 'pdf';
   description: string;
   shortDescription: string;
   icon: string;
@@ -18,6 +18,7 @@ export interface Tool {
 }
 
 export const CATEGORIES = [
+  { id: 'pdf', name: 'PDF Tools', description: 'Edit, convert, and manage your PDF documents online.' },
   { id: 'cleaning', name: 'Text Cleaning', description: 'Remove unwanted characters, spaces, and formatting.' },
   { id: 'converter', name: 'Text Converter', description: 'Change text case and format instantly.' },
   { id: 'analysis', name: 'Text Analysis', description: 'Get detailed statistics and insights about your text.' },
@@ -760,4 +761,128 @@ const additionalTools: Tool[] = [
   }
 ];
 
-export const ALL_TOOLS = [...TOOLS, ...additionalTools];
+export const PDF_TOOLS: Tool[] = [
+  {
+    id: 'pdf-editor',
+    name: 'PDF Editor',
+    slug: 'pdf-editor-online',
+    category: 'pdf',
+    shortDescription: 'Edit PDF files online for free. Add text, images, and shapes to your PDF documents.',
+    description: 'Edit PDF files online for free. Our PDF editor allows you to modify your PDF documents directly in your browser. Add text, images, and annotations easily.',
+    icon: 'FileEdit',
+    keywords: ['pdf editor online free', 'edit pdf files online', 'modify pdf documents', 'add text to pdf', 'online pdf annotator'],
+    process: (s) => s
+  },
+  {
+    id: 'image-to-pdf',
+    name: 'Image to PDF',
+    slug: 'image-to-pdf-converter',
+    category: 'pdf',
+    shortDescription: 'Convert images to PDF online. Support for JPG, PNG, and more.',
+    description: 'Convert images to PDF online for free. Easily transform your photos and images into high-quality PDF documents instantly.',
+    icon: 'Image',
+    keywords: ['image to pdf converter', 'jpg to pdf online', 'png to pdf free', 'convert photos to pdf', 'image to pdf tool'],
+    process: (s) => s
+  },
+  {
+    id: 'pdf-to-image',
+    name: 'PDF to Image',
+    slug: 'pdf-to-image-converter',
+    category: 'pdf',
+    shortDescription: 'Convert PDF pages to high-quality images online.',
+    description: 'Convert PDF to image online for free. Extract pages from your PDF and save them as JPG or PNG images instantly.',
+    icon: 'FileImage',
+    keywords: ['pdf to image converter', 'pdf to jpg online', 'pdf to png free', 'extract images from pdf', 'pdf page to image'],
+    process: (s) => s
+  },
+  {
+    id: 'generate-pdf',
+    name: 'Generate PDF',
+    slug: 'generate-pdf-online',
+    category: 'pdf',
+    shortDescription: 'Create PDF documents from scratch online.',
+    description: 'Generate PDF online for free. Create professional PDF documents from text, HTML, or images easily using our PDF generator.',
+    icon: 'FilePlus',
+    keywords: ['generate pdf online', 'create pdf document', 'pdf generator tool', 'make pdf online free', 'text to pdf creator'],
+    process: (s) => s
+  },
+  {
+    id: 'pdf-compress',
+    name: 'PDF Compress',
+    slug: 'compress-pdf-online',
+    category: 'pdf',
+    shortDescription: 'Compress PDF files online to reduce file size.',
+    description: 'Compress PDF online for free. Reduce the file size of your PDF documents without losing quality. Perfect for email attachments.',
+    icon: 'Minimize2',
+    keywords: ['compress pdf online free', 'reduce pdf file size', 'pdf compressor tool', 'shrink pdf document', 'optimize pdf for web'],
+    process: (s) => s
+  },
+  {
+    id: 'pdf-size-reduce',
+    name: 'PDF Size Reduce',
+    slug: 'reduce-pdf-size-online',
+    category: 'pdf',
+    shortDescription: 'Reduce PDF size online for free.',
+    description: 'Reduce PDF size online for free. Optimize your PDF documents for faster sharing and storage with our PDF size reducer.',
+    icon: 'Shrink',
+    keywords: ['reduce pdf size online', 'pdf size reducer', 'optimize pdf file', 'shrink pdf size free', 'pdf file optimizer'],
+    process: (s) => s
+  },
+  {
+    id: 'pdf-password-remover',
+    name: 'PDF Password Remover',
+    slug: 'remove-pdf-password-online',
+    category: 'pdf',
+    shortDescription: 'Remove password protection from PDF files online.',
+    description: 'Remove PDF password online for free. Unlock protected PDF documents and remove security restrictions instantly.',
+    icon: 'Unlock',
+    keywords: ['pdf password remover', 'unlock pdf online', 'remove pdf security', 'decrypt pdf file', 'pdf password cracker free'],
+    process: (s) => s
+  },
+  {
+    id: 'pdf-excel',
+    name: 'PDF to Excel',
+    slug: 'pdf-to-excel-converter',
+    category: 'pdf',
+    shortDescription: 'Convert PDF tables to Excel spreadsheets online.',
+    description: 'Convert PDF to Excel online for free. Extract data and tables from your PDF documents and save them as editable XLSX files.',
+    icon: 'FileSpreadsheet',
+    keywords: ['pdf to excel converter', 'pdf to xlsx online', 'extract tables from pdf', 'pdf to spreadsheet free', 'convert pdf data to excel'],
+    process: (s) => s
+  },
+  {
+    id: 'excel-to-pdf',
+    name: 'Excel to PDF',
+    slug: 'excel-to-pdf-converter',
+    category: 'pdf',
+    shortDescription: 'Convert Excel spreadsheets to PDF online.',
+    description: 'Convert Excel to PDF online for free. Transform your XLSX and CSV files into professional PDF documents instantly.',
+    icon: 'FileText',
+    keywords: ['excel to pdf converter', 'xlsx to pdf online', 'csv to pdf free', 'convert spreadsheet to pdf', 'excel to pdf tool'],
+    process: (s) => s
+  },
+  {
+    id: 'word-to-pdf',
+    name: 'Word to PDF',
+    slug: 'word-to-pdf-converter',
+    category: 'pdf',
+    shortDescription: 'Convert Word documents to PDF online.',
+    description: 'Convert Word to PDF online for free. Transform your DOCX and DOC files into high-quality PDF documents easily.',
+    icon: 'FileText',
+    keywords: ['word to pdf converter', 'docx to pdf online', 'doc to pdf free', 'convert word doc to pdf', 'word to pdf tool'],
+    process: (s) => s
+  },
+  {
+    id: 'pdf-to-word',
+    name: 'PDF to Word',
+    slug: 'pdf-to-word-converter',
+    category: 'pdf',
+    shortDescription: 'Convert PDF documents to editable Word files online.',
+    description: 'Convert PDF to Word online for free. Transform your PDF documents into editable DOCX files instantly while preserving formatting.',
+    icon: 'FileText',
+    keywords: ['pdf to word converter', 'pdf to docx online', 'convert pdf to editable word', 'pdf to word free tool', 'pdf to doc converter'],
+    process: (s) => s
+  }
+];
+
+export const ALL_TOOLS = [...TOOLS, ...additionalTools, ...PDF_TOOLS];
