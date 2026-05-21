@@ -66,7 +66,7 @@ export default async function handler(req: any, res: any) {
 
     // ── AI SEO Automation: GitHub से pages.json fetch करो ─────────────────
     try {
-      let githubRepo = process.env.SEO_GITHUB_REPO || "mahendragope/texlyonline.in";
+      let githubRepo = process.env.SEO_GITHUB_REPO || "chillforai-droid/Texly";
       // Full GitHub URL हो तो owner/repo format में convert करो
       if (githubRepo.includes("github.com/")) {
         githubRepo = githubRepo.split("github.com/")[1].replace(/\.git$/, "").replace(/\/$/, "");
