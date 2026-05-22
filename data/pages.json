@@ -55,14 +55,14 @@
     ],
     "createdAt": "2026-05-18T12:00:00.000Z",
     "updatedAt": "2026-05-18T12:00:00.000Z",
-    "canonicalUrl": "https://www.texlyonline.in/remove-symbols-online",
+    "canonicalUrl": "https://www.texlyonline.in/seo/remove-symbols-online",
     "relatedTools": [
       "remove-emojis-from-text",
       "duplicate-lines-remover",
       "case-converter"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/remove-symbols-online",
+      "url": "https://www.texlyonline.in/seo/remove-symbols-online",
       "name": "Text Symbols Remover",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -112,13 +112,14 @@
     ],
     "createdAt": "2026-05-19T10:00:00.000Z",
     "updatedAt": "2026-05-19T10:00:00.000Z",
-    "canonicalUrl": "https://www.texlyonline.in/remove-emojis-from-text",
+    "canonicalUrl": "https://www.texlyonline.in/seo/remove-emojis-from-text",
     "relatedTools": [
       "remove-symbols-online",
-      "duplicate-lines-remover"
+      "duplicate-lines-remover",
+      "remove-whitespace-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/remove-emojis-from-text",
+      "url": "https://www.texlyonline.in/seo/remove-emojis-from-text",
       "name": "Emoji Strip Engine",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -169,14 +170,14 @@
     ],
     "createdAt": "2026-05-21T09:14:41.109Z",
     "updatedAt": "2026-05-21T09:14:41.109Z",
-    "canonicalUrl": "https://www.texlyonline.in/duplicate-lines-remover",
+    "canonicalUrl": "https://www.texlyonline.in/seo/duplicate-lines-remover",
     "relatedTools": [
-      "remove-empty-lines",
-      "sort-text-lines",
-      "remove-extra-spaces"
+      "remove-whitespace-online",
+      "case-converter",
+      "remove-space-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/duplicate-lines-remover",
+      "url": "https://www.texlyonline.in/seo/duplicate-lines-remover",
       "name": "Remove duplicate lines online",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -238,14 +239,14 @@
     ],
     "createdAt": "2026-05-21T09:19:49.574Z",
     "updatedAt": "2026-05-21T09:19:49.574Z",
-    "canonicalUrl": "https://www.texlyonline.in/remove-whitespace-online",
+    "canonicalUrl": "https://www.texlyonline.in/seo/remove-whitespace-online",
     "relatedTools": [
-      "remove-duplicate-lines",
-      "remove-line-breaks",
-      "text-stripper-online"
+      "case-converter",
+      "remove-space-online",
+      "duplicate-lines-remover"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/remove-whitespace-online",
+      "url": "https://www.texlyonline.in/seo/remove-whitespace-online",
       "name": "remove whitespace online",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -307,13 +308,14 @@
     ],
     "createdAt": "2026-05-21T09:52:41.411Z",
     "updatedAt": "2026-05-21T09:52:41.411Z",
-    "canonicalUrl": "https://www.texlyonline.in/case-converter",
+    "canonicalUrl": "https://www.texlyonline.in/seo/case-converter",
     "relatedTools": [
       "remove-symbols-online",
-      "remove-emojis-from-text"
+      "remove-emojis-from-text",
+      "remove-whitespace-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/case-converter",
+      "url": "https://www.texlyonline.in/seo/case-converter",
       "name": "Uppercase to Lowercase Converter",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -383,7 +385,7 @@
     ],
     "createdAt": "2026-05-21T19:13:30.583Z",
     "updatedAt": "2026-05-21T19:13:30.583Z",
-    "canonicalUrl": "https://www.texlyonline.in/strip-html-tags-online",
+    "canonicalUrl": "https://www.texlyonline.in/seo/strip-html-tags-online",
     "relatedTools": [
       "remove-whitespace-online",
       "case-converter",
@@ -393,7 +395,7 @@
       "remove-emojis-from-text"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/strip-html-tags-online",
+      "url": "https://www.texlyonline.in/seo/strip-html-tags-online",
       "name": "strip html tags from text",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -485,13 +487,14 @@
     ],
     "createdAt": "2026-05-21T19:17:04.818Z",
     "updatedAt": "2026-05-21T19:17:04.818Z",
-    "canonicalUrl": "https://www.texlyonline.in/remove-emoji-on-text",
+    "canonicalUrl": "https://www.texlyonline.in/seo/remove-emoji-on-text",
     "relatedTools": [
       "remove-emojis-from-text",
-      "remove-symbols-online"
+      "remove-symbols-online",
+      "remove-whitespace-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/remove-emoji-on-text",
+      "url": "https://www.texlyonline.in/seo/remove-emoji-on-text",
       "name": "Remove emoji on text",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -529,30 +532,42 @@
   },
   {
     "slug": "json-formatter",
-    "keyword": "json formatter utility",
-    "title": "JSON Formatter Utility - Beautify & Validate JSON | Texly",
-    "metaDescription": "Format, beautify, and validate JSON data instantly with our free client-side JSON Formatter Utility. Ensure 100% security with no server uploads.",
     "intro": "Working with raw, minified JSON strings can be incredibly frustrating, especially when debugging API responses or complex configurations. Our free, web-native JSON Formatter Utility instantly transforms cluttered, single-line JSON data into a beautifully indented, highly readable, and perfectly structured hierarchy. Because this processing happens entirely client-side within your browser, your sensitive API payloads, configurations, and tokens are never uploaded to any remote server, guaranteeing absolute confidentiality. Whether you need to fix broken syntax, locate deep nested objects, or clean up minified payloads, this tool does it securely in milliseconds.",
+    "title": "JSON Formatter Utility - Beautify & Validate JSON | Texly",
     "faqList": [
       {
-        "question": "What is a JSON formatter utility and why do I need one?",
-        "answer": "A JSON formatter utility is a specialized tool designed to parse raw, unformatted, or minified JSON text and reconstruct it with proper indentation, line breaks, and whitespace highlighting. Developers, QA engineers, and system administrators rely on these utilities because unformatted JSON is virtually impossible to read, debug, or audit by human eyes. Our utility instantly structures the data, highlighting missing commas, unbalanced brackets, and key-value pairings to simplify syntax verification."
+        "answer": "A JSON formatter utility is a specialized tool designed to parse raw, unformatted, or minified JSON text and reconstruct it with proper indentation, line breaks, and whitespace highlighting. Developers, QA engineers, and system administrators rely on these utilities because unformatted JSON is virtually impossible to read, debug, or audit by human eyes. Our utility instantly structures the data, highlighting missing commas, unbalanced brackets, and key-value pairings to simplify syntax verification.",
+        "question": "What is a JSON formatter utility and why do I need one?"
       },
       {
-        "question": "Is my sensitive configuration data safe using this JSON formatter?",
-        "answer": "Absolutely. Our JSON formatter utility operates under a strict client-side model, meaning all processing, parsing, and rendering are executed directly inside your web browser using JavaScript. No payloads, database credentials, API access keys, or personal identifying information are ever transmitted to our backend servers or third-party monitoring APIs. This makes our free tool safe and secure for strict corporate compliance workflows."
+        "answer": "Absolutely. Our JSON formatter utility operates under a strict client-side model, meaning all processing, parsing, and rendering are executed directly inside your web browser using JavaScript. No payloads, database credentials, API access keys, or personal identifying information are ever transmitted to our backend servers or third-party monitoring APIs. This makes our free tool safe and secure for strict corporate compliance workflows.",
+        "question": "Is my sensitive configuration data safe using this JSON formatter?"
       },
       {
-        "question": "How does this tool handle syntax errors in invalid JSON payloads?",
-        "answer": "When you paste an invalid string into our formatting utility, the engine triggers an intelligent validation phase. Instead of crashing, the built-in parser identifies the precise location where the syntax deviates from the strict ECMA-404 JSON standard. It provides clear feedback on whether the issue is a trailing comma, missing quotation marks, or unclosed braces, allowing you to quickly patch code before deployment."
+        "answer": "When you paste an invalid string into our formatting utility, the engine triggers an intelligent validation phase. Instead of crashing, the built-in parser identifies the precise location where the syntax deviates from the strict ECMA-404 JSON standard. It provides clear feedback on whether the issue is a trailing comma, missing quotation marks, or unclosed braces, allowing you to quickly patch code before deployment.",
+        "question": "How does this tool handle syntax errors in invalid JSON payloads?"
       },
       {
-        "question": "Can I use this utility to minify JSON instead of beautifying it?",
-        "answer": "Yes, our versatile formatting utility allows you to toggle seamlessly between beautifying and minifying operations. Minification collapses the entire structural hierarchy into a single dense line by stripping unnecessary spaces, tabs, and line breaks. This is highly beneficial for optimizing network payloads, reducing API latency, and shrinking overall payload storage requirements in high-production server environments."
+        "answer": "Yes, our versatile formatting utility allows you to toggle seamlessly between beautifying and minifying operations. Minification collapses the entire structural hierarchy into a single dense line by stripping unnecessary spaces, tabs, and line breaks. This is highly beneficial for optimizing network payloads, reducing API latency, and shrinking overall payload storage requirements in high-production server environments.",
+        "question": "Can I use this utility to minify JSON instead of beautifying it?"
       },
       {
-        "question": "Is there a file size limit when parsing large datasets?",
-        "answer": "Since our tool utilizes highly optimized, modern client-side JavaScript engines, it can easily process multiple megabytes of nested data in real-time. The processing performance is governed primarily by your local machine's memory and CPU capabilities. For typical JSON files up to 20MB, the beautification is executed in a fraction of a second without lagging your browser tab."
+        "answer": "Since our tool utilizes highly optimized, modern client-side JavaScript engines, it can easily process multiple megabytes of nested data in real-time. The processing performance is governed primarily by your local machine's memory and CPU capabilities. For typical JSON files up to 20MB, the beautification is executed in a fraction of a second without lagging your browser tab.",
+        "question": "Is there a file size limit when parsing large datasets?"
+      }
+    ],
+    "keyword": "json formatter utility",
+    "category": "Formatting Tools",
+    "examples": [
+      {
+        "input": "{\"status\":\"success\",\"data\":{\"user\":{\"id\":102,\"name\":\"John Doe\",\"roles\":[\"admin\",\"editor\"]},\"active\":true}}",
+        "output": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"user\": {\n      \"id\": 102,\n      \"name\": \"John Doe\",\n      \"roles\": [\n        \"admin\",\n        \"editor\"\n      ]\n    },\n    \"active\": true\n  }\n}",
+        "explanation": "The utility takes a minified single-line JSON string, parses the components, validates structural integrity, and outputs beautifully formatted JSON using standard 2-space indentation."
+      },
+      {
+        "input": "{\"name\": \"Alice\", \"details\": { \"age\": 30, \"city\": \"Paris\" } }",
+        "output": "{\n  \"name\": \"Alice\",\n  \"details\": {\n    \"age\": 30,\n    \"city\": \"Paris\"\n  }\n}",
+        "explanation": "This demonstrates standard beautification where arbitrary spacing is normalized, elements are correctly indented on separate lines, and structure is fully validated."
       }
     ],
     "useCases": [
@@ -569,22 +584,22 @@
         "description": "Technical writers drafting developer documentations require clear, clean, and consistently styled JSON code blocks. This utility transforms messy raw data into standard two-space or four-space indented samples, ready to be embedded cleanly into blogs, documentation hubs, or API reference sheets."
       }
     ],
-    "examples": [
-      {
-        "input": "{\"status\":\"success\",\"data\":{\"user\":{\"id\":102,\"name\":\"John Doe\",\"roles\":[\"admin\",\"editor\"]},\"active\":true}}",
-        "output": "{\n  \"status\": \"success\",\n  \"data\": {\n    \"user\": {\n      \"id\": 102,\n      \"name\": \"John Doe\",\n      \"roles\": [\n        \"admin\",\n        \"editor\"\n      ]\n    },\n    \"active\": true\n  }\n}",
-        "explanation": "The utility takes a minified single-line JSON string, parses the components, validates structural integrity, and outputs beautifully formatted JSON using standard 2-space indentation."
-      },
-      {
-        "input": "{\"name\": \"Alice\", \"details\": { \"age\": 30, \"city\": \"Paris\" } }",
-        "output": "{\n  \"name\": \"Alice\",\n  \"details\": {\n    \"age\": 30,\n    \"city\": \"Paris\"\n  }\n}",
-        "explanation": "This demonstrates standard beautification where arbitrary spacing is normalized, elements are correctly indented on separate lines, and structure is fully validated."
-      }
-    ],
+    "createdAt": "2026-05-22T02:04:32.837Z",
+    "updatedAt": "2026-05-22T02:04:32.837Z",
+    "canonicalUrl": "https://www.texlyonline.in/seo/json-formatter",
     "relatedTools": [
       "remove-whitespace-online",
-      "duplicate-lines-remover"
+      "duplicate-lines-remover",
+      "case-converter"
     ],
+    "schemaMarkup": {
+      "url": "https://www.texlyonline.in/seo/json-formatter",
+      "name": "json formatter utility",
+      "@type": "WebApplication",
+      "@context": "https://schema.org",
+      "operatingSystem": "All",
+      "applicationCategory": "Utility"
+    },
     "detailedContent": [
       {
         "heading": "Comprehensive Guide on json formatter utility",
@@ -607,22 +622,11 @@
         ]
       }
     ],
-    "schemaMarkup": {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "json formatter utility",
-      "url": "https://www.texlyonline.in/json-formatter",
-      "applicationCategory": "Utility",
-      "operatingSystem": "All"
-    },
+    "metaDescription": "Format, beautify, and validate JSON data instantly with our free client-side JSON Formatter Utility. Ensure 100% security with no server uploads.",
     "socialMediaScripts": {
-      "pinterestDescription": "Format and beautify your raw JSON code instantly! Safely validate APIs and configuration files in your browser with our client-side JSON Formatter Utility. No data uploads mean 100% privacy. Try it free on Texly! #JSON #WebDev #CodingTools #API",
       "reelCaption": "Stop struggling with unreadable minified API responses! 🤯 Code with ease using Texly's client-side JSON Formatter Utility. ✨ 100% Secure, ultra-fast, and completely browser-native. Tap the link to clean your code! 💻🚀 #DeveloperTools #TechCoding #WebDevelopment #ProgrammingLife",
-      "shortsScript": "Are you tired of debugging ugly, single-line JSON strings? 🛑 Our free JSON Formatter Utility on Texly is here to help! Just paste your messy JSON, and instantly get beautifully formatted, valid code. Since it processes 100% client-side inside your browser, your secret keys and API data never leave your computer. Fast, secure, and absolutely free! Go to TexlyOnline now and make your coding life ten times easier!"
-    },
-    "category": "Formatting Tools",
-    "canonicalUrl": "https://www.texlyonline.in/json-formatter",
-    "createdAt": "2026-05-22T02:04:32.837Z",
-    "updatedAt": "2026-05-22T02:04:32.837Z"
+      "shortsScript": "Are you tired of debugging ugly, single-line JSON strings? 🛑 Our free JSON Formatter Utility on Texly is here to help! Just paste your messy JSON, and instantly get beautifully formatted, valid code. Since it processes 100% client-side inside your browser, your secret keys and API data never leave your computer. Fast, secure, and absolutely free! Go to TexlyOnline now and make your coding life ten times easier!",
+      "pinterestDescription": "Format and beautify your raw JSON code instantly! Safely validate APIs and configuration files in your browser with our client-side JSON Formatter Utility. No data uploads mean 100% privacy. Try it free on Texly! #JSON #WebDev #CodingTools #API"
+    }
   }
 ]
