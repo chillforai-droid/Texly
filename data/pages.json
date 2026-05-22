@@ -1275,10 +1275,9 @@
       }
     ],
     "relatedTools": [
-      "remove-whitespace-online",
+      "remove-empty-lines-online",
       "remove-extra-spaces-online",
-      "remove-line-breaks-tool",
-      "remove-empty-lines-online"
+      "remove-line-breaks-tool"
     ],
     "detailedContent": [
       {
