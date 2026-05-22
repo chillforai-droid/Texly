@@ -55,7 +55,7 @@
     ],
     "createdAt": "2026-05-18T12:00:00.000Z",
     "updatedAt": "2026-05-18T12:00:00.000Z",
-    "canonicalUrl": "https://www.texlyonline.in/remove-symbols-online",
+    "canonicalUrl": "https://www.texlyonline.in/seo/remove-symbols-online",
     "relatedTools": [
       "ai-text-suite",
       "remove-numbers-from-text",
@@ -67,7 +67,7 @@
       "duplicate-lines-remover"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/remove-symbols-online",
+      "url": "https://www.texlyonline.in/seo/remove-symbols-online",
       "name": "Text Symbols Remover",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -117,7 +117,7 @@
     ],
     "createdAt": "2026-05-19T10:00:00.000Z",
     "updatedAt": "2026-05-19T10:00:00.000Z",
-    "canonicalUrl": "https://www.texlyonline.in/remove-emojis-from-text",
+    "canonicalUrl": "https://www.texlyonline.in/seo/remove-emojis-from-text",
     "relatedTools": [
       "remove-symbols-online",
       "duplicate-lines-remover",
@@ -125,7 +125,7 @@
       "remove-space-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/remove-emojis-from-text",
+      "url": "https://www.texlyonline.in/seo/remove-emojis-from-text",
       "name": "Emoji Strip Engine",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -176,14 +176,14 @@
     ],
     "createdAt": "2026-05-21T09:14:41.109Z",
     "updatedAt": "2026-05-21T09:14:41.109Z",
-    "canonicalUrl": "https://www.texlyonline.in/duplicate-lines-remover",
+    "canonicalUrl": "https://www.texlyonline.in/seo/duplicate-lines-remover",
     "relatedTools": [
       "remove-whitespace-online",
       "case-converter",
       "remove-space-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/duplicate-lines-remover",
+      "url": "https://www.texlyonline.in/seo/duplicate-lines-remover",
       "name": "Remove duplicate lines online",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -245,14 +245,14 @@
     ],
     "createdAt": "2026-05-21T09:19:49.574Z",
     "updatedAt": "2026-05-21T09:19:49.574Z",
-    "canonicalUrl": "https://www.texlyonline.in/remove-whitespace-online",
+    "canonicalUrl": "https://www.texlyonline.in/seo/remove-whitespace-online",
     "relatedTools": [
       "case-converter",
       "remove-space-online",
       "duplicate-lines-remover"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/remove-whitespace-online",
+      "url": "https://www.texlyonline.in/seo/remove-whitespace-online",
       "name": "remove whitespace online",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -314,14 +314,14 @@
     ],
     "createdAt": "2026-05-21T09:52:41.411Z",
     "updatedAt": "2026-05-21T09:52:41.411Z",
-    "canonicalUrl": "https://www.texlyonline.in/case-converter",
+    "canonicalUrl": "https://www.texlyonline.in/seo/case-converter",
     "relatedTools": [
       "remove-symbols-online",
       "remove-emojis-from-text",
       "remove-whitespace-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/case-converter",
+      "url": "https://www.texlyonline.in/seo/case-converter",
       "name": "Uppercase to Lowercase Converter",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -391,7 +391,7 @@
     ],
     "createdAt": "2026-05-21T19:13:30.583Z",
     "updatedAt": "2026-05-21T19:13:30.583Z",
-    "canonicalUrl": "https://www.texlyonline.in/strip-html-tags-online",
+    "canonicalUrl": "https://www.texlyonline.in/seo/strip-html-tags-online",
     "relatedTools": [
       "remove-whitespace-online",
       "case-converter",
@@ -401,7 +401,7 @@
       "remove-emojis-from-text"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/strip-html-tags-online",
+      "url": "https://www.texlyonline.in/seo/strip-html-tags-online",
       "name": "strip html tags from text",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -493,14 +493,14 @@
     ],
     "createdAt": "2026-05-21T19:17:04.818Z",
     "updatedAt": "2026-05-21T19:17:04.818Z",
-    "canonicalUrl": "https://www.texlyonline.in/remove-emoji-on-text",
+    "canonicalUrl": "https://www.texlyonline.in/seo/remove-emoji-on-text",
     "relatedTools": [
       "remove-emojis-from-text",
       "remove-symbols-online",
       "remove-whitespace-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/remove-emoji-on-text",
+      "url": "https://www.texlyonline.in/seo/remove-emoji-on-text",
       "name": "Remove emoji on text",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -592,14 +592,14 @@
     ],
     "createdAt": "2026-05-22T02:04:32.837Z",
     "updatedAt": "2026-05-22T02:04:32.837Z",
-    "canonicalUrl": "https://www.texlyonline.in/json-formatter",
+    "canonicalUrl": "https://www.texlyonline.in/seo/json-formatter",
     "relatedTools": [
       "remove-whitespace-online",
       "duplicate-lines-remover",
       "case-converter"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/json-formatter",
+      "url": "https://www.texlyonline.in/seo/json-formatter",
       "name": "json formatter utility",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -691,14 +691,14 @@
     ],
     "createdAt": "2026-05-22T04:46:01.525Z",
     "updatedAt": "2026-05-22T04:46:01.525Z",
-    "canonicalUrl": "https://www.texlyonline.in/remove-multiple-spaces",
+    "canonicalUrl": "https://www.texlyonline.in/seo/remove-multiple-spaces",
     "relatedTools": [
       "remove-extra-spaces-online",
       "remove-whitespace-online",
       "case-converter"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/remove-multiple-spaces",
+      "url": "https://www.texlyonline.in/seo/remove-multiple-spaces",
       "name": "remove multiple spaces online",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -790,14 +790,14 @@
     ],
     "createdAt": "2026-05-22T05:06:42.414Z",
     "updatedAt": "2026-05-22T05:06:42.414Z",
-    "canonicalUrl": "https://www.texlyonline.in/count-characters-online",
+    "canonicalUrl": "https://www.texlyonline.in/seo/count-characters-online",
     "relatedTools": [
       "character-counter-tool",
       "word-counter-online-free",
       "remove-whitespace-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/count-characters-online",
+      "url": "https://www.texlyonline.in/seo/count-characters-online",
       "name": "count characters online",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -889,7 +889,7 @@
     ],
     "createdAt": "2026-05-22T05:28:28.300Z",
     "updatedAt": "2026-05-22T05:28:28.300Z",
-    "canonicalUrl": "https://www.texlyonline.in/convert-bank-statement-pdf-to-excel-free",
+    "canonicalUrl": "https://www.texlyonline.in/seo/convert-bank-statement-pdf-to-excel-free",
     "relatedTools": [
       "pdf-to-excel-converter",
       "excel-to-pdf-converter",
@@ -897,7 +897,7 @@
       "remove-whitespace-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/convert-bank-statement-pdf-to-excel-free",
+      "url": "https://www.texlyonline.in/seo/convert-bank-statement-pdf-to-excel-free",
       "name": "convert bank statement pdf to excel free",
       "@type": "WebApplication",
       "@context": "https://schema.org",
