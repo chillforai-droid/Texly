@@ -121,8 +121,9 @@
     "relatedTools": [
       "remove-symbols-online",
       "duplicate-lines-remover",
-      "remove-whitespace-online",
-      "remove-space-online"
+      "remove-space-online",
+      "case-converter",
+      "ai-text-suite"
     ],
     "schemaMarkup": {
       "url": "https://www.texlyonline.in/seo/remove-emojis-from-text",
