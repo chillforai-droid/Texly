@@ -59,12 +59,7 @@
     "relatedTools": [
       "ai-text-suite",
       "remove-numbers-from-text",
-      "binary-to-text-converter",
-      "text-to-binary-converter",
-      "remove-whitespace-online",
-      "case-converter",
-      "remove-space-online",
-      "duplicate-lines-remover"
+      "binary-to-text-converter"
     ],
     "schemaMarkup": {
       "url": "https://www.texlyonline.in/seo/remove-symbols-online",
@@ -121,9 +116,7 @@
     "relatedTools": [
       "remove-symbols-online",
       "duplicate-lines-remover",
-      "remove-space-online",
-      "case-converter",
-      "ai-text-suite"
+      "remove-space-online"
     ],
     "schemaMarkup": {
       "url": "https://www.texlyonline.in/seo/remove-emojis-from-text",
@@ -181,11 +174,7 @@
     "relatedTools": [
       "case-converter",
       "remove-space-online",
-      "ai-text-suite",
-      "remove-extra-spaces-online",
-      "remove-line-breaks-tool",
-      "remove-duplicate-lines-tool",
-      "remove-empty-lines-online"
+      "ai-text-suite"
     ],
     "schemaMarkup": {
       "url": "https://www.texlyonline.in/seo/duplicate-lines-remover",
@@ -400,10 +389,7 @@
     "relatedTools": [
       "remove-whitespace-online",
       "case-converter",
-      "remove-space-online",
-      "duplicate-lines-remover",
-      "remove-symbols-online",
-      "remove-emojis-from-text"
+      "remove-space-online"
     ],
     "schemaMarkup": {
       "url": "https://www.texlyonline.in/seo/strip-html-tags-online",
