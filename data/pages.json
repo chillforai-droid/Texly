@@ -55,14 +55,14 @@
     ],
     "createdAt": "2026-05-18T12:00:00.000Z",
     "updatedAt": "2026-05-18T12:00:00.000Z",
-    "canonicalUrl": "https://www.texlyonline.in/seo/remove-symbols-online",
+    "canonicalUrl": "https://www.texlyonline.in/remove-symbols-online",
     "relatedTools": [
       "remove-emojis-from-text",
       "duplicate-lines-remover",
       "case-converter"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/seo/remove-symbols-online",
+      "url": "https://www.texlyonline.in/remove-symbols-online",
       "name": "Text Symbols Remover",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -112,14 +112,14 @@
     ],
     "createdAt": "2026-05-19T10:00:00.000Z",
     "updatedAt": "2026-05-19T10:00:00.000Z",
-    "canonicalUrl": "https://www.texlyonline.in/seo/remove-emojis-from-text",
+    "canonicalUrl": "https://www.texlyonline.in/remove-emojis-from-text",
     "relatedTools": [
       "remove-symbols-online",
       "duplicate-lines-remover",
       "remove-whitespace-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/seo/remove-emojis-from-text",
+      "url": "https://www.texlyonline.in/remove-emojis-from-text",
       "name": "Emoji Strip Engine",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -170,14 +170,14 @@
     ],
     "createdAt": "2026-05-21T09:14:41.109Z",
     "updatedAt": "2026-05-21T09:14:41.109Z",
-    "canonicalUrl": "https://www.texlyonline.in/seo/duplicate-lines-remover",
+    "canonicalUrl": "https://www.texlyonline.in/duplicate-lines-remover",
     "relatedTools": [
       "remove-whitespace-online",
       "case-converter",
       "remove-space-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/seo/duplicate-lines-remover",
+      "url": "https://www.texlyonline.in/duplicate-lines-remover",
       "name": "Remove duplicate lines online",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -239,14 +239,14 @@
     ],
     "createdAt": "2026-05-21T09:19:49.574Z",
     "updatedAt": "2026-05-21T09:19:49.574Z",
-    "canonicalUrl": "https://www.texlyonline.in/seo/remove-whitespace-online",
+    "canonicalUrl": "https://www.texlyonline.in/remove-whitespace-online",
     "relatedTools": [
       "case-converter",
       "remove-space-online",
       "duplicate-lines-remover"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/seo/remove-whitespace-online",
+      "url": "https://www.texlyonline.in/remove-whitespace-online",
       "name": "remove whitespace online",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -308,14 +308,14 @@
     ],
     "createdAt": "2026-05-21T09:52:41.411Z",
     "updatedAt": "2026-05-21T09:52:41.411Z",
-    "canonicalUrl": "https://www.texlyonline.in/seo/case-converter",
+    "canonicalUrl": "https://www.texlyonline.in/case-converter",
     "relatedTools": [
       "remove-symbols-online",
       "remove-emojis-from-text",
       "remove-whitespace-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/seo/case-converter",
+      "url": "https://www.texlyonline.in/case-converter",
       "name": "Uppercase to Lowercase Converter",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -385,7 +385,7 @@
     ],
     "createdAt": "2026-05-21T19:13:30.583Z",
     "updatedAt": "2026-05-21T19:13:30.583Z",
-    "canonicalUrl": "https://www.texlyonline.in/seo/strip-html-tags-online",
+    "canonicalUrl": "https://www.texlyonline.in/strip-html-tags-online",
     "relatedTools": [
       "remove-whitespace-online",
       "case-converter",
@@ -395,7 +395,7 @@
       "remove-emojis-from-text"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/seo/strip-html-tags-online",
+      "url": "https://www.texlyonline.in/strip-html-tags-online",
       "name": "strip html tags from text",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -487,14 +487,14 @@
     ],
     "createdAt": "2026-05-21T19:17:04.818Z",
     "updatedAt": "2026-05-21T19:17:04.818Z",
-    "canonicalUrl": "https://www.texlyonline.in/seo/remove-emoji-on-text",
+    "canonicalUrl": "https://www.texlyonline.in/remove-emoji-on-text",
     "relatedTools": [
       "remove-emojis-from-text",
       "remove-symbols-online",
       "remove-whitespace-online"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/seo/remove-emoji-on-text",
+      "url": "https://www.texlyonline.in/remove-emoji-on-text",
       "name": "Remove emoji on text",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -586,14 +586,14 @@
     ],
     "createdAt": "2026-05-22T02:04:32.837Z",
     "updatedAt": "2026-05-22T02:04:32.837Z",
-    "canonicalUrl": "https://www.texlyonline.in/seo/json-formatter",
+    "canonicalUrl": "https://www.texlyonline.in/json-formatter",
     "relatedTools": [
       "remove-whitespace-online",
       "duplicate-lines-remover",
       "case-converter"
     ],
     "schemaMarkup": {
-      "url": "https://www.texlyonline.in/seo/json-formatter",
+      "url": "https://www.texlyonline.in/json-formatter",
       "name": "json formatter utility",
       "@type": "WebApplication",
       "@context": "https://schema.org",
@@ -631,30 +631,42 @@
   },
   {
     "slug": "remove-multiple-spaces",
-    "keyword": "remove multiple spaces online",
-    "title": "Remove Multiple Spaces Online | Clean Text Instantly | Texly",
-    "metaDescription": "Instantly remove multiple spaces online with our free, client-side text formatter. Clean messy whitespaces, tabs, and line breaks in one click!",
     "intro": "Eliminate messy layouts and uneven gaps instantly with our free online tool designed to remove multiple spaces online. Whether you are dealing with text copy-pasted from PDFs, unformatted databases, or chaotic word processors, this browser-native utility collapses consecutive whitespaces into single, clean spaces. Enjoy an absolute zero-latency formatting experience that respects your privacy by processing everything locally.",
+    "title": "Remove Multiple Spaces Online | Clean Text Instantly | Texly",
     "faqList": [
       {
-        "question": "How does the remove multiple spaces online tool handle trailing or leading spaces?",
-        "answer": "Our advanced space cleaner not only merges multiple consecutive spaces into a single blank character but also trims any stubborn leading and trailing whitespaces from the edges of your text, resulting in a perfectly balanced string ready for publication."
+        "answer": "Our advanced space cleaner not only merges multiple consecutive spaces into a single blank character but also trims any stubborn leading and trailing whitespaces from the edges of your text, resulting in a perfectly balanced string ready for publication.",
+        "question": "How does the remove multiple spaces online tool handle trailing or leading spaces?"
       },
       {
-        "question": "Is my sensitive data safe when processing text with Texly?",
-        "answer": "Absolutely. Unlike traditional server-side tools, our utility operates entirely inside your local browser sandbox. No text data is ever transmitted to remote databases, external APIs, or cloud servers, offering premium-level security for private code, documents, and lists."
+        "answer": "Absolutely. Unlike traditional server-side tools, our utility operates entirely inside your local browser sandbox. No text data is ever transmitted to remote databases, external APIs, or cloud servers, offering premium-level security for private code, documents, and lists.",
+        "question": "Is my sensitive data safe when processing text with Texly?"
       },
       {
-        "question": "Does this tool support removing tab characters or double spaces?",
-        "answer": "Yes, this tool seamlessly identifies redundant double spaces, consecutive tab keys, and uneven margins. It converts them all into standard, clean, single spacing configurations without affecting your core paragraphs or deleting necessary sentence-ending periods."
+        "answer": "Yes, this tool seamlessly identifies redundant double spaces, consecutive tab keys, and uneven margins. It converts them all into standard, clean, single spacing configurations without affecting your core paragraphs or deleting necessary sentence-ending periods.",
+        "question": "Does this tool support removing tab characters or double spaces?"
       },
       {
-        "question": "Can developers use this utility for purging raw database output?",
-        "answer": "Certainly. Software developers and database administrators can easily paste massive arrays of messy SQL query results, unformatted log dumps, or fragmented CSV records to strip away unintended gaps and standardize string formatting in seconds."
+        "answer": "Certainly. Software developers and database administrators can easily paste massive arrays of messy SQL query results, unformatted log dumps, or fragmented CSV records to strip away unintended gaps and standardize string formatting in seconds.",
+        "question": "Can developers use this utility for purging raw database output?"
       },
       {
-        "question": "Is there a character limit when pasting huge documents?",
-        "answer": "There are no restrictive character or file size limits. Your web browser's local processing memory dictates the capacity, allowing you to instantly format entire books, massive essays, or complex data files without facing frustrating timeouts or premium paywalls."
+        "answer": "There are no restrictive character or file size limits. Your web browser's local processing memory dictates the capacity, allowing you to instantly format entire books, massive essays, or complex data files without facing frustrating timeouts or premium paywalls.",
+        "question": "Is there a character limit when pasting huge documents?"
+      }
+    ],
+    "keyword": "remove multiple spaces online",
+    "category": "Text Cleaners",
+    "examples": [
+      {
+        "input": "This   is    an   unformatted      text sentence.",
+        "output": "This is an unformatted text sentence.",
+        "explanation": "The utility scanned the text, identified all segments with more than one standard space, and condensed each sequence down to a single space character."
+      },
+      {
+        "input": "\tDataField1    \t DataField2       DataField3",
+        "output": "DataField1 DataField2 DataField3",
+        "explanation": "Irregular tabs and deep consecutive spacing blocks are entirely normalized into a cleanly structured single-spaced sequence."
       }
     ],
     "useCases": [
@@ -671,23 +683,22 @@
         "description": "Social media platforms require clean, visually appealing layouts. Marketers copy and paste their drafts here to systematically prune accidental double spaces, line indents, and stray keystrokes, resulting in highly readable, professional captions for Instagram, LinkedIn, and X."
       }
     ],
-    "examples": [
-      {
-        "input": "This   is    an   unformatted      text sentence.",
-        "output": "This is an unformatted text sentence.",
-        "explanation": "The utility scanned the text, identified all segments with more than one standard space, and condensed each sequence down to a single space character."
-      },
-      {
-        "input": "\tDataField1    \t DataField2       DataField3",
-        "output": "DataField1 DataField2 DataField3",
-        "explanation": "Irregular tabs and deep consecutive spacing blocks are entirely normalized into a cleanly structured single-spaced sequence."
-      }
-    ],
+    "createdAt": "2026-05-22T04:46:01.525Z",
+    "updatedAt": "2026-05-22T04:46:01.525Z",
+    "canonicalUrl": "https://www.texlyonline.in/remove-multiple-spaces",
     "relatedTools": [
       "remove-extra-spaces-online",
       "remove-whitespace-online",
       "case-converter"
     ],
+    "schemaMarkup": {
+      "url": "https://www.texlyonline.in/remove-multiple-spaces",
+      "name": "remove multiple spaces online",
+      "@type": "WebApplication",
+      "@context": "https://schema.org",
+      "operatingSystem": "All",
+      "applicationCategory": "Utility"
+    },
     "detailedContent": [
       {
         "heading": "Comprehensive Guide on remove multiple spaces online",
@@ -710,22 +721,11 @@
         ]
       }
     ],
-    "schemaMarkup": {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "remove multiple spaces online",
-      "url": "https://www.texlyonline.in/seo/remove-multiple-spaces",
-      "applicationCategory": "Utility",
-      "operatingSystem": "All"
-    },
+    "metaDescription": "Instantly remove multiple spaces online with our free, client-side text formatter. Clean messy whitespaces, tabs, and line breaks in one click!",
     "socialMediaScripts": {
-      "pinterestDescription": "Quickly remove multiple spaces online for free! Perfect for copywriters, editors, and coders seeking a 1-click text spacing fixer. Trim messy text instantly.",
       "reelCaption": "Messy spacing throwing off your copy? 😫 Clean it up instantly with our 1-click space cleaner! 🚀 No installations, no tracking, just pure clean text in milliseconds. Try Texly today! 💻✨ #ContentCreation #EditingHacks #Copywriting #TechTool",
-      "shortsScript": "Pasting text with annoying extra spaces? Stop manually backspacing! Just head to Texly, paste your text, and click to remove multiple spaces online instantly. It's safe, browser-native, and 100% free. Check out Texly now!"
-    },
-    "category": "Text Cleaners",
-    "canonicalUrl": "https://www.texlyonline.in/seo/remove-multiple-spaces",
-    "createdAt": "2026-05-22T04:46:01.525Z",
-    "updatedAt": "2026-05-22T04:46:01.525Z"
+      "shortsScript": "Pasting text with annoying extra spaces? Stop manually backspacing! Just head to Texly, paste your text, and click to remove multiple spaces online instantly. It's safe, browser-native, and 100% free. Check out Texly now!",
+      "pinterestDescription": "Quickly remove multiple spaces online for free! Perfect for copywriters, editors, and coders seeking a 1-click text spacing fixer. Trim messy text instantly."
+    }
   }
 ]
