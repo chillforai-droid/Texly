@@ -4,8 +4,8 @@
  * Key optimizations vs. original:
  *  1. Every lazy-loaded <Route> is wrapped in its own <RouteErrorBoundary>
  *     so one broken page can't blank the whole app.
- *  2. Framer Motion animations are disabled on Samsung TVs / low-end devices
- *     via the MotionConfig override.
+ *  2. Framer Motion fully removed — replaced with CSS transitions to fix
+ *     desktop dark mode GPU glitch (text repeat/overlap artifact on Chrome).
  *  3. TexlyAIAssistant (heavy Gradio dependency) is truly lazy – only
  *     imported after the first user interaction.
  *  4. TexlyAI floating button is deferred until after page is interactive.
@@ -30,6 +30,7 @@ import {
   useParams,
 } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
+
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -58,6 +59,8 @@ import {
   FileText,
   Sparkles,
   Zap,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 // ─── Lazy pages ───────────────────────────────────────────────────────────────
@@ -83,6 +86,7 @@ const SnapchatTagGenerator = lazy(
 const AIToolPlaceholder = lazy(() => import('./pages/tools/AIToolPlaceholder'));
 const AITextSuite = lazy(() => import('./pages/tools/AITextSuite'));
 const DevStudioPage = lazy(() => import('./components/DevStudio'));
+const AIAutomation = lazy(() => import('./pages/AIAutomation'));
 // AI SEO Automation Panel द्वारा push किए गए programmatic landing pages
 const SEOPage = lazy(() => import('./pages/SEOPage'));
 
@@ -359,6 +363,7 @@ function AppContent() {
   // AppContent itself doesn't need desktop flags directly
   const [directorySearch, setDirectorySearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [directoryOpen, setDirectoryOpen] = useState(false);
 
   const filteredTools = useMemo(() => {
     if (!directorySearch.trim()) return ALL_TOOLS;
@@ -493,6 +498,14 @@ function AppContent() {
               }
             />
             <Route
+              path="/ai-automation"
+              element={
+                <RouteErrorBoundary>
+                  <AIAutomation />
+                </RouteErrorBoundary>
+              }
+            />
+            <Route
               path="/tools/:slug"
               element={
                 <RouteErrorBoundary>
@@ -585,19 +598,42 @@ function AppContent() {
       {/* ── All Tools Directory ─────────────────────────────────────────────── */}
       <section
         aria-labelledby="directory-heading"
-        className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-10 sm:py-16 lg:py-24 transition-colors duration-300 below-fold"
+        className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-10 sm:py-16 transition-colors duration-300 below-fold"
       >
         <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <h2
-              id="directory-heading"
-              className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-4 sm:mb-6"
+
+          {/* ── Toggle Button ── */}
+          <div className="flex justify-center mb-4">
+            <button
+              onClick={() => setDirectoryOpen(prev => !prev)}
+              aria-expanded={directoryOpen}
+              aria-controls="directory-body"
+              className="group inline-flex items-center gap-3 px-7 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-base sm:text-lg shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 select-none"
             >
+              <Sparkles className="w-5 h-5 opacity-90" />
+              <span>{t.directory.title}</span>
+              {directoryOpen
+                ? <ChevronUp className="w-5 h-5 transition-transform duration-300" />
+                : <ChevronDown className="w-5 h-5 transition-transform duration-300 group-hover:translate-y-0.5" />
+              }
+            </button>
+          </div>
+
+          {/* ── Description always visible ── */}
+          <p className="text-center text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+            {t.directory.description}
+          </p>
+
+          {/* ── Collapsible Body ── */}
+          <div
+            id="directory-body"
+            style={{ maxHeight: directoryOpen ? '9999px' : '0px', opacity: directoryOpen ? 1 : 0 }}
+            className="overflow-hidden transition-all duration-500 ease-in-out"
+          >
+          <div className="text-center mb-16 max-w-3xl mx-auto mt-10">
+            <h2 id="directory-heading" className="sr-only">
               {t.directory.title}
             </h2>
-            <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 sm:mb-10">
-              {t.directory.description}
-            </p>
 
             <div className="relative max-w-md mx-auto group">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
@@ -737,6 +773,7 @@ function AppContent() {
               </div>
             </div>
           </div>
+          </div>{/* end collapsible body */}
         </div>
       </section>
 
@@ -786,15 +823,20 @@ function AppContent() {
 
 // ─── Root App ─────────────────────────────────────────────────────────────────
 function App() {
+  // shouldReduceAnimations() = Samsung TV, prefers-reduced-motion, या low-end device
+  // reducedMotion=true होने पर framer-motion सभी animations instantly complete करेगा
+  // यह large screen blank fix करता है जहाँ whileInView viewport से बाहर था
+  const reducedMotion = shouldReduceAnimations();
+
   return (
     <ErrorBoundary>
       <HelmetProvider>
         <LanguageProvider>
           <ThemeProvider>
-            <Router>
-              <ScrollToTop />
-              <AppContent />
-            </Router>
+              <Router>
+                <ScrollToTop />
+                <AppContent />
+              </Router>
           </ThemeProvider>
         </LanguageProvider>
       </HelmetProvider>

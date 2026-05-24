@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { 
   Sparkles, 
@@ -67,15 +66,11 @@ const AITools = () => {
       {/* Hero Section */}
       <section className="relative pt-20 pb-16 overflow-hidden">
         {/* Background Glows */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[500px] bg-blue-600/10 dark:bg-blue-600/20 blur-[120px] rounded-full opacity-50 pointer-events-none" />
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-purple-600/5 dark:bg-purple-600/10 blur-[100px] rounded-full pointer-events-none" />
+        <div className="hidden sm:block absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-[500px] bg-blue-600/10 dark:bg-blue-600/20 blur-[120px] rounded-full opacity-50 pointer-events-none" />
+        <div className="hidden sm:block absolute -top-24 -left-24 w-96 h-96 bg-purple-600/5 dark:bg-purple-600/10 blur-[100px] rounded-full pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="texly-fade-in">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest mb-8">
               <Sparkles className="w-4 h-4" />
               Next-Gen AI Platform
@@ -87,7 +82,7 @@ const AITools = () => {
             <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
               Experience professional-grade AI image processing tools running locally on our servers. No subscriptions, no hidden costs, just pure open-source power.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -96,13 +91,7 @@ const AITools = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {AI_TOOLS.map((tool, index) => (
-              <motion.div
-                key={tool.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
+              <div key={tool.id} className="texly-fade-in">
                 <Link 
                   to={tool.path}
                   className="group relative block h-full p-8 rounded-[2.5rem] bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 transition-all duration-500 shadow-sm hover:shadow-xl dark:backdrop-blur-xl overflow-hidden"
@@ -134,7 +123,7 @@ const AITools = () => {
                     </div>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -179,7 +168,7 @@ const AITools = () => {
       <section className="py-20 pb-32">
         <div className="max-w-4xl mx-auto px-4">
           <div className="p-12 rounded-[3rem] bg-gradient-to-br from-blue-600 to-indigo-700 text-center relative overflow-hidden shadow-2xl shadow-blue-600/20">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full -mr-32 -mt-32" />
+            <div className="hidden sm:block absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full -mr-32 -mt-32" />
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-black mb-6 text-white">Ready to transform your images?</h2>
               <p className="text-blue-100 mb-10 text-lg font-medium">

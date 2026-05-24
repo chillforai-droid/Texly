@@ -1,621 +1,513 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Search, 
-  ArrowRight, 
-  Zap, 
-  ShieldCheck, 
-  Heart, 
-  Sparkles, 
-  ChevronRight,
-  ChevronLeft,
-  Star,
-  FileText,
-  RefreshCw,
-  Trash2,
-  BarChart3,
-  Wrench
+import {
+  Search, ArrowRight, Zap, Sparkles, Star,
+  FileText, RefreshCw, Trash2, BarChart3, Wrench,
+  Code2, Github, TrendingUp, Layers, Cpu, ArrowUpRight,
+  Shield, Bolt
 } from 'lucide-react';
 import { ALL_TOOLS, CATEGORIES } from '../data/tools';
-
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
-import AdPlaceholder from '../components/AdPlaceholder';
 import { useLanguage } from '../context/LanguageContext';
 import { BASE_URL } from '../config';
-
 import CategoryModal from '../components/CategoryModal';
 import DynamicIcon from '../components/LucideIcon';
 import { useDesktopPerf } from '../hooks/useDesktopPerf';
+
+const categoryThemes: Record<string, { gradient: string; iconBg: string; border: string; badge: string; glow: string }> = {
+  cleaning:  { gradient: 'from-emerald-500 to-teal-500',   iconBg: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400', border: 'border-emerald-200 dark:border-emerald-800/40', badge: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300', glow: 'shadow-emerald-500/20' },
+  converter: { gradient: 'from-blue-500 to-indigo-500',    iconBg: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',           border: 'border-blue-200 dark:border-blue-800/40',   badge: 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300', glow: 'shadow-blue-500/20' },
+  analysis:  { gradient: 'from-amber-500 to-orange-500',   iconBg: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400',         border: 'border-amber-200 dark:border-amber-800/40', badge: 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300', glow: 'shadow-amber-500/20' },
+  utility:   { gradient: 'from-slate-500 to-slate-700',    iconBg: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400',            border: 'border-slate-200 dark:border-slate-700',    badge: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300', glow: 'shadow-slate-500/20' },
+  pdf:       { gradient: 'from-rose-500 to-pink-500',      iconBg: 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400',             border: 'border-rose-200 dark:border-rose-800/40',   badge: 'bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300', glow: 'shadow-rose-500/20' },
+  ai:        { gradient: 'from-violet-500 to-purple-600',  iconBg: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400',     border: 'border-violet-200 dark:border-violet-800/40', badge: 'bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300', glow: 'shadow-violet-500/20' },
+  generator: { gradient: 'from-purple-500 to-fuchsia-500', iconBg: 'bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400',     border: 'border-purple-200 dark:border-purple-800/40', badge: 'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300', glow: 'shadow-purple-500/20' },
+};
+
+const categoryIcons: Record<string, React.ReactNode> = {
+  cleaning: <Trash2 className="w-4 h-4" />,
+  converter: <RefreshCw className="w-4 h-4" />,
+  analysis: <BarChart3 className="w-4 h-4" />,
+  utility: <Wrench className="w-4 h-4" />,
+  pdf: <FileText className="w-4 h-4" />,
+  ai: <Cpu className="w-4 h-4" />,
+  generator: <Layers className="w-4 h-4" />,
+};
+
+const VIRAL_IDS = ['whatsapp-text-formatter', 'number-to-words'];
+
+const STATS = [
+  { value: '100+', label: 'Free Tools' },
+  { value: '50K+', label: 'Daily Users' },
+  { value: '0', label: 'Sign-ups Needed' },
+  { value: '100%', label: 'Private & Fast' },
+];
 
 const HomePage = () => {
   const { t } = useLanguage();
   const { initialToolCount, isDesktop, isLargeScreen } = useDesktopPerf();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [displayCount, setDisplayCount] = useState(initialToolCount);
 
   const filteredTools = useMemo(() => {
     if (!searchQuery.trim()) return ALL_TOOLS;
-    const search = searchQuery.toLowerCase();
-    return ALL_TOOLS.filter(tool => 
-      tool.name.toLowerCase().includes(search) || 
-      tool.category.toLowerCase().includes(search) ||
-      tool.keywords.some(k => k.toLowerCase().includes(search)) ||
-      (t.toolNames[tool.id as keyof typeof t.toolNames] || '').toLowerCase().includes(search)
+    const s = searchQuery.toLowerCase();
+    return ALL_TOOLS.filter(tool =>
+      tool.name.toLowerCase().includes(s) ||
+      tool.category.toLowerCase().includes(s) ||
+      tool.keywords.some(k => k.toLowerCase().includes(s)) ||
+      (t.toolNames[tool.id as keyof typeof t.toolNames] || '').toLowerCase().includes(s)
     );
   }, [searchQuery, t.toolNames]);
 
-  // CLS FIX: Initialize displayCount from useDesktopPerf (handles all breakpoints)
-  // desktop: 12, large: 18, xl: 24, mobile: 6 — no jump after hydration
-  const [displayCount, setDisplayCount] = useState(initialToolCount);
-  const [isMobile, setIsMobile] = useState(() => {
-    if (typeof window !== 'undefined') return window.innerWidth < 768;
-    return false;
-  });
-
   useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      if (mobile) setDisplayCount(prev => prev > 6 ? 6 : prev);
-    };
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setSearchQuery(''); };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
   }, []);
 
   const popularTools = useMemo(() => ALL_TOOLS.slice(0, displayCount), [displayCount]);
+  const viralTools = useMemo(() => ALL_TOOLS.filter(t => VIRAL_IDS.includes(t.id)), []);
+  const aiTools = useMemo(() => ALL_TOOLS.filter(t => t.category === 'ai').slice(0, 4), []);
 
-  // JSON-LD for Home
+  const getToolPath = (tool: any) =>
+    tool.category === 'ai' || tool.category === 'generator' ? `/tools/${tool.slug}` : `/tool/${tool.slug}`;
+
   const homeSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "url": BASE_URL,
-    "name": "Texly",
-    "description": "Free online text tools for cleaning, formatting, and analyzing text.",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": `${BASE_URL}/?q={search_term_string}`,
-      "query-input": "required name=search_term_string"
-    }
-  };
-
-  const categoryIcons: any = {
-    cleaning: <Trash2 className="w-5 h-5" />,
-    converter: <RefreshCw className="w-5 h-5" />,
-    analysis: <BarChart3 className="w-5 h-5" />,
-    utility: <Wrench className="w-5 h-5" />,
-    pdf: <FileText className="w-5 h-5" />,
-    ai: <Sparkles className="w-5 h-5" />,
-    generator: <Sparkles className="w-5 h-5" />,
-  };
-
-  const getToolPath = (tool: any) => {
-    if (tool.category === 'ai' || tool.category === 'generator') {
-      return `/tools/${tool.slug}`;
-    }
-    return `/tool/${tool.slug}`;
-  };
-
-  const categoryThemes: Record<string, { 
-    primary: string, 
-    bg: string, 
-    border: string, 
-    iconBg: string,
-    text: string,
-    gradient: string,
-    hoverShadow: string
-  }> = {
-    cleaning: { 
-      primary: 'emerald-600', 
-      bg: 'bg-emerald-50/50 dark:bg-emerald-900/10', 
-      border: 'border-emerald-100 dark:border-emerald-800/50', 
-      iconBg: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
-      text: 'text-emerald-900 dark:text-emerald-100',
-      gradient: 'from-emerald-500 to-teal-600',
-      hoverShadow: 'hover:shadow-emerald-500/10 dark:hover:shadow-emerald-500/20'
-    },
-    converter: { 
-      primary: 'blue-600', 
-      bg: 'bg-blue-50/50 dark:bg-blue-900/10', 
-      border: 'border-blue-100 dark:border-blue-800/50', 
-      iconBg: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400',
-      text: 'text-blue-900 dark:text-blue-100',
-      gradient: 'from-blue-500 to-indigo-600',
-      hoverShadow: 'hover:shadow-blue-500/10 dark:hover:shadow-blue-500/20'
-    },
-    analysis: { 
-      primary: 'amber-600', 
-      bg: 'bg-amber-50/50 dark:bg-amber-900/10', 
-      border: 'border-amber-100 dark:border-amber-800/50', 
-      iconBg: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
-      text: 'text-amber-900 dark:text-amber-100',
-      gradient: 'from-amber-500 to-orange-600',
-      hoverShadow: 'hover:shadow-amber-500/10 dark:hover:shadow-amber-500/20'
-    },
-    utility: { 
-      primary: 'slate-600', 
-      bg: 'bg-slate-50/50 dark:bg-slate-900/10', 
-      border: 'border-slate-100 dark:border-slate-800/50', 
-      iconBg: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400',
-      text: 'text-slate-900 dark:text-slate-100',
-      gradient: 'from-slate-500 to-slate-700',
-      hoverShadow: 'hover:shadow-slate-500/10 dark:hover:shadow-slate-500/20'
-    },
-    pdf: { 
-      primary: 'rose-600', 
-      bg: 'bg-rose-50/50 dark:bg-rose-900/10', 
-      border: 'border-rose-100 dark:border-rose-800/50', 
-      iconBg: 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400',
-      text: 'text-rose-900 dark:text-rose-100',
-      gradient: 'from-rose-500 to-pink-600',
-      hoverShadow: 'hover:shadow-rose-500/10 dark:hover:shadow-rose-500/20'
-    },
-    ai: { 
-      primary: 'blue-600', 
-      bg: 'bg-blue-50/50 dark:bg-blue-900/10', 
-      border: 'border-blue-100 dark:border-blue-800/50', 
-      iconBg: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
-      text: 'text-blue-900 dark:text-blue-100',
-      gradient: 'from-blue-500 to-indigo-600',
-      hoverShadow: 'hover:shadow-blue-500/10 dark:hover:shadow-blue-500/20'
-    },
-    generator: { 
-      primary: 'purple-600', 
-      bg: 'bg-purple-50/50 dark:bg-purple-900/10', 
-      border: 'border-purple-100 dark:border-purple-800/50', 
-      iconBg: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
-      text: 'text-purple-900 dark:text-purple-100',
-      gradient: 'from-purple-500 to-fuchsia-600',
-      hoverShadow: 'hover:shadow-purple-500/10 dark:hover:shadow-purple-500/20'
-    }
+    "@context": "https://schema.org", "@type": "WebSite",
+    url: BASE_URL, name: "Texly",
+    description: "Free online text tools for cleaning, formatting, and analyzing text.",
+    potentialAction: { "@type": "SearchAction", target: `${BASE_URL}/?q={search_term_string}`, "query-input": "required name=search_term_string" }
   };
 
   return (
-    <main className="relative min-h-screen">
-      <SEO 
-        title={t.home.heroTitle}
-        description={t.home.heroSubtitle}
-        canonical="/"
-      />
-      <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify(homeSchema)}
-        </script>
-      </Helmet>
-      {/* Background Decoration — contain:strict prevents reflow */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10" style={{ contain: 'strict' }}>
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-500/5 dark:bg-blue-500/10 blur-[120px] rounded-full" style={{ willChange: 'auto' }} />
-        <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-indigo-500/5 dark:bg-indigo-500/10 blur-[100px] rounded-full" style={{ willChange: 'auto' }} />
-        <div className="absolute bottom-[10%] left-[20%] w-[25%] h-[25%] bg-emerald-500/5 dark:bg-emerald-500/10 blur-[100px] rounded-full" style={{ willChange: 'auto' }} />
-      </div>
+    <main className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
+      <SEO title={t.home.heroTitle} description={t.home.heroSubtitle} canonical="/" />
+      <Helmet><script type="application/ld+json">{JSON.stringify(homeSchema)}</script></Helmet>
 
-      <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
-        {/* Hero Section */}
-      <section className="text-center mb-10 sm:mb-16" aria-labelledby="hero-title">
-        <div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-bold mb-8 border border-blue-100 dark:border-blue-800"
-        >
-          <Sparkles className="w-4 h-4" />
-          <span>{t.home.trendingNow}</span>
+      {/* ═══════════════════════════════════════════════════════
+          HERO — Dramatic split layout with floating orbs
+      ═══════════════════════════════════════════════════════ */}
+      <section className="relative overflow-hidden pt-14 pb-20 sm:pt-20 sm:pb-28">
+
+        {/* Ambient background — desktop only (prevents Android GPU glitch) */}
+        <div className="hidden sm:block absolute inset-0 pointer-events-none -z-10" style={{ isolation: 'isolate' }}>
+          {/* Top-left blue orb */}
+          <div className="absolute -top-24 -left-24 w-[500px] h-[500px] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%)' }} />
+          {/* Top-right violet orb */}
+          <div className="absolute -top-16 right-0 w-[420px] h-[420px] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 70%)' }} />
+          {/* Center glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] rounded-full"
+            style={{ background: 'radial-gradient(ellipse, rgba(59,130,246,0.06) 0%, transparent 60%)' }} />
+          {/* Grid pattern */}
+          <div className="absolute inset-0 opacity-[0.025] dark:opacity-[0.04]"
+            style={{ backgroundImage: 'linear-gradient(rgba(100,116,139,1) 1px, transparent 1px), linear-gradient(90deg, rgba(100,116,139,1) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
         </div>
-        <h1 
-          id="hero-title"
-          className="text-3xl sm:text-4xl md:text-7xl font-black text-slate-900 dark:text-white mb-6 tracking-tight leading-[1.1]"
-        >
-          {t.home.heroTitle.split(' ').map((word: string, i: number) => (
-            <span key={i} className={i === 1 ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600' : ''}>
-              {word}{' '}
-            </span>
-          ))}
-        </h1>
-        <p 
-          className="text-base sm:text-xl text-slate-600 dark:text-slate-400 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-2"
-        >
-          {t.home.heroSubtitle}
-        </p>
 
-        <div className="relative max-w-2xl mx-auto group">
-          <label htmlFor="tool-search" className="sr-only">{t.home.searchPlaceholder}</label>
-          <Search className="absolute left-3.5 sm:left-6 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 sm:w-6 sm:h-6 group-focus-within:text-blue-600 transition-colors" aria-hidden="true" />
-          <input
-            id="tool-search"
-            type="text"
-            placeholder={t.home.searchPlaceholder}
-            className="w-full pl-12 sm:pl-16 pr-4 sm:pr-6 py-3.5 sm:py-5 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl sm:rounded-[2rem] shadow-xl shadow-blue-500/5 focus:ring-4 sm:focus:ring-8 focus:ring-blue-500/5 focus:border-blue-500 outline-none transition-all text-base sm:text-xl font-medium dark:text-white"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-            <kbd className="font-sans">ESC</kbd>
-            <span>to clear</span>
+        <div className="max-w-5xl mx-auto px-4 text-center">
+
+          {/* Trending pill */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-200 dark:border-blue-800/60 bg-blue-50 dark:bg-blue-950/50 mb-8">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+            <span className="text-xs font-black text-blue-700 dark:text-blue-300 uppercase tracking-widest">{t.home.trendingNow}</span>
+          </div>
+
+          {/* Main headline */}
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[0.95] tracking-tight mb-6">
+            <span className="text-slate-900 dark:text-white">100+</span>
+            {' '}
+            <span className="relative inline-block">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-blue-600 to-violet-600">Free</span>
+            </span>
+            <br />
+            <span className="text-slate-900 dark:text-white">AI Tools</span>
+            {' '}
+            <span className="text-slate-400 dark:text-slate-600">&</span>
+            <br className="sm:hidden" />
+            {' '}
+            <span className="text-slate-900 dark:text-white">Text</span>
+            {' '}
+            <span className="relative">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-fuchsia-500">Utilities</span>
+              {/* Underline accent */}
+              <svg className="absolute -bottom-2 left-0 w-full hidden sm:block" height="6" viewBox="0 0 200 6" preserveAspectRatio="none">
+                <path d="M0 3 Q50 0 100 3 Q150 6 200 3" stroke="url(#ug)" strokeWidth="3" fill="none" strokeLinecap="round"/>
+                <defs><linearGradient id="ug" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stopColor="#8b5cf6"/><stop offset="100%" stopColor="#d946ef"/></linearGradient></defs>
+              </svg>
+            </span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-lg mx-auto mb-4 leading-relaxed font-medium">
+            {t.home.heroSubtitle}
+          </p>
+
+          {/* Trust badges */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+            <span className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400">
+              <Shield className="w-3.5 h-3.5 text-emerald-500" /> No Signup
+            </span>
+            <span className="w-px h-3 bg-slate-300 dark:bg-slate-700" />
+            <span className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400">
+              <Bolt className="w-3.5 h-3.5 text-amber-500" /> Instant & Private
+            </span>
+            <span className="w-px h-3 bg-slate-300 dark:bg-slate-700" />
+            <span className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400">
+              <Zap className="w-3.5 h-3.5 text-blue-500" /> 100% Free
+            </span>
+          </div>
+
+          {/* Search bar */}
+          <div className="relative max-w-2xl mx-auto mb-8">
+            <div className="relative">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 pointer-events-none z-10" />
+              <label htmlFor="tool-search" className="sr-only">{t.home.searchPlaceholder}</label>
+              <input
+                id="tool-search" type="text"
+                placeholder={t.home.searchPlaceholder}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-14 pr-24 py-4 sm:py-5 text-base font-medium bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl shadow-slate-200/60 dark:shadow-slate-900/60 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all dark:text-white placeholder:text-slate-400"
+              />
+              {searchQuery ? (
+                <button onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-black text-slate-500 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3 py-1.5 rounded-xl transition-colors">
+                  ESC
+                </button>
+              ) : (
+                <span className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg items-center gap-1 select-none">
+                  <kbd>ESC</kbd> to clear
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Quick links */}
+          <div className="flex flex-wrap justify-center gap-2">
+            {ALL_TOOLS.slice(0, 5).map(tool => (
+              <Link key={tool.id} to={getToolPath(tool)}
+                className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-blue-400 hover:text-blue-600 dark:hover:border-blue-700 dark:hover:text-blue-400 hover:shadow-md transition-all">
+                <DynamicIcon name={tool.icon} className="w-3.5 h-3.5" />
+                {t.toolNames[tool.id as keyof typeof t.toolNames] || tool.name}
+              </Link>
+            ))}
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="mt-10 flex flex-wrap justify-center gap-2 sm:gap-3">
-          {ALL_TOOLS.slice(0, 5).map(tool => (
-            <Link 
-              key={tool.id} 
-              to={getToolPath(tool)}
-              className="px-3 py-2 sm:px-5 sm:py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400 hover:border-blue-500 hover:text-blue-600 hover:shadow-lg hover:shadow-blue-500/10 transition-all flex items-center gap-2"
-            >
-              <DynamicIcon name={tool.icon} className="w-4 h-4" />
-              {t.toolNames[tool.id] || tool.name}
-            </Link>
-          ))}
+        {/* Stats bar */}
+        <div className="max-w-4xl mx-auto px-4 mt-16">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-200 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+            {STATS.map((stat, i) => (
+              <div key={i} className="bg-white dark:bg-slate-900 px-6 py-5 text-center">
+                <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-0.5">{stat.value}</div>
+                <div className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide">{stat.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-            {/* 🔥 New Viral Tools Section */}
-      <section className="py-12 relative">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-black uppercase tracking-widest">
-              <Zap className="w-3 h-3 fill-current" />
-              🔥 Trending Now
+      <div className="max-w-6xl mx-auto px-4">
+
+        {/* ═══════════════════════════════════════════════════════
+            TRENDING — Bold editorial cards
+        ═══════════════════════════════════════════════════════ */}
+        <section className="mb-20">
+          {/* Section header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-red-500 to-orange-500 shadow-lg shadow-red-500/30">
+                <Zap className="w-3.5 h-3.5 text-white fill-white" />
+                <span className="text-[11px] font-black text-white uppercase tracking-widest">Trending Now</span>
+              </div>
             </div>
+            <Link to="/ai-tools" className="flex items-center gap-1 text-xs font-black text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors uppercase tracking-wide">
+              View All <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-8">
-            New & <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Viral Tools</span>
+
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-8 leading-tight">
+            New &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Viral Tools</span>
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ALL_TOOLS.filter(t => ['whatsapp-text-formatter', 'number-to-words'].includes(t.id)).map((tool) => (
-              <Link
-                key={tool.id}
-                to={`/tool/${tool.slug}`}
-                className="group flex items-start gap-4 p-5 bg-white dark:bg-slate-900 border-2 border-red-100 dark:border-red-900/20 rounded-2xl hover:border-red-400 hover:shadow-lg hover:shadow-red-500/10 transition-all"
-              >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shrink-0">
-                  <DynamicIcon name={tool.icon} className="w-6 h-6 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-black text-red-500 uppercase tracking-wide">New</span>
-                    <span className="text-xs bg-red-50 dark:bg-red-900/20 text-red-600 px-2 py-0.5 rounded-full font-bold">🔥 Trending</span>
+
+          {/* Cards — horizontal scroll on mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            {viralTools.map((tool, idx) => (
+              <Link key={tool.id} to={`/tool/${tool.slug}`}
+                className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-red-300 dark:hover:border-red-800/60 hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-300 hover:-translate-y-1">
+                {/* Top accent line */}
+                <div className="h-1 w-full bg-gradient-to-r from-red-500 to-orange-500" />
+                <div className="p-5">
+                  {/* Badges row */}
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 text-[10px] font-black uppercase tracking-widest">New</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-widest">Trending</span>
                   </div>
-                  <h3 className="font-black text-slate-900 dark:text-white text-sm leading-snug group-hover:text-red-600 transition-colors line-clamp-2">
-                    {tool.name}
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
-                    {tool.shortDescription}
-                  </p>
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center mb-4 shadow-lg shadow-red-500/25 group-hover:scale-105 transition-transform">
+                    <DynamicIcon name={tool.icon} className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-sm font-black text-slate-900 dark:text-white leading-snug mb-2 line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">{tool.name}</h3>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-2 leading-relaxed">{tool.shortDescription}</p>
+                  <div className="mt-4 flex items-center gap-1 text-[11px] font-black text-red-500 opacity-0 group-hover:opacity-100 transition-all translate-x-0 group-hover:translate-x-1">
+                    Use Tool <ArrowRight className="w-3 h-3" />
+                  </div>
                 </div>
               </Link>
             ))}
 
-            {/* DevStudio Card */}
-            <Link
-              to="/devstudio"
-              className="group flex items-start gap-4 p-5 bg-white dark:bg-slate-900 border-2 border-emerald-100 dark:border-emerald-900/20 rounded-2xl hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-500/10 transition-all"
-            >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shrink-0 text-white font-black text-lg">
-                ⟨/⟩
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-black text-emerald-600 uppercase tracking-wide">New</span>
-                  <span className="text-xs bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 px-2 py-0.5 rounded-full font-bold">⚡ Hot</span>
+            {/* DevStudio card */}
+            <Link to="/devstudio"
+              className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-800/60 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-1">
+              <div className="h-1 w-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+              <div className="p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest">New</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 text-[10px] font-black uppercase tracking-widest">Hot</span>
                 </div>
-                <h3 className="font-black text-slate-900 dark:text-white text-sm leading-snug group-hover:text-emerald-600 transition-colors">
-                  DevStudio — Online IDE
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
-                  VS Code जैसा browser IDE — ZIP upload करें, Monaco editor, AI code modify, GitHub push, live preview सब एक जगह।
-                </p>
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/25 group-hover:scale-105 transition-transform">
+                  <Code2 className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-sm font-black text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">DevStudio — Online IDE</h3>
+                <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-2 leading-relaxed">VS Code जैसा browser IDE — ZIP upload, Monaco editor, AI code, GitHub push।</p>
+                <div className="mt-4 flex items-center gap-1 text-[11px] font-black text-emerald-600 opacity-0 group-hover:opacity-100 transition-all translate-x-0 group-hover:translate-x-1">
+                  Open Studio <ArrowRight className="w-3 h-3" />
+                </div>
+              </div>
+            </Link>
+
+            {/* GitHub Push card */}
+            <Link to="/ai-automation"
+              className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-2xl hover:shadow-slate-500/10 transition-all duration-300 hover:-translate-y-1">
+              <div className="h-1 w-full bg-gradient-to-r from-slate-600 to-slate-900 dark:from-slate-400 dark:to-slate-600" />
+              <div className="p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-black uppercase tracking-widest">Free</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-black uppercase tracking-widest">Fast</span>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center mb-4 shadow-lg shadow-slate-500/20 group-hover:scale-105 transition-transform">
+                  <Github className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-sm font-black text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">Free GitHub File Push Tool</h3>
+                <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-2 leading-relaxed">Browser से GitHub repo में files push करें। 100% free।</p>
+                <div className="mt-4 flex items-center gap-1 text-[11px] font-black text-slate-500 opacity-0 group-hover:opacity-100 transition-all translate-x-0 group-hover:translate-x-1">
+                  Push Files <ArrowRight className="w-3 h-3" />
+                </div>
               </div>
             </Link>
           </div>
-        </div>
-      </section>
+        </section>
 
-{/* AI Tools Section */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-blue-600/10 blur-[100px] rounded-full pointer-events-none" />
-        <div className="max-w-6xl mx-auto px-4 relative z-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest mb-4">
-                <Sparkles className="w-3 h-3" />
-                New: AI-Powered Tools
-              </div>
-              <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">
-                Experience Next-Gen AI Processing
-              </h2>
+        {/* ═══════════════════════════════════════════════════════
+            AI SECTION
+        ═══════════════════════════════════════════════════════ */}
+        <section className="mb-20 rounded-3xl overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2e1065 100%)' }}>
+          <div className="relative p-8 sm:p-10">
+            <div className="hidden sm:block absolute inset-0 pointer-events-none overflow-hidden rounded-3xl">
+              <div className="absolute -top-10 -right-10 w-64 h-64 bg-blue-500/15 rounded-full blur-[60px]" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-violet-500/15 rounded-full blur-[50px]" />
             </div>
-            <Link 
-              to="/ai-tools"
-              className="group flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black transition-all shadow-lg shadow-blue-500/20 min-h-[48px]"
-            >
-              Explore AI Hub
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {ALL_TOOLS.filter(t => t.category === 'ai').slice(0, 4).map((tool, index) => (
-              <div
-                key={tool.id}
-              >
-                <Link 
-                  to={getToolPath(tool)}
-                  className="group block p-6 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-xl"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <DynamicIcon name={tool.icon} className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <h3 className="font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    {tool.name}
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
-                    {tool.shortDescription}
-                  </p>
+            <div className="relative z-10">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-[10px] font-black uppercase tracking-widest mb-3">
+                    <Sparkles className="w-3 h-3" /> New: AI-Powered Tools
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white">Experience Next-Gen AI Processing</h2>
+                </div>
+                <Link to="/ai-tools" className="shrink-0 flex items-center gap-2 px-5 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl font-bold text-sm transition-all backdrop-blur-sm">
+                  Explore AI Hub <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-        {/* Ad Slot 1 — fixed height prevents CLS */}
-        <div className="max-w-6xl mx-auto px-4 mb-16" style={{ minHeight: '100px', contain: 'layout' }}>
-          <AdPlaceholder slot="Home Top" format="horizontal" />
-        </div>
-
-      {/* Categories */}
-      {!searchQuery && (
-        <section className="mb-12 sm:mb-24" aria-labelledby="categories-title">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <h2 id="categories-title" className="text-3xl font-black text-slate-900 dark:text-white mb-2">{t.home.browseCategory}</h2>
-              <p className="text-slate-500 dark:text-slate-400 font-medium">Explore our collection of powerful text tools</p>
-            </div>
-            <div className="hidden md:flex gap-2">
-              <button 
-                className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400 cursor-not-allowed opacity-50"
-                aria-label="Previous Category"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button 
-                className="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400 cursor-not-allowed opacity-50"
-                aria-label="Next Category"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {aiTools.map(tool => (
+                  <Link key={tool.id} to={getToolPath(tool)}
+                    className="group p-5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/25 transition-all">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <DynamicIcon name={tool.icon} className="w-5 h-5 text-blue-300" />
+                    </div>
+                    <h3 className="text-sm font-bold text-white mb-1 group-hover:text-blue-300 transition-colors line-clamp-2 leading-snug">{tool.name}</h3>
+                    <p className="text-xs text-slate-400 line-clamp-2">{tool.shortDescription}</p>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6" role="list">
-            {CATEGORIES.map((cat) => {
-              const theme = categoryThemes[cat.id] || categoryThemes.utility;
-              return (
-                <div 
-                  key={cat.id} 
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`relative group bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border ${theme.border} dark:border-slate-800 shadow-sm transition-all overflow-hidden cursor-pointer hover:-translate-y-2`} 
-                  role="listitem"
-                >
-                  <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${theme.gradient} opacity-[0.03] dark:opacity-[0.05] rounded-bl-[5rem] group-hover:opacity-[0.08] transition-opacity`} />
-                  
-                  <div className={`w-14 h-14 ${theme.iconBg} dark:bg-slate-800 dark:text-blue-400 rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500`} aria-hidden="true">
-                    {categoryIcons[cat.id]}
-                  </div>
-                  <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">{(t.categories as any)[cat.id]}</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">{(t.categories as any)[`${cat.id}Desc`]}</p>
-                  
-                  <div className="space-y-3">
-                    {ALL_TOOLS.filter(toolItem => toolItem.category === cat.id).slice(0, 3).map(toolItem => {
-                      const isExternal = !!toolItem.externalUrl;
-                      const content = (
-                        <>
-                          <span className="truncate pr-2">{t.toolNames[toolItem.id] || toolItem.name}</span>
-                          <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all shrink-0" aria-hidden="true" />
-                        </>
-                      );
-                      const className = "flex items-center justify-between text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 group/link transition-colors";
+        </section>
 
-                      return isExternal ? (
-                        <a 
-                          key={toolItem.id} 
-                          href={toolItem.externalUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={className}
-                        >
-                          {content}
-                        </a>
-                      ) : (
-                        <Link 
-                          key={toolItem.id} 
-                          to={getToolPath(toolItem)} 
-                          className={className}
-                        >
-                          {content}
-                        </Link>
-                      );
-                    })}
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedCategory(cat);
-                      }}
-                      className="flex items-center gap-2 text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest pt-2 hover:gap-3 transition-all"
-                    >
-                      <span>{t.navbar.viewAll.split(' ')[0]} {t.navbar.viewAll.split(' ')[1]}</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </button>
+        {/* ═══════════════════════════════════════════════════════
+            CATEGORIES
+        ═══════════════════════════════════════════════════════ */}
+        {!searchQuery && (
+          <section className="mb-20">
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-1">{t.home.browseCategory}</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Explore our collection of powerful text tools</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
+              {CATEGORIES.map(cat => {
+                const theme = categoryThemes[cat.id] || categoryThemes.utility;
+                const toolCount = ALL_TOOLS.filter(t => t.category === cat.id).length;
+                return (
+                  <button key={cat.id} onClick={() => setSelectedCategory(cat)}
+                    className={`group relative overflow-hidden p-4 bg-white dark:bg-slate-900 border ${theme.border} rounded-2xl text-left hover:shadow-xl hover:shadow-current/10 transition-all hover:-translate-y-1 cursor-pointer`}>
+                    <div className={`hidden sm:block absolute top-0 right-0 w-16 h-16 bg-gradient-to-br ${theme.gradient} opacity-5 rounded-bl-3xl group-hover:opacity-10 transition-opacity`} />
+                    <div className={`w-9 h-9 ${theme.iconBg} rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                      {categoryIcons[cat.id]}
+                    </div>
+                    <p className="text-sm font-black text-slate-900 dark:text-white leading-tight mb-1.5">{(t.categories as any)[cat.id]}</p>
+                    <p className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full inline-block ${theme.badge}`}>{toolCount} tools</p>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* ═══════════════════════════════════════════════════════
+            TOOLS GRID — Redesigned cards
+        ═══════════════════════════════════════════════════════ */}
+        <section className="mb-20">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/25">
+                <Zap className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+                  {searchQuery ? `${t.home.searchResults} (${filteredTools.length})` : t.home.popularTools}
+                </h2>
+                {!searchQuery && <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Most-used by our community</p>}
+              </div>
+            </div>
+            {!searchQuery && (
+              <span className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-full text-xs font-black text-blue-700 dark:text-blue-300 uppercase tracking-widest">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
+                </span>
+                {t.home.trendingNow}
+              </span>
+            )}
+          </div>
+
+          {/* Tool cards — new design */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {(searchQuery ? filteredTools : popularTools).map(tool => {
+              const theme = categoryThemes[tool.category] || categoryThemes.utility;
+              const isExternal = !!tool.externalUrl;
+              const inner = (
+                <div className={`group relative flex flex-col h-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800/80 hover:border-transparent hover:shadow-xl ${theme.glow} transition-all duration-300 hover:-translate-y-0.5`}>
+
+                  {/* Top gradient bar */}
+                  <div className={`h-0.5 w-0 group-hover:w-full bg-gradient-to-r ${theme.gradient} transition-all duration-500`} />
+
+                  {/* Card body */}
+                  <div className="flex flex-col h-full p-5">
+                    {/* Header row: icon + category badge */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`w-11 h-11 ${theme.iconBg} rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform shrink-0`}>
+                        <DynamicIcon name={tool.icon} className="w-5 h-5" />
+                      </div>
+                      <span className={`text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg ${theme.badge}`}>
+                        {(t.categories as any)[tool.category]}
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-sm font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2 mb-1.5">
+                      {t.toolNames[tool.id as keyof typeof t.toolNames] || tool.name}
+                    </h3>
+
+                    {/* Stars */}
+                    <div className="flex items-center gap-0.5 mb-3">
+                      {[1,2,3,4,5].map(s => <Star key={s} className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />)}
+                      <span className="text-[9px] font-bold text-slate-400 ml-1">4.9</span>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2 flex-grow mb-4">
+                      {t.toolDescriptions[tool.id as keyof typeof t.toolDescriptions] || tool.shortDescription}
+                    </p>
+
+                    {/* CTA */}
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5 text-xs font-black text-blue-600 dark:text-blue-400 group-hover:gap-2.5 transition-all">
+                        {t.home.useTool} <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                      <span className="w-6 h-6 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 group-hover:text-blue-500 transition-all">
+                        <ArrowUpRight className="w-3 h-3" />
+                      </span>
+                    </div>
                   </div>
                 </div>
               );
+              return isExternal ? (
+                <a key={tool.id} href={tool.externalUrl} target="_blank" rel="noopener noreferrer" className="flex flex-col h-full">{inner}</a>
+              ) : (
+                <Link key={tool.id} to={getToolPath(tool)} className="flex flex-col h-full">{inner}</Link>
+              );
             })}
           </div>
-        </section>
-      )}
 
-        {/* Ad Slot 2 — fixed height prevents CLS */}
-        <div className="max-w-6xl mx-auto px-4 mt-12 sm:mt-24 mb-16" style={{ minHeight: '100px', contain: 'layout' }}>
-          <AdPlaceholder slot="Home Bottom" format="horizontal" />
-        </div>
-
-      {/* Tools Grid */}
-      <section aria-labelledby="tools-title" className="mb-12 sm:mb-24">
-        <div className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-              <Zap className="w-6 h-6" />
-            </div>
-            <h2 id="tools-title" className="text-3xl font-black text-slate-900 dark:text-white">
-              {searchQuery ? `${t.home.searchResults} (${filteredTools.length})` : t.home.popularTools}
-            </h2>
-          </div>
-          {!searchQuery && (
-            <div className="flex items-center space-x-3 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 rounded-full">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-600"></span>
-              </span>
-              <span className="text-sm font-black text-blue-700 dark:text-blue-300 uppercase tracking-widest">{t.home.trendingNow}</span>
+          {!searchQuery && ALL_TOOLS.length > displayCount && (
+            <div className="mt-10 text-center">
+              <button
+                onClick={() => setDisplayCount(prev => prev + (isLargeScreen ? 18 : isDesktop ? 12 : 6))}
+                className="group inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl font-black text-slate-700 dark:text-slate-300 hover:border-blue-500 hover:text-blue-600 transition-all shadow-sm hover:shadow-xl hover:shadow-blue-500/10 text-sm">
+                Load More Tools <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
           )}
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" role="list">
-          {(searchQuery ? filteredTools : popularTools).map((tool, idx) => {
-            const theme = categoryThemes[tool.category] || categoryThemes.utility;
-            const isExternal = !!tool.externalUrl;
-            const cardClassName = `group relative bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border ${theme.border} dark:border-slate-800 shadow-sm hover:border-transparent ${theme.hoverShadow} hover:shadow-2xl transition-all flex flex-col h-full overflow-hidden`;
-            
-            const cardContent = (
-              <>
-                {/* Category Badge */}
-                <div className={`absolute top-6 right-6 px-3 py-1 ${theme.bg} dark:bg-slate-800 ${theme.text} dark:text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border ${theme.border} dark:border-slate-700`}>
-                  {(t.categories as any)[tool.category]}
-                </div>
+        </section>
 
-                <div className="flex items-center gap-4 mb-8">
-                  <div className={`w-16 h-16 ${theme.iconBg} dark:bg-slate-800 dark:text-blue-400 rounded-[1.25rem] flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-sm`} aria-hidden="true">
-                    <DynamicIcon name={tool.icon} className="w-8 h-8" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:hover:text-blue-400 transition-colors leading-tight">{t.toolNames[tool.id] || tool.name}</h3>
-                    <div className="flex items-center gap-1 mt-1">
-                      {[1, 2, 3, 4, 5].map(s => (
-                        <Star key={s} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                      ))}
-                      <span className="text-[10px] font-bold text-slate-400 ml-1">4.9/5</span>
-                    </div>
-                  </div>
-                </div>
-
-                <p className="text-slate-500 dark:text-slate-400 line-clamp-3 mb-10 flex-grow leading-relaxed font-medium">
-                  {t.toolDescriptions[tool.id] || tool.shortDescription}
-                </p>
-
-                <div className="flex items-center justify-between pt-6 border-t border-slate-50 dark:border-slate-800">
-                  <div className={`flex items-center gap-2 ${theme.text} dark:text-blue-400 text-sm font-black group-hover:translate-x-2 transition-transform`}>
-                    <span>{t.home.useTool}</span>
-                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                  </div>
-                  <div className="flex -space-x-2">
-                    {[
-                      'bg-gradient-to-br from-blue-400 to-blue-600',
-                      'bg-gradient-to-br from-purple-400 to-purple-600',
-                      'bg-gradient-to-br from-green-400 to-green-600',
-                    ].map((grad, i) => (
-                      <div key={i} className={`w-6 h-6 rounded-full border-2 border-white dark:border-slate-800 ${grad}`} />
-                    ))}
-                    <div className="w-6 h-6 rounded-full border-2 border-white dark:border-slate-800 bg-blue-600 flex items-center justify-center text-[8px] font-bold text-white">
-                      +1k
-                    </div>
-                  </div>
-                </div>
-              </>
-            );
-
-            return (
-              <div
-                key={tool.id}
-                // PERF FIX: below-fold cards use content-visibility:auto → skip rendering
-                // offscreen cards until they're about to enter the viewport (reduces TBT)
-                className={idx >= 8 ? 'below-fold' : undefined}
-              >
-                {isExternal ? (
-                  <a 
-                    href={tool.externalUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={cardClassName}
-                    role="listitem"
-                  >
-                    {cardContent}
-                  </a>
-                ) : (
-                  <Link 
-                    to={getToolPath(tool)}
-                    className={cardClassName}
-                    role="listitem"
-                  >
-                    {cardContent}
-                  </Link>
-                )}
+        {/* WHY CHOOSE */}
+        <section className="mb-20 pt-10 border-t border-slate-100 dark:border-slate-800/60">
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-3 text-center">{t.home.whyChoose}</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 text-center max-w-xl mx-auto mb-10">{t.home.whyChooseDesc}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {[
+              { icon: <Zap className="w-6 h-6" />, bg: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400', title: t.home.freeTitle, desc: t.home.freeDesc },
+              { icon: <RefreshCw className="w-6 h-6" />, bg: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400', title: t.home.privacyTitle, desc: t.home.privacyDesc },
+              { icon: <BarChart3 className="w-6 h-6" />, bg: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400', title: t.home.speedTitle, desc: t.home.speedDesc },
+            ].map((item, i) => (
+              <div key={i} className="flex flex-col items-center text-center p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                <div className={`w-12 h-12 ${item.bg} rounded-xl flex items-center justify-center mb-4`}>{item.icon}</div>
+                <h3 className="text-base font-black text-slate-900 dark:text-white mb-2">{item.title}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
               </div>
-            );
-          })}
-        </div>
-        
-        {!searchQuery && ALL_TOOLS.length > displayCount && (
-          <div className="mt-16 text-center">
-            <button
-              onClick={() => setDisplayCount(prev => prev + (isLargeScreen ? 18 : isDesktop ? 12 : 6))}
-              className="px-10 py-5 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-[2rem] font-black text-slate-700 dark:text-slate-300 hover:border-blue-500 hover:text-blue-600 transition-all shadow-lg hover:shadow-2xl active:scale-95"
-            >
-              Load More Tools
-            </button>
+            ))}
           </div>
-        )}
-      </section>
+        </section>
 
-      {/* SEO Footer Content */}
-      <section className="mt-24 pt-16 border-t border-slate-100 dark:border-slate-800" aria-labelledby="why-choose-title">
-        <div className="prose prose-slate dark:prose-invert max-w-none">
-          <h2 id="why-choose-title" className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">{t.home.whyChoose}</h2>
-          <p className="text-lg text-slate-600 dark:text-slate-400 text-center max-w-3xl mx-auto mb-16">
-            {t.home.whyChooseDesc}
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-8">
-            <div className="text-center p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-50 dark:border-slate-800 shadow-sm">
-              <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-6" aria-hidden="true">
-                <Zap className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{t.home.freeTitle}</h3>
-              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">{t.home.freeDesc}</p>
-            </div>
-            <div className="text-center p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-50 dark:border-slate-800 shadow-sm">
-              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-6" aria-hidden="true">
-                <RefreshCw className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{t.home.privacyTitle}</h3>
-              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">{t.home.privacyDesc}</p>
-            </div>
-            <div className="text-center p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-50 dark:border-slate-800 shadow-sm">
-              <div className="w-16 h-16 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center mx-auto mb-6" aria-hidden="true">
-                <BarChart3 className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{t.home.speedTitle}</h3>
-              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">{t.home.speedDesc}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <CategoryModal 
+      </div>
+
+      <CategoryModal
         isOpen={!!selectedCategory}
         onClose={() => setSelectedCategory(null)}
         category={selectedCategory}
         tools={ALL_TOOLS.filter(t => t.category === selectedCategory?.id)}
         theme={selectedCategory ? (categoryThemes[selectedCategory.id] || categoryThemes.utility) : categoryThemes.utility}
       />
-    </div>
-  </main>
+
+      {/* Page-level styles */}
+      <style>{`
+        @keyframes hero-fade-up {
+          from { opacity: 0; transform: translateY(24px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </main>
   );
 };
 

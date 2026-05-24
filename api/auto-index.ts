@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
-import { ALL_TOOLS } from "../src/data/tools";
+import { ALL_TOOLS } from "../src/data/tools.js";
 import dotenv from "dotenv";
-import fetch from "node-fetch";
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();

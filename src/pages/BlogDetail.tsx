@@ -26,7 +26,6 @@ import {
   Sparkles,
   Wrench
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../components/SEO';
 import AdPlaceholder from '../components/AdPlaceholder';
 import CommentSection from '../components/CommentSection';
@@ -151,7 +150,7 @@ const BlogDetail: React.FC = () => {
     <main className="min-h-screen bg-white dark:bg-slate-950 py-24 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       {/* Reading Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1.5 z-[100] bg-slate-100 dark:bg-slate-900">
-        <motion.div 
+        <div 
           className="h-full bg-blue-600"
           style={{ width: `${readingProgress}%` }}
         />
@@ -173,20 +172,17 @@ const BlogDetail: React.FC = () => {
       />
       
       {/* Back to Top Button */}
-      <AnimatePresence>
+      
         {readingProgress > 20 && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+          <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="fixed bottom-8 right-8 w-14 h-14 bg-slate-900 text-white rounded-2xl shadow-2xl flex items-center justify-center z-50 hover:bg-blue-600 transition-all group"
             aria-label="Back to top"
           >
             <ChevronUp className="w-6 h-6 group-hover:-translate-y-1 transition-transform" />
-          </motion.button>
+          </button>
         )}
-      </AnimatePresence>
+      
 
       <div className="max-w-4xl mx-auto">
         <Link 
@@ -197,10 +193,7 @@ const BlogDetail: React.FC = () => {
         </Link>
 
         <header className="mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+          <div
           >
             <div className="flex items-center gap-4 text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-6">
               <span>{post.category}</span>
@@ -248,7 +241,7 @@ const BlogDetail: React.FC = () => {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </header>
 
         {/* Ad Slot 1 */}
@@ -284,10 +277,7 @@ const BlogDetail: React.FC = () => {
           </div>
         )}
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+        <div
           className="mb-16 rounded-3xl overflow-hidden shadow-2xl"
         >
           <img 
@@ -297,9 +287,9 @@ const BlogDetail: React.FC = () => {
             referrerPolicy="no-referrer"
             loading="lazy"
           />
-        </motion.div>
+        </div>
 
-        <article className="prose prose-slate dark:prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-img:rounded-3xl prose-img:shadow-xl">
+        <article className="prose prose-slate dark:prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-img:rounded-3xl prose-img:shadow-xl blog-html-content">
           {post.contentType === 'html' ? (
             <div dangerouslySetInnerHTML={{ __html: processedContent }} />
           ) : post.contentType === 'text' ? (
@@ -383,7 +373,7 @@ const BlogDetail: React.FC = () => {
         <footer className="mt-24 pt-16 border-t border-slate-100 dark:border-slate-800">
           <div className="bg-slate-900 dark:bg-slate-900/80 p-10 sm:p-16 rounded-[40px] text-center relative overflow-hidden border border-slate-800">
             <div className="absolute top-0 right-0 w-[50%] h-full opacity-10 pointer-events-none">
-              <div className="absolute top-[-20%] right-[-10%] w-full h-full bg-blue-500 rounded-full blur-[100px]" />
+              <div className="hidden sm:block absolute top-[-20%] right-[-10%] w-full h-full bg-blue-500 rounded-full blur-[100px]" />
             </div>
             
             <div className="relative z-10">

@@ -47,6 +47,7 @@ export default async function handler(req: any, res: any) {
     // Static Pages
     const staticPages = [
       { path: "/", priority: "1.0", changefreq: "daily" },
+      { path: "/ai-automation", priority: "0.7", changefreq: "monthly" },
       { path: "/blog", priority: "0.8", changefreq: "daily" },
       { path: "/about-us", priority: "0.5", changefreq: "monthly" },
       { path: "/privacy-policy", priority: "0.3", changefreq: "monthly" },

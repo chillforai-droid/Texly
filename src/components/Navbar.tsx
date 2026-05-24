@@ -15,7 +15,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useTheme } from '../context/ThemeContext';
 import { Language } from '../data/translations';
 import {
-  Zap, Languages, Check, Sun, Moon, Menu, X, Sparkles, Code2,
+  Zap, Languages, Check, Sun, Moon, Menu, X, Sparkles, Code2, Bot,
 } from 'lucide-react';
 
 const Navbar: React.FC = () => {
@@ -69,6 +69,14 @@ const Navbar: React.FC = () => {
             >
               <Code2 className="w-4 h-4" />
               DevStudio
+            </Link>
+            {/* GitHub Push link */}
+            <Link
+              to="/ai-automation"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all"
+            >
+              <Bot className="w-4 h-4" />
+              GitHub Push
             </Link>
           </div>
 
@@ -163,6 +171,14 @@ const Navbar: React.FC = () => {
           >
             <Code2 className="w-5 h-5" />
             DevStudio
+          </Link>
+          <Link
+            to="/ai-automation"
+            className="flex items-center gap-3 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-bold"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <Bot className="w-5 h-5" />
+            GitHub Push
           </Link>
 
           <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
