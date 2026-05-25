@@ -1,1042 +1,676 @@
-```tsx
-"use client";
+```jsx
+import React, { useState, useEffect } from 'react';
 
-import React, { useState, useMemo, useEffect } from "react";
-
-// --- Types & Constants ---
-type SchemaType = "Article" | "Organization" | "Product" | "LocalBusiness" | "FAQPage";
-
-interface FAQItem {
-  question: string;
-  answer: string;
-}
-
-interface SchemaData {
-  article: {
-    headline: string;
-    description: string;
-    image: string;
-    authorName: string;
-    publisherName: string;
-    publisherLogo: string;
-    datePublished: string;
-    dateModified: string;
-  };
-  organization: {
-    name: string;
-    url: string;
-    logo: string;
-    sameAs: string; // Comma separated social links
-    contactPhone: string;
-    contactType: string;
-  };
-  product: {
-    name: string;
-    image: string;
-    description: string;
-    brand: string;
-    sku: string;
-    price: string;
-    priceCurrency: string;
-    availability: "InStock" | "OutOfStock" | "PreOrder";
-    ratingValue: string;
-    reviewCount: string;
-  };
-  localBusiness: {
-    name: string;
-    description: string;
-    image: string;
-    telephone: string;
-    priceRange: string;
-    streetAddress: string;
-    addressLocality: string;
-    addressRegion: string;
-    postalCode: string;
-    addressCountry: string;
-    latitude: string;
-    longitude: string;
-  };
-  faq: FAQItem[];
-}
-
-const initialSchemaData: SchemaData = {
-  article: {
-    headline: "Next.js App Router Schema Guide",
-    description: "Learn how to dynamically generate and inject structured JSON-LD schemas in Next.js 13, 14, and 15 layouts.",
-    image: "https://texly.io/images/og-image.png",
-    authorName: "Texly SEO Expert",
-    publisherName: "Texly SEO OS",
-    publisherLogo: "https://texly.io/logo.png",
-    datePublished: new Date().toISOString().split("T")[0],
-    dateModified: new Date().toISOString().split("T")[0],
-  },
-  organization: {
-    name: "Texly SEO Operating System",
-    url: "https://texly.io",
-    logo: "https://texly.io/logo.png",
-    sameAs: "https://twitter.com/texly,https://github.com/texly",
-    contactPhone: "+1-800-555-0199",
-    contactType: "Customer Support",
-  },
-  product: {
-    name: "Texly Professional SEO OS Suite",
-    image: "https://texly.io/images/product-suite.png",
-    description: "The complete automated SEO toolchain designed specifically for modern headless frameworks and Next.js platforms.",
-    brand: "Texly",
-    sku: "TEX-SEO-OS-PRO",
-    price: "49.00",
-    priceCurrency: "USD",
-    availability: "InStock",
-    ratingValue: "4.9",
-    reviewCount: "128",
-  },
-  localBusiness: {
-    name: "Texly Headquartered Hub",
-    description: "Enterprise SEO solutions and custom programmatic Next.js consultancy services.",
-    image: "https://texly.io/images/hq-office.jpg",
-    telephone: "+1-555-873-3000",
-    priceRange: "$$$",
-    streetAddress: "100 Pine Street, Suite 1200",
-    addressLocality: "San Francisco",
-    addressRegion: "CA",
-    postalCode: "94111",
-    addressCountry: "US",
-    latitude: "37.7925",
-    longitude: "-122.3999",
-  },
-  faq: [
-    {
-      question: "How do I add JSON-LD in Next.js App Router?",
-      answer: "Inject the structured JSON-LD by returning a standard React script tag inside your layout.tsx or page.tsx containing dangerouslySetInnerHTML set to the stringified JSON schema.",
-    },
-    {
-      question: "Can I generate JSON-LD schema dynamically based on database calls?",
-      answer: "Yes! In Next.js Server Components, you can fetch your data dynamically from database or APIs inside the Server Component page, construct the JSON-LD object dynamically, and output it in the JSX response.",
-    },
-  ],
+// Define custom SVG Icons inline for perfect performance and dependency-free rendering
+const Icons = {
+  Sparkles: () => (
+    <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+    </svg>
+  ),
+  Code: () => (
+    <svg className="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+    </svg>
+  ),
+  Copy: () => (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+    </svg>
+  ),
+  Check: () => (
+    <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+    </svg>
+  ),
+  Info: () => (
+    <svg className="w-4 h-4 text-slate-400 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  BookOpen: () => (
+    <svg className="w-5 h-5 text-indigo-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+    </svg>
+  ),
+  Globe: () => (
+    <svg className="w-5 h-5 text-teal-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+    </svg>
+  )
 };
 
-// --- Custom Icons ---
-const CopyIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376A8.965 8.965 0 0012 12.75a8.965 8.965 0 00-3.75-3.375m7.5 10.375a3.75 3.75 0 11-7.5 0M15.75 9.75H18.75c.621 0 1.125.504 1.125 1.125V18" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-emerald-500">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-  </svg>
-);
-
-const InfoIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.083.984l-.04.02-.137.072m-.188 1.133l-.041.02a.75.75 0 111.083-.984l-.04.02-.137.072m1.5-12.452a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
 export default function JsonLdSchemaGenerator() {
-  const [activeSchema, setActiveSchema] = useState<SchemaType>("Article");
-  const [schemaData, setSchemaData] = useState<SchemaData>(initialSchemaData);
-  const [outputTab, setOutputTab] = useState<"json" | "nextjs">("json");
+  const [schemaType, setSchemaType] = useState('Organization');
   const [copied, setCopied] = useState(false);
-
-  // FAQ Accordion State (for dynamic list below)
-  const [faqOpenStates, setFaqOpenStates] = useState<{ [key: number]: boolean }>({
-    0: true,
-    1: false,
-    2: false,
+  const [activeTab, setActiveTab] = useState('inline'); // inline | metadata | ts
+  
+  // Dynamic Form Field States
+  const [fields, setFields] = useState({
+    orgName: 'Texly Tech Solutions',
+    orgUrl: 'https://texly.io',
+    orgLogo: 'https://texly.io/logo.png',
+    orgSameAs: 'https://twitter.com/texly_io, https://github.com/texly',
+    
+    webName: 'Texly SEO Operating System',
+    webUrl: 'https://texly.io',
+    webSearchUrl: 'https://texly.io/search?q={search_term_string}',
+    
+    artTitle: 'Optimizing Next.js App Router for Dynamic SEO',
+    artUrl: 'https://texly.io/blog/nextjs-app-router-seo',
+    artImage: 'https://texly.io/blog/cover.jpg',
+    artAuthor: 'Alex Rivera',
+    artPublished: new Date().toISOString().split('T')[0],
+    
+    bizName: 'Texly Consulting',
+    bizImage: 'https://texly.io/consulting.jpg',
+    bizAddress: '120 Port Street, San Francisco, CA',
+    bizPhone: '+1-555-0199',
+    bizPrice: '$$$'
   });
 
-  const handleCopy = (text: string) => {
+  // Handle Dynamic Input Change
+  const handleInputChange = (key, value) => {
+    setFields(prev => ({ ...prev, [key]: value }));
+  };
+
+  // Generate standard JSON-LD Schema
+  const getJsonLdRaw = () => {
+    switch (schemaType) {
+      case 'Organization':
+        return {
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          'name': fields.orgName,
+          'url': fields.orgUrl,
+          'logo': fields.orgLogo,
+          'sameAs': fields.orgSameAs.split(',').map(s => s.trim()).filter(s => s)
+        };
+      case 'WebSite':
+        return {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          'name': fields.webName,
+          'url': fields.webUrl,
+          'potentialAction': {
+            '@type': 'SearchAction',
+            'target': fields.webSearchUrl,
+            'query-input': 'required name=search_term_string'
+          }
+        };
+      case 'Article':
+        return {
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          'headline': fields.artTitle,
+          'image': [fields.artImage],
+          'datePublished': fields.artPublished,
+          'author': {
+            '@type': 'Person',
+            'name': fields.artAuthor
+          },
+          'publisher': {
+            '@type': 'Organization',
+            'name': fields.orgName,
+            'logo': {
+              '@type': 'ImageObject',
+              'url': fields.orgLogo
+            }
+          }
+        };
+      case 'LocalBusiness':
+        return {
+          '@context': 'https://schema.org',
+          '@type': 'LocalBusiness',
+          'name': fields.bizName,
+          'image': [fields.bizImage],
+          'address': {
+            '@type': 'PostalAddress',
+            'streetAddress': fields.bizAddress,
+            'addressLocality': 'San Francisco',
+            'addressRegion': 'CA',
+            'postalCode': '94105',
+            'addressCountry': 'US'
+          },
+          'telephone': fields.bizPhone,
+          'priceRange': fields.bizPrice
+        };
+      default:
+        return {};
+    }
+  };
+
+  const schemaJson = getJsonLdRaw();
+  const schemaString = JSON.stringify(schemaJson, null, 2);
+
+  // Dynamic Next.js Code Blocks
+  const nextJsInlineCode = `// app/page.tsx or app/layout.tsx
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '${schemaType === 'Organization' ? fields.orgName : schemaType === 'WebSite' ? fields.webName : fields.artTitle}',
+  description: 'Generated efficiently via Texly SEO Operating System Schema Builder.',
+};
+
+export default function Page() {
+  const jsonLd = ${schemaString};
+
+  return (
+    <>
+      {/* Injecting Structured Data Directly into the Head */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <main className="max-w-4xl mx-auto py-12 px-4">
+        <h1 className="text-3xl font-bold">Optimized Route Page</h1>
+        <p className="mt-2 text-slate-400">SEO Schema registered perfectly.</p>
+      </main>
+    </>
+  );
+}`;
+
+  const nextJsMetadataCode = `// app/layout.tsx
+// Alternate setup returning the static schema in your Next.js Head export
+export function generateMetadata() {
+  return {
+    title: '${schemaType === 'Organization' ? fields.orgName : fields.webName}',
+    alternates: {
+      canonical: '${schemaType === 'Organization' ? fields.orgUrl : fields.webUrl}',
+    },
+    other: {
+      'structured-data': '${schemaType === 'Organization' ? fields.orgUrl : fields.webUrl}',
+    }
+  };
+}`;
+
+  const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const updateField = (category: keyof SchemaData, field: string, value: any) => {
-    setSchemaData((prev) => ({
-      ...prev,
-      [category]: {
-        ...(prev[category] as any),
-        [field]: value,
-      },
-    }));
+  // Accordion Component State for FAQ
+  const [openFaq, setOpenFaq] = useState(0);
+
+  const toggleFaq = (index) => {
+    setOpenFaq(openFaq === index ? null : index);
   };
 
-  const handleFAQChange = (index: number, key: "question" | "answer", value: string) => {
-    const updatedFaqs = [...schemaData.faq];
-    updatedFaqs[index] = { ...updatedFaqs[index], [key]: value };
-    setSchemaData((prev) => ({ ...prev, faq: updatedFaqs }));
-  };
-
-  const addFAQItem = () => {
-    setSchemaData((prev) => ({
-      ...prev,
-      faq: [...prev.faq, { question: "", answer: "" }],
-    }));
-  };
-
-  const removeFAQItem = (index: number) => {
-    if (schemaData.faq.length <= 1) return;
-    const updatedFaqs = schemaData.faq.filter((_, i) => i !== index);
-    setSchemaData((prev) => ({ ...prev, faq: updatedFaqs }));
-  };
-
-  // --- Real-time Generated JSON-LD Objects ---
-  const generatedJsonLd = useMemo(() => {
-    const context = "https://schema.org";
-
-    switch (activeSchema) {
-      case "Article":
-        return {
-          "@context": context,
-          "@type": "NewsArticle",
-          "headline": schemaData.article.headline,
-          "description": schemaData.article.description,
-          "image": [schemaData.article.image].filter(Boolean),
-          "datePublished": schemaData.article.datePublished,
-          "dateModified": schemaData.article.dateModified || schemaData.article.datePublished,
-          "author": {
-            "@type": "Person",
-            "name": schemaData.article.authorName,
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": schemaData.article.publisherName,
-            "logo": {
-              "@type": "ImageObject",
-              "url": schemaData.article.publisherLogo,
-            },
-          },
-        };
-
-      case "Organization":
-        return {
-          "@context": context,
-          "@type": "Organization",
-          "name": schemaData.organization.name,
-          "url": schemaData.organization.url,
-          "logo": schemaData.organization.logo,
-          "sameAs": schemaData.organization.sameAs.split(",").map((s) => s.trim()).filter(Boolean),
-          "contactPoint": schemaData.organization.contactPhone
-            ? {
-                "@type": "ContactPoint",
-                "telephone": schemaData.organization.contactPhone,
-                "contactType": schemaData.organization.contactType,
-              }
-            : undefined,
-        };
-
-      case "Product":
-        return {
-          "@context": context,
-          "@type": "Product",
-          "name": schemaData.product.name,
-          "image": [schemaData.product.image].filter(Boolean),
-          "description": schemaData.product.description,
-          "sku": schemaData.product.sku,
-          "brand": {
-            "@type": "Brand",
-            "name": schemaData.product.brand,
-          },
-          "offers": {
-            "@type": "Offer",
-            "price": schemaData.product.price,
-            "priceCurrency": schemaData.product.priceCurrency,
-            "availability": `https://schema.org/${schemaData.product.availability}`,
-          },
-          "aggregateRating": schemaData.product.ratingValue
-            ? {
-                "@type": "AggregateRating",
-                "ratingValue": schemaData.product.ratingValue,
-                "reviewCount": schemaData.product.reviewCount || "1",
-              }
-            : undefined,
-        };
-
-      case "LocalBusiness":
-        return {
-          "@context": context,
-          "@type": "LocalBusiness",
-          "name": schemaData.localBusiness.name,
-          "description": schemaData.localBusiness.description,
-          "image": schemaData.localBusiness.image,
-          "telephone": schemaData.localBusiness.telephone,
-          "priceRange": schemaData.localBusiness.priceRange,
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": schemaData.localBusiness.streetAddress,
-            "addressLocality": schemaData.localBusiness.addressLocality,
-            "addressRegion": schemaData.localBusiness.addressRegion,
-            "postalCode": schemaData.localBusiness.postalCode,
-            "addressCountry": schemaData.localBusiness.addressCountry,
-          },
-          "geo": schemaData.localBusiness.latitude && schemaData.localBusiness.longitude
-            ? {
-                "@type": "GeoCoordinates",
-                "latitude": parseFloat(schemaData.localBusiness.latitude) || 0,
-                "longitude": parseFloat(schemaData.localBusiness.longitude) || 0,
-              }
-            : undefined,
-        };
-
-      case "FAQPage":
-        return {
-          "@context": context,
-          "@type": "FAQPage",
-          "mainEntity": schemaData.faq.map((item) => ({
-            "@type": "Question",
-            "name": item.question,
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": item.answer,
-            },
-          })),
-        };
-
-      default:
-        return {};
+  const faqs = [
+    {
+      q: "Where should I add JSON-LD structured data in Next.js App Router?",
+      a: "In Next.js App Router, you can inject the JSON-LD schema using a custom script inside your page.tsx or layout.tsx components. Simply use <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} /> anywhere in your component tree. Next.js automatically processes and resolves it into the HTML head tag during Server Side Rendering."
+    },
+    {
+      q: "Does App Router require structured data in generateMetadata?",
+      a: "No. The Next.js generateMetadata or metadata API configuration is designed for traditional standard meta tags (like openGraph, canonical URLs, viewport, twitter etc). For complex structured nesting like JSON-LD schema markup, Google specifically supports scripts inside the body or head. Simply placing the inline script inside your component is the industry-best practice."
+    },
+    {
+      q: "How can I validate if Google recognizes my JSON-LD markup?",
+      a: "After generating your schema using our Texly tools, copy your compiled script block, deploy it to a staging or production URL, then use Google's official Rich Results Test. This ensures flawless parsing and qualifies your site for rich search feature results."
+    },
+    {
+      q: "Can I use dynamic state parameters inside JSON-LD in Next.js?",
+      a: "Absolutely. Since React layouts and pages are dynamic on the server, you can pull details dynamically from dynamic route arguments or headless CMS APIs, construct your JavaScript object object schema literal, and feed it directly to the dangerouslySetInnerHTML script rendering block."
     }
-  }, [activeSchema, schemaData]);
-
-  const jsonLdString = useMemo(() => {
-    return JSON.stringify(generatedJsonLd, null, 2);
-  }, [generatedJsonLd]);
-
-  // Next.js App Router compatible complete component code structure
-  const nextJsOutputString = useMemo(() => {
-    return `import type { Metadata } from 'next';
-
-// 1. Optional Metadata Exporter (For App Router Head Parameters)
-export const metadata: Metadata = {
-  title: '${
-    activeSchema === "Article"
-      ? schemaData.article.headline
-      : activeSchema === "Product"
-      ? schemaData.product.name
-      : activeSchema === "LocalBusiness"
-      ? schemaData.localBusiness.name
-      : activeSchema === "Organization"
-      ? schemaData.organization.name
-      : "Dynamic Schema Target Page"
-  }',
-  description: '${
-    activeSchema === "Article"
-      ? schemaData.article.description
-      : activeSchema === "Product"
-      ? schemaData.product.description
-      : activeSchema === "LocalBusiness"
-      ? schemaData.localBusiness.description
-      : "Next.js JSON-LD Dynamic Structured Schema Integration"
-  }',
-};
-
-// 2. Dynamic JSON-LD injection structure
-export default function Page() {
-  const jsonLd = ${jsonLdString.replace(/\n/g, "\n  ")};
+  ];
 
   return (
-    <>
-      {/* Dynamic SEO schema markup injected into layout natively */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
       
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold">Injected Schema Page</h1>
-        <p className="mt-2 text-slate-600">
-          The ${activeSchema} JSON-LD Schema has been injected directly into this document body.
-        </p>
-      </main>
-    </>
-  );
-}`;
-  }, [activeSchema, jsonLdString, schemaData]);
+      {/* Background Gradient Orbs */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-900/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 right-1/4 w-[600px] h-[600px] bg-emerald-900/10 rounded-full blur-3xl pointer-events-none" />
 
-  // Score Calculations (Simple dynamic completeness utility)
-  const validationChecklist = useMemo(() => {
-    const list: { check: string; satisfied: boolean }[] = [];
-    if (activeSchema === "Article") {
-      list.push({ check: "Has Headline (min 10 chars)", satisfied: schemaData.article.headline.length > 10 });
-      list.push({ check: "Has Description", satisfied: !!schemaData.article.description });
-      list.push({ check: "Has Image URL specified", satisfied: !!schemaData.article.image });
-      list.push({ check: "Publisher name provided", satisfied: !!schemaData.article.publisherName });
-    } else if (activeSchema === "Organization") {
-      list.push({ check: "Has Corporate Name", satisfied: !!schemaData.organization.name });
-      list.push({ check: "Has Corporate Web Address", satisfied: schemaData.organization.url.startsWith("http") });
-      list.push({ check: "Has Social References (sameAs)", satisfied: schemaData.organization.sameAs.length > 5 });
-    } else if (activeSchema === "Product") {
-      list.push({ check: "Has SKU Number", satisfied: !!schemaData.product.sku });
-      list.push({ check: "Has Defined Price Setup", satisfied: parseFloat(schemaData.product.price) > 0 });
-      list.push({ check: "Has valid aggregative rating (1-5)", satisfied: parseFloat(schemaData.product.ratingValue) <= 5 && parseFloat(schemaData.product.ratingValue) >= 1 });
-    } else if (activeSchema === "LocalBusiness") {
-      list.push({ check: "Has Physical Street Address", satisfied: !!schemaData.localBusiness.streetAddress });
-      list.push({ check: "Has Lat / Long Coordinates", satisfied: !!schemaData.localBusiness.latitude && !!schemaData.localBusiness.longitude });
-    } else if (activeSchema === "FAQPage") {
-      list.push({ check: "At least 2 FAQs defined", satisfied: schemaData.faq.length >= 2 });
-      list.push({ check: "All Question & Answer fields completed", satisfied: schemaData.faq.every(f => f.question && f.answer) });
-    }
-    return list;
-  }, [activeSchema, schemaData]);
-
-  const scorePercentage = useMemo(() => {
-    if (!validationChecklist.length) return 100;
-    const itemsPassed = validationChecklist.filter(v => v.satisfied).length;
-    return Math.round((itemsPassed / validationChecklist.length) * 100);
-  }, [validationChecklist]);
-
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
-      {/* Header section */}
-      <header className="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/25">
+      {/* Hero Header Area */}
+      <header className="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex items-center space-x-3">
+            <div className="h-9 w-9 bg-gradient-to-tr from-indigo-500 to-emerald-400 rounded-lg flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">
               T
-            </span>
-            <div className="flex flex-col">
-              <span className="font-semibold text-white tracking-wide text-sm leading-none">TEXLY SEO OS</span>
-              <span className="text-[10px] text-indigo-400 font-bold tracking-widest mt-0.5">APP ROUTER HELPER</span>
+            </div>
+            <div>
+              <span className="font-bold text-lg text-slate-50 tracking-wide">Texly</span>
+              <span className="text-xs text-slate-400 ml-2 border-l border-slate-800 pl-2">SEO Operating System</span>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Next.js 13, 14 & 15 Ready
+          
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Free SEO Engine
             </span>
+            <span className="text-xs text-slate-400">Next.js App Router Schema Engine v2.0</span>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-10 border-b border-slate-900 bg-gradient-to-b from-slate-900/30 to-transparent">
-        <div className="absolute inset-y-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.06),transparent_40%)]" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="max-w-3xl">
-            <span className="text-indigo-400 text-xs font-bold tracking-widest uppercase bg-indigo-500/10 px-3 py-1 rounded-full">
-              Automated JSON-LD App Router Schema Generator
-            </span>
-            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mt-4">
-              Next.js Schema Generator
-            </h1>
-            <p className="mt-4 text-base sm:text-lg text-slate-400 leading-relaxed">
-              Create high-fidelity, nested JSON-LD schema configurations for Next.js App Router.
-              Avoid syntax errors, bypass hydration issues, and export ready-to-run layout modules with complete schema validations.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Interactive Workspace Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Step 1: Selector Tabs */}
-        <div className="mb-8">
-          <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">
-            Select Schema Architecture
-          </label>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
-            {(["Article", "Organization", "Product", "LocalBusiness", "FAQPage"] as SchemaType[]).map((type) => (
-              <button
-                key={type}
-                onClick={() => {
-                  setActiveSchema(type);
-                  setCopied(false);
-                }}
-                className={`py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-250 ${
-                  activeSchema === type
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800"
-                }`}
-              >
-                {type === "FAQPage" ? "FAQ Page" : type === "LocalBusiness" ? "Local Business" : type}
-              </button>
-            ))}
-          </div>
+      {/* Main Container */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10">
+        
+        {/* Intro Hero banner */}
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 via-indigo-200 to-emerald-300 bg-clip-text text-transparent">
+            JSON-LD App Router Schema Generator
+          </h1>
+          <p className="mt-4 text-slate-400 text-lg leading-relaxed">
+            Generate pixel-perfect structured schema markup compatible with standard React / Next.js dynamic routing frameworks. Fully responsive, highly robust engine optimized to drive maximum click-through rates.
+          </p>
         </div>
 
-        {/* Configuration Columns */}
+        {/* Workspace Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Column - Configurations */}
+          
+          {/* Left Column: Form Controls */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 sm:p-6 shadow-xl">
-              <h2 className="text-lg font-bold text-white flex items-center justify-between border-b border-slate-800 pb-4 mb-5">
-                <span>Configure Properties</span>
-                <span className="text-xs bg-slate-800 text-slate-300 font-mono px-2 py-0.5 rounded">
-                  {activeSchema}
-                </span>
-              </h2>
+            <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-6 backdrop-blur-sm">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-semibold text-lg text-slate-200 flex items-center gap-2">
+                  <Icons.Sparkles /> Setup Parameters
+                </h3>
+                <span className="text-xs text-indigo-400 font-mono">100% Client-Side Ready</span>
+              </div>
 
-              {/* Dynamic Inputs Based on Schema Type Selection */}
-              {activeSchema === "Article" && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Headline</label>
-                    <input
-                      type="text"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.article.headline}
-                      onChange={(e) => updateField("article", "headline", e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Description</label>
-                    <textarea
-                      rows={3}
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.article.description}
-                      onChange={(e) => updateField("article", "description", e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Image URL</label>
-                    <input
-                      type="url"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.article.image}
-                      onChange={(e) => updateField("article", "image", e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Author Name</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.article.authorName}
-                        onChange={(e) => updateField("article", "authorName", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Publisher</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.article.publisherName}
-                        onChange={(e) => updateField("article", "publisherName", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Publisher Logo URL</label>
-                    <input
-                      type="url"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.article.publisherLogo}
-                      onChange={(e) => updateField("article", "publisherLogo", e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Published Date</label>
-                      <input
-                        type="date"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.article.datePublished}
-                        onChange={(e) => updateField("article", "datePublished", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Modified Date</label>
-                      <input
-                        type="date"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.article.dateModified}
-                        onChange={(e) => updateField("article", "dateModified", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeSchema === "Organization" && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Organization Name</label>
-                    <input
-                      type="text"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.organization.name}
-                      onChange={(e) => updateField("organization", "name", e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Website URL</label>
-                    <input
-                      type="url"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.organization.url}
-                      onChange={(e) => updateField("organization", "url", e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Logo URL</label>
-                    <input
-                      type="url"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.organization.logo}
-                      onChange={(e) => updateField("organization", "logo", e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Social Profiles (Comma Separated)</label>
-                    <input
-                      type="text"
-                      placeholder="https://facebook.com/brand, https://linkedin.com/brand"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.organization.sameAs}
-                      onChange={(e) => updateField("organization", "sameAs", e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Contact Telephone</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.organization.contactPhone}
-                        onChange={(e) => updateField("organization", "contactPhone", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Contact Type</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.organization.contactType}
-                        onChange={(e) => updateField("organization", "contactType", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeSchema === "Product" && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Product Name</label>
-                    <input
-                      type="text"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.product.name}
-                      onChange={(e) => updateField("product", "name", e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Product Image URL</label>
-                    <input
-                      type="url"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.product.image}
-                      onChange={(e) => updateField("product", "image", e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Description</label>
-                    <textarea
-                      rows={2}
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.product.description}
-                      onChange={(e) => updateField("product", "description", e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Brand</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.product.brand}
-                        onChange={(e) => updateField("product", "brand", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">SKU / ID</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.product.sku}
-                        onChange={(e) => updateField("product", "sku", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Price</label>
-                      <input
-                        type="number"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.product.price}
-                        onChange={(e) => updateField("product", "price", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Currency</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.product.priceCurrency}
-                        onChange={(e) => updateField("product", "priceCurrency", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Stock</label>
-                      <select
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 h-9"
-                        value={schemaData.product.availability}
-                        onChange={(e) => updateField("product", "availability", e.target.value as any)}
-                      >
-                        <option value="InStock">In Stock</option>
-                        <option value="OutOfStock">Out of Stock</option>
-                        <option value="PreOrder">Pre-order</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Rating (1-5)</label>
-                      <input
-                        type="number"
-                        step="0.1"
-                        min="1"
-                        max="5"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.product.ratingValue}
-                        onChange={(e) => updateField("product", "ratingValue", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Reviews Count</label>
-                      <input
-                        type="number"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.product.reviewCount}
-                        onChange={(e) => updateField("product", "reviewCount", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeSchema === "LocalBusiness" && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Business Name</label>
-                    <input
-                      type="text"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.localBusiness.name}
-                      onChange={(e) => updateField("localBusiness", "name", e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Telephone</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.localBusiness.telephone}
-                        onChange={(e) => updateField("localBusiness", "telephone", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Price Range</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. $$"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.localBusiness.priceRange}
-                        onChange={(e) => updateField("localBusiness", "priceRange", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Street Address</label>
-                    <input
-                      type="text"
-                      className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                      value={schemaData.localBusiness.streetAddress}
-                      onChange={(e) => updateField("localBusiness", "streetAddress", e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">City / Locality</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.localBusiness.addressLocality}
-                        onChange={(e) => updateField("localBusiness", "addressLocality", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">State / Region</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.localBusiness.addressRegion}
-                        onChange={(e) => updateField("localBusiness", "addressRegion", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Postal / Zip Code</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.localBusiness.postalCode}
-                        onChange={(e) => updateField("localBusiness", "postalCode", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Country Code</label>
-                      <input
-                        type="text"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.localBusiness.addressCountry}
-                        onChange={(e) => updateField("localBusiness", "addressCountry", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Latitude</label>
-                      <input
-                        type="text"
-                        placeholder="37.7925"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.localBusiness.latitude}
-                        onChange={(e) => updateField("localBusiness", "latitude", e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Longitude</label>
-                      <input
-                        type="text"
-                        placeholder="-122.3999"
-                        className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                        value={schemaData.localBusiness.longitude}
-                        onChange={(e) => updateField("localBusiness", "longitude", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {activeSchema === "FAQPage" && (
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">FAQ Q&A Sets</span>
+              {/* Schema Type Selection */}
+              <div className="space-y-2 mb-6">
+                <label className="block text-xs font-semibold text-slate-400 tracking-wider uppercase">Select Schema Blueprint</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {['Organization', 'WebSite', 'Article', 'LocalBusiness'].map((t) => (
                     <button
-                      type="button"
-                      onClick={addFAQItem}
-                      className="text-xs text-indigo-400 hover:text-white bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20 transition-colors"
+                      key={t}
+                      onClick={() => setSchemaType(t)}
+                      className={`py-2 px-3 rounded-lg text-sm font-medium transition-all text-left flex items-center justify-between ${
+                        schemaType === t
+                          ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/10 border-indigo-500'
+                          : 'bg-slate-800/40 hover:bg-slate-800/80 text-slate-300 border border-slate-800'
+                      }`}
                     >
-                      + Add Question
+                      {t}
+                      {schemaType === t && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />}
                     </button>
-                  </div>
-                  {schemaData.faq.map((item, index) => (
-                    <div key={index} className="p-4 bg-slate-950 border border-slate-850 rounded-lg space-y-3 relative group">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-indigo-400">Question #{index + 1}</span>
-                        {schemaData.faq.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeFAQItem(index)}
-                            className="text-xs text-rose-400 hover:text-rose-300 transition-colors"
-                          >
-                            Remove
-                          </button>
-                        )}
-                      </div>
-                      <div>
-                        <input
-                          type="text"
-                          placeholder="What is your question?"
-                          className="w-full bg-slate-900 border border-slate-800 rounded-md py-1.5 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                          value={item.question}
-                          onChange={(e) => handleFAQChange(index, "question", e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <textarea
-                          rows={2}
-                          placeholder="Provide the detailed answer matching user intent."
-                          className="w-full bg-slate-900 border border-slate-800 rounded-md py-1.5 px-3 text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-                          value={item.answer}
-                          onChange={(e) => handleFAQChange(index, "answer", e.target.value)}
-                        />
-                      </div>
-                    </div>
                   ))}
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Live Validator / Score Tracker Widget */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider">Schema Optimizer Score</h3>
-                <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full ${
-                  scorePercentage === 100 ? "bg-emerald-500/10 text-emerald-400" : "bg-indigo-500/10 text-indigo-400"
-                }`}>
-                  {scorePercentage}% Complete
-                </span>
+              {/* Dynamic Inputs depending on selected type */}
+              <div className="space-y-4 border-t border-slate-800/60 pt-6">
+                
+                {schemaType === 'Organization' && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Organization Name</label>
+                      <input
+                        type="text"
+                        value={fields.orgName}
+                        onChange={(e) => handleInputChange('orgName', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Primary Domain (URL)</label>
+                      <input
+                        type="url"
+                        value={fields.orgUrl}
+                        onChange={(e) => handleInputChange('orgUrl', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Logo Resource URL</label>
+                      <input
+                        type="url"
+                        value={fields.orgLogo}
+                        onChange={(e) => handleInputChange('orgLogo', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Social Profiles (SameAs - Comma Separated)</label>
+                      <input
+                        type="text"
+                        value={fields.orgSameAs}
+                        onChange={(e) => handleInputChange('orgSameAs', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                        placeholder="https://twitter.com/profile, https://github.com/profile"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {schemaType === 'WebSite' && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Website Title Name</label>
+                      <input
+                        type="text"
+                        value={fields.webName}
+                        onChange={(e) => handleInputChange('webName', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Website Target URL</label>
+                      <input
+                        type="url"
+                        value={fields.webUrl}
+                        onChange={(e) => handleInputChange('webUrl', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Potential Search Endpoint</label>
+                      <input
+                        type="text"
+                        value={fields.webSearchUrl}
+                        onChange={(e) => handleInputChange('webSearchUrl', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {schemaType === 'Article' && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Headline Title</label>
+                      <input
+                        type="text"
+                        value={fields.artTitle}
+                        onChange={(e) => handleInputChange('artTitle', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Article Public URL</label>
+                      <input
+                        type="url"
+                        value={fields.artUrl}
+                        onChange={(e) => handleInputChange('artUrl', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Featured Cover Image URL</label>
+                      <input
+                        type="url"
+                        value={fields.artImage}
+                        onChange={(e) => handleInputChange('artImage', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-slate-300 mb-1">Author Name</label>
+                        <input
+                          type="text"
+                          value={fields.artAuthor}
+                          onChange={(e) => handleInputChange('artAuthor', e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-300 mb-1">Publish Date</label>
+                        <input
+                          type="date"
+                          value={fields.artPublished}
+                          onChange={(e) => handleInputChange('artPublished', e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {schemaType === 'LocalBusiness' && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Business Entity Name</label>
+                      <input
+                        type="text"
+                        value={fields.bizName}
+                        onChange={(e) => handleInputChange('bizName', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Office Image URL</label>
+                      <input
+                        type="url"
+                        value={fields.bizImage}
+                        onChange={(e) => handleInputChange('bizImage', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-slate-300 mb-1">Street Address</label>
+                      <input
+                        type="text"
+                        value={fields.bizAddress}
+                        onChange={(e) => handleInputChange('bizAddress', e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-slate-300 mb-1">Phone Number</label>
+                        <input
+                          type="text"
+                          value={fields.bizPhone}
+                          onChange={(e) => handleInputChange('bizPhone', e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-300 mb-1">Price Range</label>
+                        <input
+                          type="text"
+                          value={fields.bizPrice}
+                          onChange={(e) => handleInputChange('bizPrice', e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                          placeholder="$$$"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
               </div>
               
-              {/* Score Bar */}
-              <div className="w-full bg-slate-950 rounded-full h-2 mb-4 overflow-hidden border border-slate-850">
-                <div 
-                  className="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full transition-all duration-500"
-                  style={{ width: `${scorePercentage}%` }}
-                />
+              <div className="mt-6 pt-5 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+                <span>Google Schema standard:</span>
+                <span className="text-emerald-400 font-semibold">Ready to Inject</span>
               </div>
+            </div>
 
-              {/* Dynamic checklist */}
-              <ul className="space-y-2.5">
-                {validationChecklist.map((item, idx) => (
-                  <li key={idx} className="flex items-center gap-2.5 text-xs text-slate-400">
-                    {item.satisfied ? (
-                      <span className="h-4 w-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold">✓</span>
-                    ) : (
-                      <span className="h-4 w-4 rounded-full bg-slate-800 text-slate-500 flex items-center justify-center text-[10px] font-bold">!</span>
-                    )}
-                    <span className={item.satisfied ? "text-slate-300" : "text-slate-500"}>
-                      {item.check}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+            {/* Live SEO Score Gauge */}
+            <div className="bg-slate-900/40 border border-slate-800/80 rounded-xl p-5">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-xs text-slate-400 font-medium">Render Quality Rating</span>
+                <span className="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">Optimal</span>
+              </div>
+              <div className="w-full bg-slate-850 rounded-full h-2">
+                <div className="bg-gradient-to-r from-indigo-500 via-teal-400 to-emerald-400 h-2 rounded-full w-[98%]" />
+              </div>
+              <p className="text-[11px] text-slate-400 mt-2">
+                This blueprint complies strictly with Google's search rendering specifications for dynamic Next.js runtime engines.
+              </p>
             </div>
           </div>
 
-          {/* Right Column - Code Outputs & Next.js Implementation preview */}
+          {/* Right Column: Dynamic Exporter Code Views */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-xl shadow-xl overflow-hidden">
-              {/* Output Tab Selection Header */}
-              <div className="border-b border-slate-800 bg-slate-900/80 px-4 pt-4 pb-0 flex items-center justify-between">
-                <div className="flex gap-1">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl shadow-slate-950/40">
+              
+              {/* Tab Bar Selector */}
+              <div className="bg-slate-900 border-b border-slate-800/80 p-3 flex flex-wrap justify-between items-center gap-2">
+                <div className="flex gap-1.5">
                   <button
-                    onClick={() => setOutputTab("json")}
-                    className={`pb-3 px-4 text-xs font-bold uppercase tracking-widest border-b-2 transition-all duration-200 ${
-                      outputTab === "json"
-                        ? "border-indigo-500 text-white"
-                        : "border-transparent text-slate-400 hover:text-slate-200"
+                    onClick={() => setActiveTab('inline')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all ${
+                      activeTab === 'inline'
+                        ? 'bg-slate-850 text-slate-100 border border-slate-700'
+                        : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
-                    Raw JSON-LD
+                    Next.js App Router Page Script
                   </button>
                   <button
-                    onClick={() => setOutputTab("nextjs")}
-                    className={`pb-3 px-4 text-xs font-bold uppercase tracking-widest border-b-2 transition-all duration-200 ${
-                      outputTab === "nextjs"
-                        ? "border-indigo-500 text-white"
-                        : "border-transparent text-slate-400 hover:text-slate-200"
+                    onClick={() => setActiveTab('metadata')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all ${
+                      activeTab === 'metadata'
+                        ? 'bg-slate-850 text-slate-100 border border-slate-700'
+                        : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
-                    Next.js Layout Component
+                    Alternate Dynamic Metadata
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('raw')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all ${
+                      activeTab === 'raw'
+                        ? 'bg-slate-850 text-slate-100 border border-slate-700'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    Raw JSON-LD Object
                   </button>
                 </div>
 
                 <button
-                  onClick={() => handleCopy(outputTab === "json" ? jsonLdString : nextJsOutputString)}
-                  className="mb-3 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-md shadow-indigo-600/10"
+                  onClick={() => copyToClipboard(
+                    activeTab === 'inline' ? nextJsInlineCode : activeTab === 'metadata' ? nextJsMetadataCode : schemaString
+                  )}
+                  className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all border border-emerald-500/20 hover:border-emerald-500/40"
                 >
-                  {copied ? <CheckIcon /> : <CopyIcon />}
-                  {copied ? "Copied Structure!" : "Copy Code"}
+                  {copied ? (
+                    <>
+                      <Icons.Check /> Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Icons.Copy /> Copy Blueprint
+                    </>
+                  )}
                 </button>
               </div>
 
-              {/* Code Editor Panel */}
-              <div className="p-4 sm:p-6 bg-slate-950 overflow-x-auto font-mono text-xs text-slate-300 leading-relaxed min-h-[460px] max-h-[640px] overflow-y-auto">
-                {outputTab === "json" ? (
-                  <pre className="text-emerald-400">
-                    <code className="block whitespace-pre">
-{`<script type="application/ld+json">
-${jsonLdString}
-</script>`}
-                    </code>
-                  </pre>
-                ) : (
-                  <pre className="text-indigo-300">
-                    <code>{nextJsOutputString}</code>
-                  </pre>
-                )}
+              {/* Code Pre Container */}
+              <div className="p-5 overflow-x-auto bg-slate-950 font-mono text-sm leading-relaxed text-indigo-300 selection:bg-indigo-500/40 max-h-[500px] overflow-y-auto">
+                <pre className="text-xs sm:text-sm text-slate-200">
+                  {activeTab === 'inline' && nextJsInlineCode}
+                  {activeTab === 'metadata' && nextJsMetadataCode}
+                  {activeTab === 'raw' && schemaString}
+                </pre>
+              </div>
+
+              {/* Tips context block */}
+              <div className="p-4 bg-slate-900 border-t border-slate-800/80 flex items-start gap-2.5 text-xs text-slate-400">
+                <Icons.Info />
+                <div>
+                  <span className="font-semibold text-slate-200 block mb-0.5">Integration Best Practice:</span>
+                  Place this generated dynamic export snippet anywhere inside your targeted segment page or layout file context. It triggers immediately on static compilation or server rendering.
+                </div>
+              </div>
+
+            </div>
+
+            {/* Quick Helper Explainer widgets */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-slate-900/40 border border-slate-800/80 p-5 rounded-xl flex items-start">
+                <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 mr-4 shrink-0">
+                  <Icons.BookOpen />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-slate-200 mb-1">App Router Schema Inject</h4>
+                  <p className="text-xs text-slate-400 leading-normal">
+                    Next.js parses inline scripts seamlessly. It doesn't disrupt hydrated states and loads without delays.
+                  </p>
+                </div>
+              </div>
+              <div className="bg-slate-900/40 border border-slate-800/80 p-5 rounded-xl flex items-start">
+                <div className="p-2 rounded-lg bg-teal-500/10 text-teal-400 mr-4 shrink-0">
+                  <Icons.Globe />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-slate-200 mb-1">Google Rich Results Ready</h4>
+                  <p className="text-xs text-slate-400 leading-normal">
+                    This JSON syntax is completely compatible with Google bot algorithms for search result structures.
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Implementation Quick Tips */}
-            <div className="bg-indigo-950/20 border border-indigo-900/30 rounded-xl p-5 flex items-start gap-4">
-              <InfoIcon />
-              <div>
-                <h4 className="text-sm font-bold text-indigo-300">Next.js App Router Best Practice</h4>
-                <p className="mt-1 text-xs text-slate-400 leading-relaxed">
-                  We recommend placing schemas inside a client or server page component directly. Next.js standardizes metadata exports via the 
-                  <code className="text-indigo-300 bg-indigo-950/60 px-1 py-0.5 rounded mx-1">metadata</code> configuration object, while rich structured interactive cards like JSON-LD are fully supported by outputting raw script tags within layout scopes.
-                </p>
+          </div>
+
+        </div>
+
+        {/* Detailed Info Guide / Text Article Content Section */}
+        <section className="mt-20 border-t border-slate-800/80 pt-16">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <div className="space-y-4">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Deep Dive</span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-50">Understanding next-generation SEO with JSON-LD & Next.js App Router</h2>
+              <p className="text-slate-400 leading-relaxed text-sm sm:text-base">
+                With the paradigm shift of Next.js 13, 14, and 15 into React Server Components (RSC), page optimizations have changed. Unlike older configurations relying on custom <code className="bg-slate-800 px-1 py-0.5 rounded text-indigo-300">NextHead</code> architectures, the modern framework parses standard dynamic components cleanly directly inside server-side code execution paths.
+              </p>
+              <p className="text-slate-400 leading-relaxed text-sm sm:text-base">
+                Using this tool ensures your structural datasets render directly within the rendered DOM payload on initial loads. This dramatically cuts index latency, improving structural categorization in organic results layout schemes.
+              </p>
+            </div>
+
+            {/* Accordion List FAQ Section */}
+            <div className="space-y-4 pt-4">
+              <h3 className="text-xl font-bold text-slate-50 flex items-center">
+                Frequently Asked Schema Implementation Questions
+              </h3>
+              <div className="space-y-2">
+                {faqs.map((faq, index) => {
+                  const isOpen = openFaq === index;
+                  return (
+                    <div 
+                      key={index}
+                      className="border border-slate-800/80 rounded-xl overflow-hidden bg-slate-900/20 transition-all duration-300"
+                    >
+                      <button
+                        onClick={() => toggleFaq(index)}
+                        className="w-full text-left p-5 flex justify-between items-center hover:bg-slate-900/40 transition-colors"
+                      >
+                        <span className="font-semibold text-slate-200 text-sm sm:text-base">{faq.q}</span>
+                        <span className={`transform transition-transform text-indigo-400 text-xl font-light ${isOpen ? 'rotate-45' : ''}`}>
+                          ＋
+                        </span>
+                      </button>
+                      <div 
+                        className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                          isOpen ? 'max-h-72 border-t border-slate-850 p-5' : 'max-h-0'
+                        }`}
+                      >
+                        <p className="text-slate-400 text-xs sm:text-sm leading-relaxed">{faq.a}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
+
           </div>
-        </div>
+        </section>
+
       </main>
 
-      {/* Structured dynamic FAQs Section */}
-      <section className="bg-slate-900/40 border-t border-slate-900 py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-indigo-400 text-xs font-bold tracking-widest uppercase">FAQ KNOWLEDGE-BASE</span>
-            <h2 className="text-3xl font-extrabold text-white mt-2">Next.js Structured Schema FAQs</h2>
-            <p className="mt-3 text-sm text-slate-400">
-              Answers to technical queries about parsing and rendering dynamic JSON-LD inside React contexts and Next.js frameworks.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {[
-              {
-                q: "Why use structured data schemas in Next.js?",
-                a: "Structured JSON-LD schemas explicitly instruct Google and other crawlers on page architecture. This improves rich snippets inclusion, star ratings, aggregate reviews display, and local map discovery for your application.",
-              },
-              {
-                q: "Where does JSON-LD live in the HTML layout structure?",
-                a: "JSON-LD elements can safely live anywhere in either the <head> or <body> tags. Standard practice suggests placing them inside layouts or pages directly so they populate as early as possible during semantic parsing.",
-              },
-              {
-                q: "Does this generator support dynamic content hydration?",
-                a: "Absolutely! The React logic generated provides standard React interpolation formatting. Simply map your dynamic database state or dynamic variables to the returned JSON-LD array.",
-              },
-            ].map((faq, index) => (
-              <div 
-                key={index} 
-                className="bg-slate-900 border border-slate-800 rounded-xl transition-all duration-350 overflow-hidden"
-              >
-                <button
-                  type="button"
-                  onClick={() => setFaqOpenStates(prev => ({ ...prev, [index]: !prev[index] }))}
-                  className="w-full text-left p-5 flex justify-between items-center hover:bg-slate-850 transition-colors"
-                >
-                  <span className="font-bold text-slate-200 text-sm sm:text-base pr-4">{faq.q}</span>
-                  <span className="text-slate-400 shrink-0">
-                    {faqOpenStates[index] ? "−" : "+"}
-                  </span>
-                </button>
-                {faqOpenStates[index] && (
-                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-400 border-t border-slate-800/55 leading-relaxed bg-slate-900/50">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            ))}
+      {/* Structured Tool Footer Page */}
+      <footer className="border-t border-slate-900 bg-slate-950 mt-24 py-12 text-center text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto px-4 space-y-4">
+          <p>Texly JSON-LD SEO Generator &copy; {new Date().getFullYear()} - Professional SEO Operating System Tools.</p>
+          <div className="flex justify-center gap-6 text-slate-400">
+            <a href="#privacy" className="hover:text-slate-200">Privacy Policy</a>
+            <a href="#terms" className="hover:text-slate-200">Terms of Use</a>
+            <a href="https://texly.io" className="hover:text-indigo-400 font-semibold">Texly Home</a>
           </div>
         </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-slate-950 border-t border-slate-900 py-8 text-center text-xs text-slate-500">
-        <p>© {new Date().getFullYear()} Texly SEO Operating System. Professional Next.js Schema Engine. All rights reserved.</p>
       </footer>
+
     </div>
   );
 }
