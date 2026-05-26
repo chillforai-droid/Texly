@@ -11,7 +11,7 @@ export default async function handler(req: any, res: any) {
       "remove-numbers-from-text", "military-alphabet-converter", "remove-special-characters-online", 
       "remove-html-tags-online", "upper-case-converter", "lower-case-converter", "title-case-converter", 
       "slug-generator-online-free", "binary-to-text-converter", "text-to-binary-converter", 
-      "word-counter-online-free", "character-counter-tool", "clean-text-online-free", 
+      "word-counter-online-free", "character-counter-tool", "letter-counter-online-free", "clean-text-online-free", 
       "reading-time-calculator-online", "text-reverser-online", "text-repeater-tool", 
       "lorem-ipsum-generator-online", "find-and-replace-text-online", "sort-lines-alphabetically", 
       "camel-case-converter", "snake-case-converter", "kebab-case-converter", "pascal-case-converter", 
