@@ -131,14 +131,8 @@ function NavigateWithParams() {
 }
 
 function ToolRouteWrapper() {
-  const { slug } = useParams();
-  const tool = useMemo(
-    () => ALL_TOOLS.find((t) => t.slug === slug),
-    [slug]
-  );
-  if (tool && (tool.category === 'ai' || tool.category === 'generator')) {
-    return <Navigate to={`/tools/${slug}`} replace />;
-  }
+  // No redirect — both /tool/:slug and /tools/:slug render ToolPage directly.
+  // Redirecting between the two paths was causing 90 "Page with redirect" GSC errors.
   return <ToolPage />;
 }
 
@@ -537,11 +531,7 @@ function AppContent() {
             />
             <Route
               path="/tool/character-counter-tool"
-              element={
-                <RouteErrorBoundary>
-                  <WordCounterPage />
-                </RouteErrorBoundary>
-              }
+              element={<Navigate to="/tool/word-counter-online-free" replace />}
             />
             <Route
               path="/tool/text-to-list-converter"
