@@ -139,17 +139,22 @@ function NavigateWithParams() {
 
 function ToolRouteWrapper() {
   const { slug } = useParams();
-  // AI/generator tools live at /tools/ — render directly
-  // Regular tools live at /tool/ — redirect to canonical URL to fix GSC "Crawled not indexed"
-  const AI_TOOL_SLUGS = new Set([
+  // Hardcoded special tools jo /tools/ path pe hain
+  const HARDCODED_AI_SLUGS = new Set([
     'face-swap', 'bg-remover', 'enhancer', 'compressor', 'image-upscale',
     'image-generator', 'ai-text-suite', 'invisible-text-suite',
     'snapchat-tag-generator', 'robots-txt-tester', 'json-path-finder',
     'regex-explainer', 'cron-expression-generator', 'redirect-chain-checker',
   ]);
-  if (slug && !AI_TOOL_SLUGS.has(slug)) {
-    // Non-AI tool accessed via /tools/ — redirect to canonical /tool/ path
-    return <Navigate to={`/tool/${slug}`} replace />;
+
+  if (slug && HARDCODED_AI_SLUGS.has(slug)) {
+    return <ToolPage />;
+  }
+
+  // Dynamic tools ab /{slug} direct path se handle hote hain
+  // /tools/:slug se /{slug} redirect
+  if (slug) {
+    return <Navigate to={`/${slug}`} replace />;
   }
   return <ToolPage />;
 }
@@ -355,11 +360,37 @@ const SEO_SLUGS = new Set((pagesData as Array<{ slug: string }>).map(p => p.slug
 
 function SEOPageOrNotFound() {
   const { slug } = useParams<{ slug: string }>();
+  const [checking, setChecking] = useState(true);
+  const [isDynamicTool, setIsDynamicTool] = useState(false);
+
+  useEffect(() => {
+    if (!slug || SEO_SLUGS.has(slug)) {
+      setChecking(false);
+      return;
+    }
+    // SEO page nahi mila — Supabase mein dynamic tool dhundho
+    import('./utils/toolStorage').then(({ getToolBySlug }) => {
+      getToolBySlug(slug).then((tool) => {
+        setIsDynamicTool(!!tool);
+        setChecking(false);
+      });
+    });
+  }, [slug]);
+
+  if (checking) return <PageLoader />;
 
   if (slug && SEO_SLUGS.has(slug)) {
     return (
       <Suspense fallback={<PageLoader />}>
         <SEOPage />
+      </Suspense>
+    );
+  }
+
+  if (isDynamicTool) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ToolPage />
       </Suspense>
     );
   }
@@ -371,6 +402,23 @@ function SEOPageOrNotFound() {
   );
 }
 
+
+// /tool/:slug — hardcoded tools render karo, dynamic tools ko /{slug} redirect karo
+function ToolPageOrRedirect() {
+  const { slug } = useParams<{ slug: string }>();
+
+  // Hardcoded tool hai toh directly render karo (backward compat + SEO redirects)
+  if (slug && ALL_TOOLS.find((t) => t.slug === slug)) {
+    return <ToolPage />;
+  }
+
+  // Dynamic Supabase tool — canonical /{slug} path pe redirect
+  if (slug) {
+    return <Navigate to={`/${slug}`} replace />;
+  }
+
+  return <ToolPage />;
+}
 
 function AppContent() {
   const { t } = useLanguage();
@@ -628,7 +676,7 @@ function AppContent() {
               path="/tool/:slug"
               element={
                 <RouteErrorBoundary>
-                  <ToolPage />
+                  <ToolPageOrRedirect />
                 </RouteErrorBoundary>
               }
             />
