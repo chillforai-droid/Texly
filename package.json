@@ -71,8 +71,7 @@
     "tailwindcss": "^4.1.14",
     "terser": "^5.37.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0",
-    "vite-plugin-compression": "^0.5.1"
+    "vite": "^6.2.0"
   },
   "optionalDependencies": {}
 }
