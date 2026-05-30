@@ -158,6 +158,41 @@ export default async function handler(req: any, res: any) {
       }
     }
 
+    // ── Dynamic AI Tools from Supabase ai_tools table ─────────────────────────
+    if (supabaseUrl && supabaseAnonKey) {
+      try {
+        const { createClient: createClient2 } = await import("@supabase/supabase-js");
+        const supabase2 = createClient2(supabaseUrl, supabaseAnonKey);
+
+        const { data: aiTools } = await supabase2
+          .from("ai_tools")
+          .select("slug, category, updated_at, created_at")
+          .eq("is_active", true)
+          .limit(500);
+
+        if (aiTools) {
+          aiTools.forEach((tool: any) => {
+            // Already hardcoded tools ko duplicate mat karo
+            if (toolSlugs.includes(tool.slug) || specialToolSlugs.includes(tool.slug)) return;
+            
+            const lastmod = tool.updated_at
+              ? new Date(tool.updated_at).toISOString().split("T")[0]
+              : today;
+            
+            // AI/generator category = /tools/ path, baaki = /tool/ path
+            const path = (tool.category === "ai" || tool.category === "generator")
+              ? `/tools/${tool.slug}`
+              : `/tool/${tool.slug}`;
+
+            xml += `\n  <url>\n    <loc>${baseUrl}${path}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
+          });
+          console.log(\`[SITEMAP] Dynamic AI tools loaded: \${aiTools.length}\`);
+        }
+      } catch (toolsErr) {
+        console.error("[SITEMAP] Dynamic tools fetch error:", toolsErr);
+      }
+    }
+
     xml += "\n</urlset>";
 
     res.setHeader("Content-Type", "text/xml; charset=utf-8");

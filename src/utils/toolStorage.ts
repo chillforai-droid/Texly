@@ -25,7 +25,6 @@ const mapFromSupabase = (row: any): Tool => ({
   isAI: row.category === 'ai' || row.category === 'generator',
   // Dynamic tools ka process function - component_code se render hoga
   process: (_input: string) => '',
-  // Dynamic tool flag
   isDynamic: true,
   componentCode: row.component_code || '',
 });

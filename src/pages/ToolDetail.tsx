@@ -520,8 +520,8 @@ const ToolPage: React.FC = () => {
                     allowFullScreen
                   />
                 </div>
-              ) : (tool as any).isDynamic && (tool as any).componentCode ? (
-                <DynamicToolRenderer componentCode={(tool as any).componentCode} toolName={tool.name} />
+              ) : tool.isDynamic && tool.componentCode ? (
+                <DynamicToolRenderer componentCode={tool.componentCode} toolName={tool.name} />
               ) : tool.category === 'pdf' ? (
                 <Suspense fallback={<div className="flex items-center justify-center p-20"><div className="w-10 h-10 border-4 border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div></div>}><PDFToolWorkspace toolId={tool.id} toolName={tool.name} /></Suspense>
               ) : tool.category === 'cleaning' ? (
