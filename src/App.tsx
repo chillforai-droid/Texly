@@ -290,6 +290,7 @@ const MODAL_THEMES: Record<string, any> = {
 // Load TexlyAIAssistant only after the user has interacted with the page.
 // This prevents the 634 KB ai-image chunk from blocking initial render.
 const LazyTexlyAI = lazy(() => import('./components/TexlyAI'));
+const ImageSizeReducerPage = lazy(() => import('./pages/tools/generated/image-size-reducer'));
 
 function DeferredTexlyAI() {
   const [mounted, setMounted] = useState(false);
@@ -750,6 +751,7 @@ function AppContent() {
             />
 
             {/* * wildcard हटाया — /:slug route ऊपर NotFound handle करता है */}
+          <Route path="/tool/image-size-reducer" element={<RouteErrorBoundary><ImageSizeReducerPage /></RouteErrorBoundary>} />
           </Routes>
         </Suspense>
       </main>

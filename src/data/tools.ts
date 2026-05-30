@@ -1450,4 +1450,18 @@ const AI_TEXT_TOOLS: Tool[] = [
 ];
 
 
-export const ALL_TOOLS = [...TOOLS, ...additionalTools, ...AI_TEXT_TOOLS, ...PDF_TOOLS];
+export const ALL_TOOLS = [...TOOLS, ...additionalTools, ...AI_TEXT_TOOLS, ...PDF_TOOLS,
+  {
+  id: 'image-size-reducer',
+  name: 'Image Size Reducer',
+  slug: 'image-size-reducer',
+  category: 'converter',
+  description: 'Compress and reduce image file sizes online for free. Support JPG, PNG, WebP, AVIF, and SVG. Optimize your images without quality loss. No signup required, fast and secure browser-based compression.',
+  shortDescription: 'Reduce and compress image file sizes online for free. Support JPG, PNG, WebP, AVIF, and more with zero quality loss.',
+  icon: 'Layers',
+  keywords: ["image size reducer","reduce image size online","compress image online","image compressor free","jpg size reducer","png compressor","webp compressor","image optimizer"],
+  primaryKeyword: 'image size reducer',
+  isDynamic: false,
+  process: (s: string) => s,
+},
+];
