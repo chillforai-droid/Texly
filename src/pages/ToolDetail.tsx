@@ -86,8 +86,6 @@ const ToolPage: React.FC = () => {
   const [schemaRating, setSchemaRating] = useState<{ ratingValue: number; ratingCount: number } | undefined>(undefined);
 
   const getToolPath = (tool: any) => {
-    // Dynamic (Supabase) tools ka canonical path /{slug} hai
-    if (tool.isDynamic) return `/${tool.slug}`;
     if (tool.category === 'ai' || tool.category === 'generator') {
       return `/tools/${tool.slug}`;
     }
@@ -127,7 +125,7 @@ const ToolPage: React.FC = () => {
 
   // Live Preview Effect
   useEffect(() => {
-    if (tool && input && !tool.isAI && !tool.isDynamic && typeof tool.process === 'function') {
+    if (tool && input && !tool.isAI) {
       const result = tool.process(input, options);
       if (typeof result === 'string') {
         setOutput(result);
@@ -252,9 +250,6 @@ const ToolPage: React.FC = () => {
       handleOcr();
       return;
     }
-
-    // Dynamic tools ka process function nahi hota (componentCode se render hota hai)
-    if (tool.isDynamic || typeof tool.process !== 'function') return;
 
     setLoading(true);
     try {
@@ -421,7 +416,7 @@ const ToolPage: React.FC = () => {
       <SEO 
         title={toolSEO?.title || toolName}
         description={toolSEO?.metaDescription || t.toolDescriptions[tool.id] || t.tool.defaultHook}
-        canonical={tool.isDynamic ? `${BASE_URL}/${tool.slug}` : `${BASE_URL}/tool/${tool.slug}`}
+        canonical={`${BASE_URL}/tool/${tool.slug}`}
         keywords={[...(tool.keywords || []), ...(tool.secondaryKeywords || []), 'text tools', 'online tools', 'texly']}
       />
       
