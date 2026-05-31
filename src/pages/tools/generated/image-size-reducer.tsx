@@ -19,7 +19,12 @@ import {
   Image as ImageIcon,
   Sparkles,
   Info,
-  Settings
+  Settings,
+  Eye,
+  FileDown,
+  AlertTriangle,
+  Clipboard,
+  Check
 } from 'lucide-react';
 
 interface ImageFile {
@@ -40,13 +45,49 @@ interface ImageFile {
 
 function ToolComponent() {
   const [files, setFiles] = useState<ImageFile[]>([]);
-  const [quality, setQuality] = useState<number>(0.8);
+  const [compressionMode, setCompressionMode] = useState<'custom' | 'target'>('custom');
+  const [quality, setQuality] = useState<number>(0.75);
   const [scale, setScale] = useState<number>(100);
+  const [targetSizeKb, setTargetSizeKb] = useState<number>(100);
   const [outputFormat, setOutputFormat] = useState<string>('original');
+  const [nameSuffix, setNameSuffix] = useState<string>('-min');
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'compressor' | 'guide' | 'faq'>('compressor');
   const [faqOpen, setFaqOpen] = useState<{ [key: number]: boolean }>({});
+  const [copiedNotification, setCopiedNotification] = useState<boolean>(false);
+  
+  // Before/After comparison modal state
+  const [selectedComparisonFile, setSelectedComparisonFile] = useState<ImageFile | null>(null);
+  const [sliderPosition, setSliderPosition] = useState<number>(50);
+  const sliderRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Listen for clipboard image pastes
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (e.clipboardData) {
+        const items = Array.from(e.clipboardData.items);
+        const pastedFiles: File[] = [];
+        for (const item of items) {
+          if (item.type.indexOf('image') !== -1) {
+            const file = item.getAsFile();
+            if (file) pastedFiles.push(file);
+          }
+        }
+        if (pastedFiles.length > 0) {
+          addFiles(pastedFiles);
+          triggerNotification();
+        }
+      }
+    };
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, []);
+
+  const triggerNotification = () => {
+    setCopiedNotification(true);
+    setTimeout(() => setCopiedNotification(false), 3000);
+  };
 
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +96,6 @@ function ToolComponent() {
     }
   };
 
-  // Handle drag events
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -81,15 +121,10 @@ function ToolComponent() {
       const id = Math.random().toString(36).substring(2, 9);
       const previewUrl = URL.createObjectURL(file);
       
-      // Create temporary image to read dimensions
       const img = new Image();
       img.src = previewUrl;
-      let width = 0;
-      let height = 0;
       img.onload = () => {
-        width = img.width;
-        height = img.height;
-        setFiles(prev => prev.map(f => f.id === id ? { ...f, width, height } : f));
+        setFiles(prev => prev.map(f => f.id === id ? { ...f, width: img.width, height: img.height } : f));
       };
 
       return {
@@ -124,6 +159,9 @@ function ToolComponent() {
       }
       return prev.filter(f => f.id !== id);
     });
+    if (selectedComparisonFile?.id === id) {
+      setSelectedComparisonFile(null);
+    }
   };
 
   // Clear all files
@@ -135,19 +173,20 @@ function ToolComponent() {
       }
     });
     setFiles([]);
+    setSelectedComparisonFile(null);
   };
 
-  // Compress a single image
-  const compressSingleImage = (imageFile: ImageFile): Promise<ImageFile> => {
-    return new Promise((resolve) => {
-      setFiles(prev => prev.map(f => f.id === imageFile.id ? { ...f, status: 'compressing', progress: 30 } : f));
+  // Professional Compression with Target Size Search or Custom Settings
+  const compressSingleImage = async (imageFile: ImageFile): Promise<ImageFile> => {
+    setFiles(prev => prev.map(f => f.id === imageFile.id ? { ...f, status: 'compressing', progress: 15 } : f));
 
+    return new Promise((resolve) => {
       const reader = new FileReader();
       reader.readAsDataURL(imageFile.file);
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         const img = new Image();
         img.src = event.target?.result as string;
-        img.onload = () => {
+        img.onload = async () => {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           if (!ctx) {
@@ -156,56 +195,93 @@ function ToolComponent() {
             return;
           }
 
-          // Calculate scaled dimensions
+          // Calculate dimensions
           const newWidth = Math.round(img.width * (scale / 100));
           const newHeight = Math.round(img.height * (scale / 100));
           canvas.width = newWidth;
           canvas.height = newHeight;
-
-          // Draw image to canvas
           ctx.drawImage(img, 0, 0, newWidth, newHeight);
 
-          // Determine output MIME type
+          // Determine output format
           let mimeType = imageFile.file.type;
           if (outputFormat !== 'original') {
             mimeType = `image/${outputFormat}`;
+          } else if (compressionMode === 'target' && imageFile.file.type === 'image/png') {
+            // PNG compression is naturally limited. Auto-switch to webp for target sizes
+            mimeType = 'image/webp';
           }
 
-          setFiles(prev => prev.map(f => f.id === imageFile.id ? { ...f, progress: 70 } : f));
+          if (compressionMode === 'target') {
+            // Iterative binary search to find quality that fits the target size limit
+            const targetBytes = targetSizeKb * 1024;
+            let low = 0.02;
+            let high = 0.98;
+            let bestBlob: Blob | null = null;
+            let bestSize = 0;
+            let bestUrl: string | null = null;
+            
+            for (let i = 0; i < 6; i++) {
+              const mid = (low + high) / 2;
+              const blob: Blob | null = await new Promise((res) => {
+                canvas.toBlob((b) => res(b), mimeType, mid);
+              });
 
-          canvas.toBlob(
-            (blob) => {
               if (blob) {
-                const compressedUrl = URL.createObjectURL(blob);
-                const compressedSize = blob.size;
-                
-                setFiles(prev => prev.map(f => f.id === imageFile.id ? {
-                  ...f,
-                  status: 'done',
-                  progress: 100,
-                  compressedSize,
-                  compressedUrl,
-                  compressedWidth: newWidth,
-                  compressedHeight: newHeight
-                } : f));
-
-                resolve({
-                  ...imageFile,
-                  status: 'done',
-                  progress: 100,
-                  compressedSize,
-                  compressedUrl,
-                  compressedWidth: newWidth,
-                  compressedHeight: newHeight
-                });
-              } else {
-                setFiles(prev => prev.map(f => f.id === imageFile.id ? { ...f, status: 'error' } : f));
-                resolve({ ...imageFile, status: 'error' });
+                bestBlob = blob;
+                bestSize = blob.size;
+                if (blob.size > targetBytes) {
+                  high = mid;
+                } else {
+                  low = mid;
+                  // If we are close enough, stop early
+                  if (targetBytes - blob.size < targetBytes * 0.05) break;
+                }
               }
-            },
-            mimeType,
-            quality
-          );
+            }
+
+            if (bestBlob) {
+              bestUrl = URL.createObjectURL(bestBlob);
+              const updated: ImageFile = {
+                ...imageFile, 
+                status: 'done',
+                progress: 100,
+                compressedSize: bestSize,
+                compressedUrl: bestUrl,
+                compressedWidth: newWidth,
+                compressedHeight: newHeight
+              };
+              setFiles(prev => prev.map(f => f.id === imageFile.id ? updated : f));
+              resolve(updated);
+            } else {
+              setFiles(prev => prev.map(f => f.id === imageFile.id ? { ...f, status: 'error' } : f));
+              resolve({ ...imageFile, status: 'error' });
+            }
+          } else {
+            // Custom Quality Mode
+            canvas.toBlob(
+              (blob) => {
+                if (blob) {
+                  const compressedUrl = URL.createObjectURL(blob);
+                  const updated: ImageFile = {
+                    ...imageFile,
+                    status: 'done',
+                    progress: 100,
+                    compressedSize: blob.size,
+                    compressedUrl,
+                    compressedWidth: newWidth,
+                    compressedHeight: newHeight
+                  };
+                  setFiles(prev => prev.map(f => f.id === imageFile.id ? updated : f));
+                  resolve(updated);
+                } else {
+                  setFiles(prev => prev.map(f => f.id === imageFile.id ? { ...f, status: 'error' } : f));
+                  resolve({ ...imageFile, status: 'error' });
+                }
+              },
+              mimeType,
+              quality
+            );
+          }
         };
         img.onerror = () => {
           setFiles(prev => prev.map(f => f.id === imageFile.id ? { ...f, status: 'error' } : f));
@@ -222,26 +298,25 @@ function ToolComponent() {
   // Compress all files
   const compressAll = async () => {
     for (const file of files) {
-      if (file.status !== 'done') {
-        await compressSingleImage(file);
-      }
+      await compressSingleImage(file);
     }
   };
 
-  // Download individual file
+  // Download single image file
   const downloadFile = (file: ImageFile) => {
     if (file.compressedUrl) {
       const link = document.createElement('a');
       link.href = file.compressedUrl;
       
-      // Generate extension based on format
       let ext = file.file.name.split('.').pop();
       if (outputFormat !== 'original') {
         ext = outputFormat;
+      } else if (compressionMode === 'target' && file.file.type === 'image/png') {
+        ext = 'webp';
       }
       
       const nameWithoutExt = file.file.name.substring(0, file.file.name.lastIndexOf('.'));
-      link.download = `${nameWithoutExt}-compressed.${ext}`;
+      link.download = `${nameWithoutExt}${nameSuffix}.${ext}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -257,7 +332,52 @@ function ToolComponent() {
     });
   };
 
-  // Format file size
+  // Presets selector
+  const applyPreset = (preset: 'optimized' | 'extreme' | 'png-lossless' | 'kb-100' | 'kb-50') => {
+    if (preset === 'optimized') {
+      setCompressionMode('custom');
+      setQuality(0.75);
+      setScale(100);
+      setOutputFormat('webp');
+    } else if (preset === 'extreme') {
+      setCompressionMode('custom');
+      setQuality(0.45);
+      setScale(85);
+      setOutputFormat('webp');
+    } else if (preset === 'png-lossless') {
+      setCompressionMode('custom');
+      setQuality(0.92);
+      setScale(100);
+      setOutputFormat('png');
+    } else if (preset === 'kb-100') {
+      setCompressionMode('target');
+      setTargetSizeKb(100);
+    } else if (preset === 'kb-50') {
+      setCompressionMode('target');
+      setTargetSizeKb(50);
+    }
+  };
+
+  // Before/After split comparison mouse move handler
+  const handleSplitMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (sliderRef.current) {
+      const rect = sliderRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+      setSliderPosition(percentage);
+    }
+  };
+
+  const handleSplitTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (sliderRef.current && e.touches[0]) {
+      const rect = sliderRef.current.getBoundingClientRect();
+      const x = e.touches[0].clientX - rect.left;
+      const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+      setSliderPosition(percentage);
+    }
+  };
+
+  // Formats file sizes nicely
   const formatSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -266,319 +386,489 @@ function ToolComponent() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  // Toggle FAQ Accordion
   const toggleFaq = (index: number) => {
     setFaqOpen(prev => ({ ...prev, [index]: !prev[index] }));
   };
 
-  // Schema definitions
-  const softwareSchema = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Texly Image Size Reducer",
-    "operatingSystem": "All",
-    "applicationCategory": "MultimediaApplication",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "features": [
-      "Smart Compression",
-      "High Quality Output",
-      "Multiple Format Support",
-      "Fast Browser-Based Processing",
-      "Batch Compression Support"
-    ]
-  };
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://texlyonline.in"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Image Size Reducer",
-        "item": "https://texlyonline.in/image-size-reducer"
-      }
-    ]
-  };
+  // Compute statistics
+  const processedFiles = files.filter(f => f.status === 'done');
+  const totalOriginalBytes = files.reduce((acc, f) => acc + f.originalSize, 0);
+  const totalCompressedBytes = files.reduce((acc, f) => acc + (f.compressedSize || f.originalSize), 0);
+  const overallSavings = totalOriginalBytes > 0 
+    ? Math.round(((totalOriginalBytes - totalCompressedBytes) / totalOriginalBytes) * 100) 
+    : 0;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8 font-sans">
-      {/* Inject Schemas */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-
+    <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8 font-sans selection:bg-indigo-500 selection:text-white">
       <div className="max-w-6xl mx-auto">
+        
         {/* Header Section */}
         <div className="text-center mb-10">
-          <span className="px-3 py-1 text-xs font-semibold bg-indigo-500/10 text-indigo-400 rounded-full border border-indigo-500/20">
-            100% Free & Secure
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold bg-indigo-500/10 text-indigo-400 rounded-full border border-indigo-500/20">
+            <Sparkles className="h-3 w-3" />
+            Professional Browser-Based Compression
           </span>
-          <h1 className="mt-4 text-4xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-            Reduce Image Size Online Free
+          <h1 className="mt-4 text-4xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-white via-indigo-100 to-indigo-400 bg-clip-text text-transparent">
+            Professional Image Size Reducer
           </h1>
           <p className="mt-4 text-lg text-slate-400 max-w-3xl mx-auto">
-            Compress JPG, PNG, WebP, AVIF, and SVG images with professional-grade precision. Keep maximum quality while slashing file sizes in seconds.
+            Compress JPG, PNG, WebP, and AVIF images instantly. Choose standard custom optimization or set an exact <strong className="text-indigo-400">Target KB limit</strong> with pristine quality.
           </p>
         </div>
 
         {/* Interactive Tool Interface */}
-        <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-md shadow-2xl mb-12">
-          {/* Drag & Drop Zone */}
-          <div
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-            className={`relative border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-300 ${
-              isDragging
-                ? 'border-indigo-500 bg-indigo-500/10 scale-[0.99]'
-                : 'border-slate-700 hover:border-indigo-500/50 hover:bg-slate-800/20'
-            }`}
-          >
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              multiple
-              accept="image/*"
-              className="hidden"
-            />
-            <div className="flex flex-col items-center justify-center">
-              <div className="p-4 bg-slate-800/80 rounded-full border border-slate-700 mb-4 text-indigo-400">
-                <Upload className="h-8 w-8 animate-pulse" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+          
+          {/* Control Panel (Left column on large screens) */}
+          <div className="lg:col-span-4 bg-slate-900/60 border border-slate-800/80 rounded-3xl p-6 backdrop-blur-md flex flex-col gap-6">
+            <div className="flex items-center gap-2 pb-4 border-b border-slate-800">
+              <Settings className="h-5 w-5 text-indigo-400" />
+              <h2 className="text-lg font-bold text-slate-100">Compression Controls</h2>
+            </div>
+
+            {/* Preset shortcuts */}
+            <div>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Quick Presets</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button 
+                  onClick={() => applyPreset('optimized')}
+                  className="px-3 py-1.5 text-xs font-medium bg-slate-800/60 hover:bg-indigo-600/20 border border-slate-700/50 hover:border-indigo-500/30 text-slate-300 rounded-lg transition-all text-left"
+                >
+                  ⚡ Web Optimized (WebP)
+                </button>
+                <button 
+                  onClick={() => applyPreset('extreme')}
+                  className="px-3 py-1.5 text-xs font-medium bg-slate-800/60 hover:bg-indigo-600/20 border border-slate-700/50 hover:border-indigo-500/30 text-slate-300 rounded-lg transition-all text-left"
+                >
+                  📉 High Compression
+                </button>
+                <button 
+                  onClick={() => applyPreset('kb-100')}
+                  className="px-3 py-1.5 text-xs font-medium bg-slate-800/60 hover:bg-indigo-600/20 border border-slate-700/50 hover:border-indigo-500/30 text-slate-300 rounded-lg transition-all text-left"
+                >
+                  🎯 Target 100 KB
+                </button>
+                <button 
+                  onClick={() => applyPreset('kb-50')}
+                  className="px-3 py-1.5 text-xs font-medium bg-slate-800/60 hover:bg-indigo-600/20 border border-slate-700/50 hover:border-indigo-500/30 text-slate-300 rounded-lg transition-all text-left"
+                >
+                  🎯 Target 50 KB
+                </button>
               </div>
-              <p className="text-lg font-semibold text-slate-200">
-                Drag & Drop your images here, or <span className="text-indigo-400 hover:underline">browse</span>
-              </p>
-              <p className="text-xs text-slate-500 mt-2">
-                Supports JPG, PNG, WebP, AVIF, SVG, GIF, BMP, TIFF, ICO, HEIC
-              </p>
+            </div>
+
+            {/* Compression Mode Switcher */}
+            <div>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">Reduction Mode</label>
+              <div className="grid grid-cols-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                <button
+                  onClick={() => setCompressionMode('custom')}
+                  className={`py-2 text-xs font-bold rounded-lg transition-all ${
+                    compressionMode === 'custom'
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  Custom Settings
+                </button>
+                <button
+                  onClick={() => setCompressionMode('target')}
+                  className={`py-2 text-xs font-bold rounded-lg transition-all ${
+                    compressionMode === 'target'
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  Target Size (KB)
+                </button>
+              </div>
+            </div>
+
+            {/* Mode-Specific Parameters */}
+            <div className="space-y-4 bg-slate-950/50 p-4 rounded-xl border border-slate-800/60">
+              {compressionMode === 'custom' ? (
+                <div className="space-y-4">
+                  {/* Quality slider */}
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-xs font-semibold text-slate-300">Quality Factor</span>
+                      <span className="text-xs font-bold px-1.5 py-0.5 bg-indigo-500/10 text-indigo-400 rounded">
+                        {Math.round(quality * 100)}%
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0.05"
+                      max="1.0"
+                      step="0.05"
+                      value={quality}
+                      onChange={(e) => setQuality(parseFloat(e.target.value))}
+                      className="w-full accent-indigo-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg appearance-none"
+                    />
+                  </div>
+
+                  {/* Scale slider */}
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-xs font-semibold text-slate-300">Scale Resolution</span>
+                      <span className="text-xs font-bold px-1.5 py-0.5 bg-indigo-500/10 text-indigo-400 rounded">
+                        {scale}%
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="10"
+                      max="100"
+                      step="5"
+                      value={scale}
+                      onChange={(e) => setScale(parseInt(e.target.value))}
+                      className="w-full accent-indigo-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg appearance-none"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-xs font-semibold text-slate-300">Max File Size Target</span>
+                    <span className="text-xs font-bold text-indigo-400">KB</span>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min="5"
+                      max="10000"
+                      value={targetSizeKb}
+                      onChange={(e) => setTargetSizeKb(Math.max(1, parseInt(e.target.value) || 0))}
+                      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 font-mono"
+                    />
+                    <span className="absolute right-3 top-2.5 text-xs text-slate-500 font-bold">KB max</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 mt-2 flex items-start gap-1">
+                    <Info className="h-3.5 w-3.5 text-indigo-400 flex-shrink-0 mt-0.5" />
+                    Our smart engine runs instant iterations to find the absolute highest quality that fits into your target KB limit.
+                  </p>
+                </div>
+              )}
+
+              {/* Output Format Select */}
+              <div className="pt-2 border-t border-slate-800/60">
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Convert Format</label>
+                <select
+                  value={outputFormat}
+                  onChange={(e) => setOutputFormat(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-300 focus:outline-none focus:border-indigo-500 text-xs"
+                >
+                  <option value="original">Keep Original Format</option>
+                  <option value="webp">WebP (Highly Recommended)</option>
+                  <option value="jpeg">JPEG (Best for photos)</option>
+                  <option value="png">PNG (Best for transparent graphics)</option>
+                </select>
+              </div>
+
+              {/* Naming Pattern Suffix */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">File Name Suffix</label>
+                <input
+                  type="text"
+                  value={nameSuffix}
+                  onChange={(e) => setNameSuffix(e.target.value)}
+                  placeholder="e.g. -min"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+            </div>
+
+            {/* Global Actions */}
+            <div className="flex flex-col gap-2 mt-auto">
+              <button
+                onClick={compressAll}
+                disabled={files.length === 0}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 disabled:text-slate-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-indigo-600/10 active:scale-[0.98] text-sm"
+              >
+                <Sliders className="h-4 w-4" />
+                Compress Queue ({files.length})
+              </button>
+              
+              {processedFiles.length > 0 && (
+                <button
+                  onClick={downloadAll}
+                  className="w-full flex items-center justify-center gap-2 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-600/10 active:scale-[0.98] text-sm"
+                >
+                  <Download className="h-4 w-4" />
+                  Download All ({processedFiles.length})
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Control Panel */}
-          {files.length > 0 && (
-            <div className="mt-8 p-6 bg-slate-950/80 border border-slate-800 rounded-2xl">
-              <div className="flex items-center gap-2 mb-6 border-b border-slate-800 pb-4">
-                <Settings className="h-5 w-5 text-indigo-400" />
-                <h3 className="text-lg font-bold text-slate-200">Compression Settings</h3>
+          {/* Main Area: Drag Drop & Queue List (Right column) */}
+          <div className="lg:col-span-8 flex flex-col gap-6">
+            
+            {/* Clipboard Paste Notification Toast */}
+            {copiedNotification && (
+              <div className="bg-indigo-950 border border-indigo-500/30 text-indigo-300 px-4 py-3 rounded-xl flex items-center gap-2 animate-fade-in text-xs">
+                <Clipboard className="h-4 w-4 text-indigo-400" />
+                <span>Image successfully pasted from clipboard!</span>
               </div>
+            )}
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Quality Slider */}
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="text-sm font-medium text-slate-300 flex items-center gap-1.5">
-                      Compression Quality
-                    </label>
-                    <span className="text-xs font-semibold px-2 py-0.5 bg-indigo-500/10 text-indigo-400 rounded">
-                      {Math.round(quality * 100)}%
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0.1"
-                    max="1.0"
-                    step="0.05"
-                    value={quality}
-                    onChange={(e) => setQuality(parseFloat(e.target.value))}
-                    className="w-full accent-indigo-500 cursor-pointer h-2 bg-slate-800 rounded-lg appearance-none"
-                  />
-                  <p className="text-xs text-slate-500 mt-1.5">
-                    Lower quality produces smaller file sizes.
-                  </p>
+            {/* Drag & Drop Zone */}
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className={`relative border-2 border-dashed rounded-3xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-300 ${
+                isDragging
+                  ? 'border-indigo-500 bg-indigo-500/10 scale-[0.99]'
+                  : 'border-slate-800 bg-slate-900/30 hover:border-indigo-500/50 hover:bg-slate-900/40'
+              }`}
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                multiple
+                accept="image/*"
+                className="hidden"
+              />
+              <div className="flex flex-col items-center justify-center">
+                <div className="p-4 bg-slate-800/80 rounded-2xl border border-slate-700/80 mb-4 text-indigo-400 shadow-inner">
+                  <Upload className="h-8 w-8 animate-bounce" />
                 </div>
-
-                {/* Scale Slider */}
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="text-sm font-medium text-slate-300">
-                      Scale Dimensions
-                    </label>
-                    <span className="text-xs font-semibold px-2 py-0.5 bg-indigo-500/10 text-indigo-400 rounded">
-                      {scale}%
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min="10"
-                    max="100"
-                    step="5"
-                    value={scale}
-                    onChange={(e) => setScale(parseInt(e.target.value))}
-                    className="w-full accent-indigo-500 cursor-pointer h-2 bg-slate-800 rounded-lg appearance-none"
-                  />
-                  <p className="text-xs text-slate-500 mt-1.5">
-                    Reduce resolution to save additional space.
-                  </p>
-                </div>
-
-                {/* Output Format Select */}
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Convert Output To
-                  </label>
-                  <select
-                    value={outputFormat}
-                    onChange={(e) => setOutputFormat(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-300 focus:outline-none focus:border-indigo-500 text-sm"
-                  >
-                    <option value="original">Keep Original Format</option>
-                    <option value="jpeg">JPEG (Best for photos)</option>
-                    <option value="png">PNG (Best for graphics)</option>
-                    <option value="webp">WebP (Highly Optimized)</option>
-                  </select>
-                  <p className="text-xs text-slate-500 mt-1.5">
-                    Convert formats on-the-fly for modern web standards.
-                  </p>
-                </div>
-              </div>
-
-              {/* Global Action Buttons */}
-              <div className="flex flex-wrap justify-end gap-3 mt-6 pt-4 border-t border-slate-800/50">
-                <button
-                  onClick={clearAll}
-                  className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-900 rounded-lg transition-colors border border-transparent hover:border-slate-800"
-                >
-                  Clear All
-                </button>
-                <button
-                  onClick={compressAll}
-                  className="flex items-center gap-2 px-5 py-2 text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
-                >
-                  <Sliders className="h-4 w-4" />
-                  Compress All
-                </button>
-                {files.some(f => f.status === 'done') && (
-                  <button
-                    onClick={downloadAll}
-                    className="flex items-center gap-2 px-5 py-2 text-sm font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-all shadow-lg shadow-emerald-600/20 active:scale-95"
-                  >
-                    <Download className="h-4 w-4" />
-                    Download All
-                  </button>
-                )}
+                <p className="text-lg font-bold text-slate-200">
+                  Drag & Drop images here, or <span className="text-indigo-400 hover:underline">browse computer</span>
+                </p>
+                <p className="text-xs text-slate-500 mt-2">
+                  Supports JPG, PNG, WebP, AVIF, SVG, GIF, BMP, TIFF. Paste directly using <kbd className="bg-slate-800 px-1.5 py-0.5 rounded text-[10px] text-slate-300 border border-slate-700">Ctrl+V</kbd> or <kbd className="bg-slate-800 px-1.5 py-0.5 rounded text-[10px] text-slate-300 border border-slate-700">⌘+V</kbd>.
+                </p>
               </div>
             </div>
-          )}
 
-          {/* File Lists */}
-          {files.length > 0 && (
-            <div className="mt-8 space-y-4">
-              <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">
-                Queue ({files.length} {files.length === 1 ? 'Image' : 'Images'})
-              </h4>
-              {files.map((file) => {
-                const savings = file.compressedSize 
-                  ? Math.round(((file.originalSize - file.compressedSize) / file.originalSize) * 100) 
-                  : 0;
+            {/* Batch Statistics Dashboard */}
+            {files.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-900/50 border border-slate-800 rounded-2xl">
+                <div className="text-center sm:text-left sm:pl-4">
+                  <span className="block text-[10px] uppercase tracking-wider font-bold text-slate-500">Total Files</span>
+                  <span className="text-lg font-extrabold text-slate-200">{files.length}</span>
+                </div>
+                <div className="text-center sm:text-left">
+                  <span className="block text-[10px] uppercase tracking-wider font-bold text-slate-500">Original Size</span>
+                  <span className="text-lg font-extrabold text-slate-200">{formatSize(totalOriginalBytes)}</span>
+                </div>
+                <div className="text-center sm:text-left">
+                  <span className="block text-[10px] uppercase tracking-wider font-bold text-slate-500">Compressed Size</span>
+                  <span className="text-lg font-extrabold text-indigo-400">{formatSize(totalCompressedBytes)}</span>
+                </div>
+                <div className="text-center sm:text-left">
+                  <span className="block text-[10px] uppercase tracking-wider font-bold text-slate-500">Overall Savings</span>
+                  <span className="text-lg font-extrabold text-emerald-400">{overallSavings}%</span>
+                </div>
+              </div>
+            )}
 
-                return (
-                  <div
-                    key={file.id}
-                    className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-950 border border-slate-800 rounded-xl gap-4 hover:border-slate-700 transition-all"
+            {/* File Queue List */}
+            {files.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    Image Queue ({files.length})
+                  </h3>
+                  <button
+                    onClick={clearAll}
+                    className="text-xs text-rose-400 hover:text-rose-300 font-semibold flex items-center gap-1 bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-500/20 transition-all"
                   >
-                    {/* File Preview & Info */}
-                    <div className="flex items-center gap-4">
-                      <div className="relative h-16 w-16 rounded-lg overflow-hidden bg-slate-900 flex-shrink-0 border border-slate-800">
-                        <img
-                          src={file.previewUrl}
-                          alt={file.name}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-slate-200 truncate max-w-[200px] sm:max-w-xs">
-                          {file.name}
-                        </p>
-                        <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-slate-400">
-                          <span>Original: {formatSize(file.originalSize)}</span>
-                          {file.width > 0 && (
-                            <span className="text-slate-600">| {file.width}x{file.height}px</span>
-                          )}
-                        </div>
-                        {file.status === 'done' && file.compressedSize && (
-                          <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
-                            <span className="text-emerald-400 font-medium">
-                              Compressed: {formatSize(file.compressedSize)}
-                            </span>
-                            {file.compressedWidth && (
-                              <span className="text-slate-500">({file.compressedWidth}x{file.compressedHeight}px)</span>
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Clear Queue
+                  </button>
+                </div>
+
+                <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
+                  {files.map((file) => {
+                    const fileSavings = file.compressedSize 
+                      ? Math.round(((file.originalSize - file.compressedSize) / file.originalSize) * 100) 
+                      : 0;
+
+                    return (
+                      <div
+                        key={file.id}
+                        className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-900/40 border border-slate-800/80 hover:border-slate-700/80 rounded-2xl gap-4 transition-all"
+                      >
+                        {/* File Details */}
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          <div className="relative h-14 w-14 rounded-xl overflow-hidden bg-slate-950 flex-shrink-0 border border-slate-800">
+                            <img
+                              src={file.previewUrl}
+                              alt={file.name}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-semibold text-slate-200 truncate max-w-[180px] sm:max-w-[240px]">
+                              {file.name}
+                            </p>
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-[11px] text-slate-400">
+                              <span>Orig: {formatSize(file.originalSize)}</span>
+                              {file.width > 0 && (
+                                <span className="text-slate-600">• {file.width}×{file.height}px</span>
+                              )}
+                            </div>
+                            {file.status === 'done' && file.compressedSize && (
+                              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5 text-[11px]">
+                                <span className="text-emerald-400 font-semibold">
+                                  Comp: {formatSize(file.compressedSize)}
+                                </span>
+                                {file.compressedWidth && (
+                                  <span className="text-slate-500">({file.compressedWidth}×{file.compressedHeight}px)</span>
+                                )}
+                              </div>
                             )}
                           </div>
-                        )}
-                      </div>
-                    </div>
+                        </div>
 
-                    {/* Status & Savings Indicator */}
-                    <div className="flex items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-3 md:pt-0 border-slate-800">
-                      <div className="text-right">
-                        {file.status === 'idle' && (
-                          <span className="text-xs text-slate-500 bg-slate-900 px-2 py-1 rounded border border-slate-800">Idle</span>
-                        )}
-                        {file.status === 'compressing' && (
-                          <div className="flex items-center gap-2 text-xs text-indigo-400">
-                            <RefreshCw className="h-3 w-3 animate-spin" />
-                            Compressing...
+                        {/* Status, Savings & Actions */}
+                        <div className="flex items-center justify-between sm:justify-end gap-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
+                          <div className="text-right">
+                            {file.status === 'idle' && (
+                              <span className="text-[10px] font-bold text-slate-500 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Pending</span>
+                            )}
+                            {file.status === 'compressing' && (
+                              <div className="flex items-center gap-1.5 text-xs text-indigo-400 font-semibold">
+                                <RefreshCw className="h-3 w-3 animate-spin" />
+                                Compressing...
+                              </div>
+                            )}
+                            {file.status === 'done' && (
+                              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                                Saved {fileSavings}%
+                              </span>
+                            )}
+                            {file.status === 'error' && (
+                              <span className="text-[10px] font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">Error</span>
+                            )}
                           </div>
-                        )}
-                        {file.status === 'done' && (
-                          <div className="flex flex-col items-end">
-                            <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                              -{savings}%
-                            </span>
-                          </div>
-                        )}
-                        {file.status === 'error' && (
-                          <span className="text-xs text-rose-400 bg-rose-500/10 px-2 py-1 rounded">Error</span>
-                        )}
-                      </div>
 
-                      {/* Action Buttons per File */}
-                      <div className="flex items-center gap-2">
-                        {file.status === 'done' ? (
-                          <button
-                            onClick={() => downloadFile(file)}
-                            className="p-2 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-lg transition-all border border-emerald-500/10"
-                            title="Download compressed file"
-                          >
-                            <Download className="h-4 w-4" />
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => compressSingleImage(file)}
-                            disabled={file.status === 'compressing'}
-                            className="p-2 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-lg transition-all border border-indigo-500/10 disabled:opacity-50"
-                            title="Compress file"
-                          >
-                            <Sliders className="h-4 w-4" />
-                          </button>
-                        )}
-                        <button
-                          onClick={() => removeFile(file.id)}
-                          className="p-2 bg-slate-900 hover:bg-rose-600/20 text-slate-400 hover:text-rose-400 rounded-lg transition-all border border-slate-800 hover:border-rose-500/10"
-                          title="Remove file"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                          <div className="flex items-center gap-1.5">
+                            {file.status === 'done' && (
+                              <button
+                                onClick={() => setSelectedComparisonFile(file)}
+                                className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-all border border-slate-700/50 flex items-center gap-1 text-xs font-semibold"
+                                title="Visual Quality Comparison"
+                              >
+                                <Eye className="h-3.5 w-3.5" />
+                                <span className="hidden sm:inline">Compare</span>
+                              </button>
+                            )}
+                            
+                            {file.status === 'done' ? (
+                              <button
+                                onClick={() => downloadFile(file)}
+                                className="p-2 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-lg transition-all border border-emerald-500/20"
+                                title="Download compressed image"
+                              >
+                                <Download className="h-3.5 w-3.5" />
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => compressSingleImage(file)}
+                                disabled={file.status === 'compressing'}
+                                className="p-2 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-lg transition-all border border-indigo-500/20 disabled:opacity-50"
+                                title="Compress this image"
+                              >
+                                <Sliders className="h-3.5 w-3.5" />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => removeFile(file.id)}
+                              className="p-2 bg-slate-800 hover:bg-rose-600/20 text-slate-400 hover:text-rose-400 rounded-lg transition-all border border-slate-700/50"
+                              title="Remove file"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Before / After Split Comparison Slider Modal */}
+        {selectedComparisonFile && (
+          <div className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center p-4 sm:p-6 backdrop-blur-md">
+            <div className="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-3xl p-6 relative flex flex-col gap-4 max-h-[90vh] overflow-hidden">
+              <div className="flex justify-between items-center pb-3 border-b border-slate-800">
+                <div>
+                  <h3 className="text-base font-bold text-slate-100">Interactive Quality Comparison</h3>
+                  <p className="text-xs text-slate-400">Drag the center handle or move mouse to compare original vs compressed visual output.</p>
+                </div>
+                <button 
+                  onClick={() => setSelectedComparisonFile(null)}
+                  className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-bold transition-all"
+                >
+                  Close
+                </button>
+              </div>
+
+              {/* Slider Container */}
+              <div 
+                ref={sliderRef}
+                onMouseMove={handleSplitMove}
+                onTouchMove={handleSplitTouchMove}
+                className="relative flex-1 bg-slate-950 rounded-2xl overflow-hidden select-none cursor-ew-resize min-h-[280px] sm:min-h-[400px] border border-slate-800 flex items-center justify-center"
+              >
+                {/* Original Image (Left Side) */}
+                <img 
+                  src={selectedComparisonFile.previewUrl} 
+                  alt="Original"
+                  className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                />
+                <div className="absolute left-4 top-4 bg-black/60 backdrop-blur-md border border-slate-800 px-2.5 py-1 rounded text-[10px] font-bold text-slate-300 z-10">
+                  Original ({formatSize(selectedComparisonFile.originalSize)})
+                </div>
+
+                {/* Compressed Image (Right Side, clipped based on slider position) */}
+                <div 
+                  className="absolute inset-y-0 right-0 left-0 overflow-hidden pointer-events-none"
+                  style={{ clipPath: `polygon(${sliderPosition}% 0, 100% 0, 100% 100%, ${sliderPosition}% 100%)` }}
+                >
+                  <img 
+                    src={selectedComparisonFile.compressedUrl || selectedComparisonFile.previewUrl} 
+                    alt="Compressed"
+                    className="absolute inset-0 w-full h-full object-contain"
+                  />
+                </div>
+                <div className="absolute right-4 top-4 bg-indigo-950/80 backdrop-blur-md border border-indigo-500/30 px-2.5 py-1 rounded text-[10px] font-bold text-indigo-300 z-10">
+                  Compressed ({selectedComparisonFile.compressedSize ? formatSize(selectedComparisonFile.compressedSize) : 'N/A'})
+                </div>
+
+                {/* Vertical Divider Line & Handle */}
+                <div 
+                  className="absolute inset-y-0 w-0.5 bg-indigo-500 z-20 pointer-events-none"
+                  style={{ left: `${sliderPosition}%` }}
+                >
+                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-indigo-600 rounded-full border-2 border-white flex items-center justify-center shadow-lg">
+                    <Sliders className="h-4 w-4 text-white rotate-90" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center pt-2 text-xs">
+                <span className="text-slate-400">Original Resolution: {selectedComparisonFile.width}×{selectedComparisonFile.height}px</span>
+                <button
+                  onClick={() => downloadFile(selectedComparisonFile)}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold transition-all text-xs"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  Download This Image
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Navigation Tabs for Educational Content */}
         <div className="flex border-b border-slate-800 mb-8 overflow-x-auto">
@@ -590,7 +880,7 @@ function ToolComponent() {
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            About & Features
+            About & Professional Features
           </button>
           <button
             onClick={() => setActiveTab('guide')}
@@ -610,7 +900,7 @@ function ToolComponent() {
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            FAQs
+            Frequently Asked Questions
           </button>
         </div>
 
@@ -630,250 +920,19 @@ function ToolComponent() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-2xl">
                   <Zap className="h-8 w-8 text-indigo-400 mb-3" />
-                  <h3 className="text-lg font-bold text-white mb-2">Instant Processing</h3>
-                  <p className="text-sm text-slate-400">
-                    Powered by local WebAssembly/Canvas tech, your files are compressed directly inside your browser. No server uploads mean zero lag.
-                  </p>
-                </div>
-                <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-2xl">
-                  <ShieldCheck className="h-8 w-8 text-emerald-400 mb-3" />
-                  <h3 className="text-lg font-bold text-white mb-2">100% Privacy Secure</h3>
-                  <p className="text-sm text-slate-400">
-                    Your images never leave your computer. This makes it completely safe for sensitive, personal, or corporate files.
-                  </p>
-                </div>
-                <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-2xl">
-                  <Sparkles className="h-8 w-8 text-amber-400 mb-3" />
-                  <h3 className="text-lg font-bold text-white mb-2">Lossless Compression</h3>
-                  <p className="text-sm text-slate-400">
-                    Smart algorithms analyze and remove redundant metadata and optimize pixel data without noticeable quality loss.
-                  </p>
-                </div>
-              </div>
-
-              {/* Detailed Features Section */}
-              <div>
-                <h3 className="text-xl font-bold text-white mb-4">Key Features of Our Free Image Compressor</h3>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
-                  <li className="flex items-start gap-3 bg-slate-900/20 p-4 border border-slate-800/60 rounded-xl">
-                    <CheckCircle2 className="h-5 w-5 text-indigo-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-slate-200">Smart Compression Algorithms:</strong> Balances size and clarity seamlessly.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3 bg-slate-900/20 p-4 border border-slate-800/60 rounded-xl">
-                    <CheckCircle2 className="h-5 w-5 text-indigo-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-slate-200">Multiple Format Support:</strong> JPG, PNG, WebP, AVIF, GIF, BMP, SVG, TIFF, ICO, HEIC, HEIF.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3 bg-slate-900/20 p-4 border border-slate-800/60 rounded-xl">
-                    <CheckCircle2 className="h-5 w-5 text-indigo-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-slate-200">Batch Image Compressor:</strong> Upload and compress multiple images in a single click.
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3 bg-slate-900/20 p-4 border border-slate-800/60 rounded-xl">
-                    <CheckCircle2 className="h-5 w-5 text-indigo-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="text-slate-200">No Registration Required:</strong> Completely free to use with no hidden subscription walls.
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Supported Formats Grid */}
-              <div>
-                <h3 className="text-xl font-bold text-white mb-4">Supported Image Formats</h3>
-                <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-                  {['JPG', 'JPEG', 'PNG', 'WebP', 'AVIF', 'GIF', 'BMP', 'TIFF', 'SVG', 'ICO', 'HEIC', 'HEIF'].map(fmt => (
-                    <div key={fmt} className="bg-slate-900 border border-slate-800 py-3 rounded-xl text-center font-bold text-slate-300 text-sm hover:border-indigo-500/30 transition-all">
-                      {fmt}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
-
-          {activeTab === 'guide' && (
-            <section className="space-y-10">
-              <div>
-                <h2 className="text-2xl sm:text-3xl font-bold text-white">Why Image Compression Matters for SEO & Performance</h2>
-                <p className="mt-4 text-slate-400 leading-relaxed">
-                  In modern web development, images account for over 60% of an average webpage's total payload weight. This means that unoptimized, heavy images can significantly slow down your site speed, harming user experience and negatively impacting your search engine rankings. Utilizing our <strong>image optimizer</strong> helps correct this critical bottleneck.
-                </p>
-              </div>
-
-              {/* Performance Metrics Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-2xl">
-                  <h3 className="text-lg font-bold text-white mb-2">Search Engine Optimization (SEO)</h3>
-                  <p className="text-sm text-slate-400">
-                    Google uses page speed as a primary ranking factor for both desktop and mobile search. Using a <strong>free image compressor online</strong> helps you meet Core Web Vitals targets, such as Largest Contentful Paint (LCP).
-                  </p>
-                </div>
-                <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-2xl">
-                  <h3 className="text-lg font-bold text-white mb-2">Mobile Responsiveness</h3>
-                  <p className="text-sm text-slate-400">
-                    Mobile users often operate on slower networks (3G/4G). Compressing your images ensures rapid loads, saving precious mobile bandwidth and improving conversion rates.
-                  </p>
-                </div>
-              </div>
-
-              {/* Image Format Comparison Table */}
-              <div>
-                <h3 className="text-xl font-bold text-white mb-4">Choosing the Right Image Format</h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full bg-slate-900/40 border border-slate-800 rounded-xl">
-                    <thead>
-                      <tr className="border-b border-slate-800 text-left text-slate-200">
-                        <th className="p-4">Format</th>
-                        <th className="p-4">Compression Type</th>
-                        <th className="p-4">Transparency</th>
-                        <th className="p-4">Best Use Case</th>
-                      </tr>
-                    </thead>
-                    <tbody className="text-slate-400 text-sm divide-y divide-slate-800">
-                      <tr>
-                        <td className="p-4 font-semibold text-slate-200">JPEG / JPG</td>
-                        <td className="p-4">Lossy</td>
-                        <td className="p-4">No</td>
-                        <td className="p-4">Photographs, complex gradient images</td>
-                      </tr>
-                      <tr>
-                        <td className="p-4 font-semibold text-slate-200">PNG</td>
-                        <td className="p-4">Lossless</td>
-                        <td className="p-4">Yes</td>
-                        <td className="p-4">Logos, icons, screenshots, graphics with text</td>
-                      </tr>
-                      <tr>
-                        <td className="p-4 font-semibold text-slate-200">WebP</td>
-                        <td className="p-4">Lossy & Lossless</td>
-                        <td className="p-4">Yes</td>
-                        <td className="p-4">Modern websites, universal web design</td>
-                      </tr>
-                      <tr>
-                        <td className="p-4 font-semibold text-slate-200">AVIF</td>
-                        <td className="p-4">Highly Efficient Lossy</td>
-                        <td className="p-4">Yes</td>
-                        <td className="p-4">Next-gen web graphics, maximum size savings</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Professional Optimization Tips */}
-              <div className="p-6 bg-indigo-950/20 border border-indigo-500/20 rounded-2xl">
-                <h3 className="text-lg font-bold text-indigo-300 mb-2 flex items-center gap-2">
-                  <Info className="h-5 w-5" />
-                  Professional Tips for Image Optimization
-                </h3>
-                <ul className="list-disc list-inside space-y-2 text-sm text-slate-300 mt-3">
-                  <li>Always scale down dimensions to the maximum actual display width on your layout.</li>
-                  <li>Use <strong>WebP</strong> format where possible to achieve up to 30% more savings than JPEG.</li>
-                  <li>Make sure to write descriptive, keyword-rich alt text for all compressed images.</li>
-                  <li>Implement lazy-loading to defer loading images outside the viewport.</li>
-                </ul>
-              </div>
-            </section>
-          )}
-
-          {activeTab === 'faq' && (
-            <section className="space-y-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6">Frequently Asked Questions</h2>
-              <div className="space-y-4">
-                {[
-                  {
-                    q: "What is an Image Size Reducer?",
-                    a: "An Image Size Reducer is an online utility designed to compress your image file size (reducing the KB or MB footprint) while preserving the original visual quality as much as possible."
-                  },
-                  {
-                    q: "How does image compression work?",
-                    a: "It works by analyzing pixel patterns, removing duplicate/unnecessary metadata, and applying smart mathematical models to store the image data in a more compact configuration."
-                  },
-                  {
-                    q: "Does compression reduce quality?",
-                    a: "With our tool, you can choose the quality percentage. At standard settings (around 80%), the reduction in file size is massive, while any difference in quality is virtually invisible to the naked eye."
-                  },
-                  {
-                    q: "Are my uploaded files safe?",
-                    a: "Yes, absolutely! Our Image Compressor operates purely within your web browser. Your images are never uploaded to our servers, keeping your sensitive data completely secure and private."
-                  },
-                  {
-                    q: "Can I compress images on my mobile device?",
-                    a: "Yes. The tool is fully responsive and operates perfectly on all modern smartphones, tablets, and desktops without installing any extra software."
-                  },
-                  {
-                    q: "What is the best image format for websites?",
-                    a: "WebP and AVIF are currently considered the absolute best formats for website use because they deliver superior compression efficiency and support transparency."
-                  }
-                ].map((faq, idx) => (
-                  <div key={idx} className="border border-slate-800 bg-slate-900/20 rounded-xl overflow-hidden">
-                    <button
-                      onClick={() => toggleFaq(idx)}
-                      className="w-full flex justify-between items-center p-5 text-left font-semibold text-slate-200 hover:bg-slate-800/20 transition-all"
-                    >
-                      <span>{faq.q}</span>
-                      {faqOpen[idx] ? <ChevronUp className="h-5 w-5 text-indigo-400" /> : <ChevronDown className="h-5 w-5 text-indigo-400" />}
-                    </button>
-                    {faqOpen[idx] && (
-                      <div className="p-5 border-t border-slate-800/50 text-sm text-slate-400 leading-relaxed">
-                        {faq.a}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-        </div>
-
-        {/* Related Tools / Internal Links Footer */}
-        <div className="mt-16 pt-8 border-t border-slate-900">
-          <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-6 text-center">
-            Explore More Free Utilities
-          </h4>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {[
-              { name: 'Image Resizer Tool', url: '#' },
-              { name: 'Image Converter Tool', url: '#' },
-              { name: 'Image Crop Tool', url: '#' },
-              { name: 'Image Upscaler Tool', url: '#' },
-              { name: 'JPG to PNG Converter', url: '#' },
-              { name: 'PNG to WebP Converter', url: '#' },
-              { name: 'PDF Compressor Tool', url: '#' },
-              { name: 'PDF to Image Tool', url: '#' }
-            ].map((tool, index) => (
-              <a
-                key={index}
-                href={tool.url}
-                className="p-4 bg-slate-900/30 hover:bg-indigo-500/10 border border-slate-800 hover:border-indigo-500/20 rounded-xl text-center text-xs font-semibold text-slate-400 hover:text-indigo-400 transition-all"
-              >
-                {tool.name}
-              </a>
-            ))}
-          </div>
-        </div>
-
-      </div>
-    </div>
-  );
-}
+                  <h3 className=
 
 // Page wrapper with SEO
 export default function ImageSizeReducerPage() {
   return (
     <>
       <Helmet>
-        <title>Reduce Image Size Online Free – Compress JPG, PNG, WebP</title>
-        <meta name="description" content="Compress and reduce image file size online for free. Support JPG, JPEG, PNG, WebP, AVIF, GIF, BMP, TIFF, SVG, HEIC. Optimize images without quality loss." />
+        <title>Professional Image Size Reducer | Compress to Target KB</title>
+        <meta name="description" content="Reduce image sizes to exact target KB. Free, secure, browser-based batch tool with quality sliders, format conversion, and real-time before/after comparison." />
       </Helmet>
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-12 px-4">
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-3xl font-black text-center mb-8">Image Size Reducer</h1>
+          <h1 className="text-3xl font-black text-center mb-8">Professional Image Size Reducer</h1>
           <ToolComponent />
         </div>
       </div>
