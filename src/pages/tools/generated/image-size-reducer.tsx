@@ -920,7 +920,61 @@ function ToolComponent() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-2xl">
                   <Zap className="h-8 w-8 text-indigo-400 mb-3" />
-                  <h3 className=
+                  <h3 className="text-lg font-bold text-white mb-2">Browser-Based Processing</h3>
+                  <p className="text-slate-400 text-sm">All compression happens locally in your browser. Your images never leave your device.</p>
+                </div>
+                <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-2xl">
+                  <Zap className="h-8 w-8 text-indigo-400 mb-3" />
+                  <h3 className="text-lg font-bold text-white mb-2">Target KB Control</h3>
+                  <p className="text-slate-400 text-sm">Set an exact target file size in KB and our tool automatically finds the optimal quality level.</p>
+                </div>
+                <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-2xl">
+                  <Zap className="h-8 w-8 text-indigo-400 mb-3" />
+                  <h3 className="text-lg font-bold text-white mb-2">Batch Processing</h3>
+                  <p className="text-slate-400 text-sm">Upload and compress multiple images at once. Download individually or as a ZIP archive.</p>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {activeTab === 'guide' && (
+            <section className="space-y-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white">SEO &amp; Optimization Guide</h2>
+              <p className="text-slate-400 leading-relaxed">
+                Optimizing image sizes is one of the highest-impact improvements you can make for web performance. Large images are the #1 cause of slow page loads — and slow pages hurt SEO rankings, bounce rates, and conversions.
+              </p>
+              <ul className="space-y-3 text-slate-400">
+                <li><strong className="text-white">JPEG:</strong> Best for photographs. Target under 200KB for hero images, under 100KB for thumbnails.</li>
+                <li><strong className="text-white">PNG:</strong> Best for logos and transparent images. Use WebP instead when transparency isn't needed.</li>
+                <li><strong className="text-white">WebP:</strong> 25–35% smaller than JPEG/PNG at equivalent quality. Supported by all modern browsers.</li>
+              </ul>
+            </section>
+          )}
+
+          {activeTab === 'faq' && (
+            <section className="space-y-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white">Frequently Asked Questions</h2>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-1">Is my image data safe?</h3>
+                  <p className="text-slate-400">Yes. All processing is done entirely in your browser using JavaScript. No image data is ever uploaded to any server.</p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-1">What formats are supported?</h3>
+                  <p className="text-slate-400">JPEG, PNG, WebP, and GIF. Output can be saved as JPEG or WebP for best compression.</p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-1">Is there a file size limit?</h3>
+                  <p className="text-slate-400">There is no hard limit since processing is local, but very large images (50MB+) may be slow depending on your device.</p>
+                </div>
+              </div>
+            </section>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // Page wrapper with SEO
 export default function ImageSizeReducerPage() {

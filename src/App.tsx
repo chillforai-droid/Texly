@@ -798,7 +798,9 @@ function AppContent() {
 
             <div className="relative max-w-md mx-auto group">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
+              <label htmlFor="directory-search" className="sr-only">{t.directory.searchPlaceholder}</label>
               <input
+                id="directory-search"
                 type="text"
                 placeholder={t.directory.searchPlaceholder}
                 className="w-full pl-12 pr-4 py-3.5 sm:py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all dark:text-white min-h-[44px]"
