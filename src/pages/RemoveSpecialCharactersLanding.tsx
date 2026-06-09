@@ -20,23 +20,22 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
 // ─── SEO ────────────────────────────────────────────────────────────────────
-const SEO_TITLE = 'Remove Special Characters Online — Free & Instant Tool | Texly';
+const SEO_TITLE = 'Remove Special Characters Online — Free, Instant, No Signup | Texly';
 const SEO_DESC =
   'Remove special characters from text online — free, instant, no login. Strip @#$%! symbols, punctuation & emojis in 1 click. Works for Excel, SQL, CSV, Python, SEO & filenames. 100% private — runs in your browser.';
 const SEO_KEYWORDS =
-  'remove special characters online free, remove special characters from text, special character remover online, strip special characters free, remove symbols from text online, remove punctuation from text online, special character cleaner, sanitize text online, remove special chars excel, remove special characters python, special characters removal tool, remove special characters, special character remover';
+  'remove special characters online free, remove special characters from text, special character remover online, strip special characters free, remove symbols from text online, remove punctuation from text online, special character cleaner, sanitize text online, remove special chars excel, remove special characters python, special characters removal tool';
 const CANONICAL = 'https://www.texlyonline.in/remove-special-characters-online';
 
-// ─── Schema: WebApplication (primary) ────────────────────────────────────────
-const SCHEMA_APP = {
+// ─── Schema ─────────────────────────────────────────────────────────────────
+const SCHEMA = {
   '@context': 'https://schema.org',
-  '@type': 'WebApplication',
+  '@type': 'SoftwareApplication',
   name: 'Remove Special Characters Online — Texly',
   url: CANONICAL,
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  browserRequirements: 'Requires JavaScript',
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', availability: 'https://schema.org/InStock' },
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   description: SEO_DESC,
   featureList: [
     'Remove @#$%! symbols in 1 click',
@@ -44,104 +43,6 @@ const SCHEMA_APP = {
     '100% browser-side — no data sent to server',
     'No login or signup required',
     'Works on mobile & desktop',
-    'No character limit',
-    'Instant results',
-  ],
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.9',
-    ratingCount: '2847',
-    bestRating: '5',
-    worstRating: '1',
-  },
-};
-
-// ─── Schema: HowTo ───────────────────────────────────────────────────────────
-const SCHEMA_HOWTO = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'How to Remove Special Characters from Text Online',
-  description: 'Remove special characters from any text in 3 simple steps using Texly — free, instant, no signup.',
-  totalTime: 'PT10S',
-  tool: [{ '@type': 'HowToTool', name: 'Texly Remove Special Characters Tool' }],
-  step: [
-    {
-      '@type': 'HowToStep',
-      name: 'Paste Your Text',
-      text: 'Copy your text containing @#$%! symbols, punctuation, or emojis and paste it into the input box.',
-      url: `${CANONICAL}#tool`,
-      position: 1,
-    },
-    {
-      '@type': 'HowToStep',
-      name: 'Choose a Preset',
-      text: 'Select a preset like Plain Text, CSV/Excel, SEO/URL, SQL/DB, Python/Code, or Filename Safe — or use custom checkboxes.',
-      url: `${CANONICAL}#tool`,
-      position: 2,
-    },
-    {
-      '@type': 'HowToStep',
-      name: 'Copy Clean Output',
-      text: 'Click "Remove Special Characters" then copy the cleaned text with one click.',
-      url: `${CANONICAL}#tool`,
-      position: 3,
-    },
-  ],
-};
-
-// ─── Schema: FAQPage ─────────────────────────────────────────────────────────
-const SCHEMA_FAQ = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'What counts as a special character?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Special characters are any characters that are not letters (a–z, A–Z), digits (0–9), or standard spaces. This includes symbols like @, #, $, %, ^, &, *, punctuation like !, ?, commas, dashes, brackets, and non-ASCII characters like emojis.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Is my text sent to your servers?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'No. 100% of the processing happens locally in your browser using JavaScript. Your text never leaves your device and is never seen by our servers.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How do I remove special characters in Excel?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Copy your Excel column text, paste it here, select the "CSV / Excel" preset, and click Remove. Then paste the clean text back into Excel. This is faster than writing nested SUBSTITUTE formulas.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'How do I remove special characters in Python?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'In Python you can use: import re; clean = re.sub(r"[^a-zA-Z0-9\\s]", "", text). Or use this tool for a quick one-off clean without writing any code.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Can it handle emojis and Unicode characters?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Yes. The "Symbols" toggle removes emojis and most Unicode special symbols. The "Punctuation" toggle handles standard punctuation. Use both together for the cleanest plain-text output.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Is there a character limit?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'No hard limit. Everything runs in your browser. The tool has been tested with texts over 1 million characters without issues.',
-      },
-    },
   ],
 };
 
@@ -350,10 +251,7 @@ export default function RemoveSpecialCharactersLanding() {
         <meta name="twitter:title" content={SEO_TITLE} />
         <meta name="twitter:description" content={SEO_DESC} />
         {/* Schema */}
-        {/* Multiple Schemas for rich results */}
-        <script type="application/ld+json">{JSON.stringify(SCHEMA_APP)}</script>
-        <script type="application/ld+json">{JSON.stringify(SCHEMA_HOWTO)}</script>
-        <script type="application/ld+json">{JSON.stringify(SCHEMA_FAQ)}</script>
+        <script type="application/ld+json">{JSON.stringify(SCHEMA)}</script>
       </Helmet>
 
       {/* Toast */}
@@ -384,21 +282,6 @@ export default function RemoveSpecialCharactersLanding() {
             }}
           />
           <div className="max-w-5xl mx-auto px-4 pt-16 pb-12 text-center relative">
-            {/* Breadcrumb for SEO */}
-            <nav aria-label="Breadcrumb" className="text-xs text-slate-400 mb-4">
-              <ol className="flex justify-center items-center gap-1" itemScope itemType="https://schema.org/BreadcrumbList">
-                <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                  <Link to="/" itemProp="item" className="hover:text-blue-500 transition-colors"><span itemProp="name">Home</span></Link>
-                  <meta itemProp="position" content="1" />
-                </li>
-                <li aria-hidden>›</li>
-                <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-                  <span itemProp="name" className="text-slate-600 dark:text-slate-400">Remove Special Characters Online</span>
-                  <meta itemProp="position" content="2" />
-                </li>
-              </ol>
-            </nav>
-
             {/* Trust badge */}
             <div className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-full px-4 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300 mb-6">
               <span>⚡</span>
@@ -406,22 +289,15 @@ export default function RemoveSpecialCharactersLanding() {
             </div>
 
             <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white leading-tight mb-4">
-              Remove Special Characters from Text<br />
+              Remove Special Characters<br />
               <span className="text-blue-600">Online — Free & Instant</span>
             </h1>
 
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-4 leading-relaxed">
-              Paste any text and strip <code className="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-sm font-mono text-red-500">@#$%!</code> symbols, punctuation, and emojis in one click — free <strong className="text-slate-800 dark:text-slate-200">special character remover</strong>.
-              Works for Excel, SQL, CSV, Python, SEO, and filenames.
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed">
+              Strip <code className="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-sm font-mono text-red-500">@#$%!</code> symbols, punctuation, and emojis from any text in one click.
+              Perfect for Excel, SQL, CSV, Python, SEO, and filenames.
               Your text <strong className="text-slate-800 dark:text-slate-200">never leaves your device</strong>.
             </p>
-
-            {/* Star rating display */}
-            <div className="flex justify-center items-center gap-2 mb-6 text-sm text-slate-500">
-              <span className="text-yellow-400 text-base">★★★★★</span>
-              <span className="font-semibold text-slate-700 dark:text-slate-300">4.9/5</span>
-              <span>(2,847 users)</span>
-            </div>
 
             {/* Stat row */}
             <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-500 dark:text-slate-400 mb-2">
@@ -440,7 +316,7 @@ export default function RemoveSpecialCharactersLanding() {
         </section>
 
         {/* ── TOOL WIDGET ─────────────────────────────────────────────────── */}
-        <section id="tool" className="max-w-5xl mx-auto px-4 py-12" aria-label="Remove special characters tool">
+        <section className="max-w-5xl mx-auto px-4 py-12" aria-label="Remove special characters tool">
 
           {/* Preset selector */}
           <div className="mb-6">
