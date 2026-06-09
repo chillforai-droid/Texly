@@ -826,17 +826,6 @@ function AppContent() {
               }
             />
 
-            {/* ── Generated Tool Pages — /:slug से पहले रखना जरूरी है ── */}
-            {/* image-size-reducer को /:slug से पहले रखो — वरना /:slug पहले match होगा और page कभी load नहीं होगा (dead route bug) */}
-            <Route
-              path="/tool/image-size-reducer"
-              element={
-                <RouteErrorBoundary>
-                  <ImageSizeReducerPage />
-                </RouteErrorBoundary>
-              }
-            />
-
             {/* /:slug — canonical URLs (pages.json में जो URLs हैं वो directly work करें) */}
             <Route
               path="/:slug"
@@ -846,6 +835,9 @@ function AppContent() {
                 </RouteErrorBoundary>
               }
             />
+
+            {/* * wildcard हटाया — /:slug route ऊपर NotFound handle करता है */}
+          <Route path="/tool/image-size-reducer" element={<RouteErrorBoundary><ImageSizeReducerPage /></RouteErrorBoundary>} />
           </Routes>
         </Suspense>
       </main>

@@ -22,8 +22,7 @@ const STANDALONE_TOOL_IDS = new Set([
   'regex-explainer',
   'cron-expression-generator',
   'redirect-chain-checker',
-  'image-size-reducer',
-  'image-format-converter'  // dedicated page at /tools/image-format-converter
+  'image-size-reducer'
 ]);
 
 // Categories map to their premium parent hub
