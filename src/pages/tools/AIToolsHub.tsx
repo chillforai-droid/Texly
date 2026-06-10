@@ -128,8 +128,8 @@ export default function AIToolsHub() {
     // Enforce 24-hour rate limit
     const dayAgo = Date.now() - 24 * 60 * 60 * 1000;
     const freshHistory = requestsHistory.filter(t => new Date(t).getTime() > dayAgo);
-    if (freshHistory.length >= 3) {
-      alert("सुरक्षा और फ्री लिमिट: आप 24 घंटे में केवल 3 AI रिक्वेस्ट कर सकते हैं। / Usage Limit: You can only make 3 AI requests per 24 hours.");
+    if (freshHistory.length >= 10) {
+      alert("Daily limit reached: You can make 10 AI requests per 24 hours. Please try again tomorrow.");
       return;
     }
 
@@ -152,6 +152,11 @@ export default function AIToolsHub() {
         }),
       });
 
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err?.error || `Server error ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.success && data.result) {
         setOutput(data.result);
@@ -162,24 +167,13 @@ export default function AIToolsHub() {
         setRequestsHistory(updated);
         localStorage.setItem('texly_ai_requests', JSON.stringify(updated));
       } else {
-        throw new Error(data.error || 'Server error');
+        throw new Error(data.error || 'AI returned empty response. Please try again.');
       }
     } catch (e: any) {
-      console.warn("AI processing error. Initiating smart offline-safe fallback...", e);
-      // Smart offline fallback helpers
-      setTimeout(() => {
-        let fallbackText = '';
-        if (activeTool === 'ai-summarizer') {
-          fallbackText = `=== AI OFFLINE SUMMARY HIGHLIGHTS ===\n• Core Subject: analyzed target text safely.\n• Length: ${input.length} characters parsed.\n• Highlight: Simplified flow variables detected. Everything looks optimized.`;
-        } else if (activeTool === 'grammar-checker') {
-          fallbackText = input.replace(/\s+/g, ' ').trim(); // Simple normalization as mock corrected
-        } else if (activeTool === 'keyword-extractor') {
-          fallbackText = "seo, marketing, plain text, web application, content writing, optimization, database";
-        } else {
-          fallbackText = `=== AI Sandbox Translation: ${activeDef.name} ===\nProcessed incoming payload successfully (client-side sandbox emulation):\n"${input.substring(0, 80)}..."\n\n[Note: Mount a stable process.env.GEMINI_API_KEY in your cloud panel settings to bypass sandbox emulation modes]`;
-        }
-        setOutput(fallbackText);
-      }, 1000);
+      // Real error — show actual message, no fake fallback
+      const msg = e?.message || 'Something went wrong. Please try again.';
+      console.error('[AIToolsHub] API error:', msg, e);
+      setOutput(`⚠️ Error: ${msg}`);
     } finally {
       setIsGenerating(false);
     }
@@ -384,9 +378,9 @@ export default function AIToolsHub() {
 
               {/* Request Limit Info */}
               <div className="mb-3 px-1 flex items-center justify-between text-[11px] font-semibold text-slate-500">
-                <span>Free Limit: 3 requests per 24 hours</span>
+                <span>Free Limit: 10 requests per 24 hours</span>
                 <span className={remainingRequests === 0 ? "text-amber-600 font-extrabold" : "text-slate-600 font-bold"}>
-                  Remaining: {remainingRequests} / 3
+                  Remaining: {remainingRequests} / 10
                 </span>
               </div>
 
