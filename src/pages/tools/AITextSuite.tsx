@@ -20,37 +20,28 @@ import {
 } from 'lucide-react';
 import AdPlaceholder from '../../components/AdPlaceholder';
 
-// ─── Groq Config ──────────────────────────────────────────────────────────────
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY || '';
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
-
-async function callGroq(systemPrompt: string, userText: string): Promise<string> {
-  if (!GROQ_API_KEY) throw new Error('NO_KEY');
-
-  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+// ─── Server-side AI call (keys stay secure on server) ────────────────────────
+// Calls /api/ai/text → server uses GROQ_API_KEY + GEMINI_API_KEY (Vercel env vars)
+async function callGroq(systemPrompt: string, userText: string, toolId = 'custom'): Promise<string> {
+  const res = await fetch('/api/ai/text', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${GROQ_API_KEY}`,
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: GROQ_MODEL,
-      max_tokens: 2048,
-      temperature: 0.3,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userText },
-      ],
+      input: userText,
+      toolId,
+      systemPrompt, // server will use this if toolId is 'custom'
     }),
   });
 
   if (!res.ok) {
+    if (res.status === 404) throw new Error('NO_KEY');
     const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || `HTTP ${res.status}`);
+    throw new Error(err?.error || `Server error ${res.status}`);
   }
 
   const data = await res.json();
-  return data.choices?.[0]?.message?.content?.trim() || '';
+  if (!data.success) throw new Error(data.error || 'AI call failed');
+  return data.result?.trim() || '';
 }
 
 // ─── Tool Definitions ─────────────────────────────────────────────────────────
@@ -230,7 +221,7 @@ Return ONLY the final text, no explanations.`;
 
     } catch (err: any) {
       if (err.message === 'NO_KEY') {
-        setError('VITE_GROQ_API_KEY नहीं मिली। .env में add करें।');
+        setError('AI service temporarily unavailable। Please try again।');
       } else {
         setError(`Error: ${err.message || 'दोबारा try करें।'}`);
       }

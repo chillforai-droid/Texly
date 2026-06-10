@@ -32,7 +32,7 @@ router.post('/compressor', upload.single('image'), async (req: any, res) => {
 // AI Text Processing Route
 router.post('/text', async (req, res) => {
   try {
-    const { input, toolId, options } = req.body;
+    const { input, toolId, options, systemPrompt: customSystemPrompt, maxTokens } = req.body;
     if (!input) return res.status(400).json({ error: 'Input text is required' });
 
     let prompt = '';
@@ -90,9 +90,17 @@ router.post('/text', async (req, res) => {
       case 'keyword-extractor':
         prompt = `Analyze the following article and extract the top 15 highest-value semantic SEO search terms and keywords as a simple comma-separated list. Return ONLY the keywords list:\n\n${input}`;
         break;
+      case 'custom':
+        // Custom systemPrompt passed from frontend (texlyAIEngine.ts)
+        prompt = input;
+        break;
       default:
         prompt = `Process the following text and return an improved version:\n\n${input}`;
     }
+
+    // Use custom system prompt if provided (for chat / TexlyAI flows)
+    const effectiveSystemPrompt = customSystemPrompt || 
+      "You are a helpful, professional writing and editing assistant. Answer the user prompt directly. Do not include conversational filler. Return ONLY the requested output.";
 
     const groqKey = process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY;
     let text = '';
@@ -110,7 +118,7 @@ router.post('/text', async (req, res) => {
           body: JSON.stringify({
             model: "llama-3.1-8b-instant",
             messages: [
-              { role: "system", content: "You are a helpful, professional writing and editing assistant. Answer the user prompt directly. Do not include conversational filler like 'Sure', 'Sure! Here is the text:', or any preamble. Return ONLY the requested output." },
+              { role: "system", content: effectiveSystemPrompt },
               { role: "user", content: prompt }
             ],
             temperature: 0.3,
@@ -141,7 +149,10 @@ router.post('/text', async (req, res) => {
         console.log('Attempting Gemini API with gemini-2.0-flash...');
         const { GoogleGenerativeAI } = await import('@google/generative-ai');
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+        const model = genAI.getGenerativeModel({ 
+          model: 'gemini-2.0-flash',
+          systemInstruction: effectiveSystemPrompt,
+        });
         const result = await model.generateContent(prompt);
         const geminiText = result.response.text();
         if (geminiText) {

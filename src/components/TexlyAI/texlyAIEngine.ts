@@ -1,125 +1,50 @@
 /**
  * texlyAIEngine.ts
  * =====================
- * Gemini + Groq powered AI engine for Texly
- * - Gemini Flash (free tier) → primary
- * - Groq (free models) → fallback
- * - Bilingual: auto-detects Hindi vs English and responds accordingly
+ * Server-side AI proxy — Gemini + Groq
+ *
+ * Frontend se direct API call NAHI karta (keys expose hongi).
+ * Sabhi calls /api/ai/text server route ke zariye jaati hain.
+ * Server pe GROQ_API_KEY aur GEMINI_API_KEY (Vercel env vars) set honi chahiye.
  */
 
 import { buildSystemPrompt, Lang } from './texlyPersonality';
 
-// ─── Config ───────────────────────────────────────────────────────────────────
-// Keys should be in .env as VITE_GEMINI_API_KEY and VITE_GROQ_API_KEY
-const GEMINI_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
-const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY || '';
-
-// ─── Conversation history (for multi-turn context) ────────────────────────────
 export interface ChatMessage {
   role: 'user' | 'model' | 'assistant';
   content: string;
 }
 
-// ─── Gemini API call ──────────────────────────────────────────────────────────
-async function callGemini(
-  userMessage: string,
-  history: ChatMessage[],
+// ─── Server-side proxy call ───────────────────────────────────────────────────
+async function callServerAI(
+  prompt: string,
   systemPrompt: string,
+  maxTokens = 400,
   signal?: AbortSignal
 ): Promise<string> {
-  if (!GEMINI_KEY) throw new Error('No Gemini key');
-
-  // Build Gemini contents array (history + new message)
-  // Gemini uses 'user' / 'model' roles
-  const contents = [
-    ...history
-      .filter(m => m.role === 'user' || m.role === 'model')
-      .map(m => ({
-        role: m.role as 'user' | 'model',
-        parts: [{ text: m.content }],
-      })),
-    { role: 'user' as const, parts: [{ text: userMessage }] },
-  ];
-
-  const body = {
-    system_instruction: { parts: [{ text: systemPrompt }] },
-    contents,
-    generationConfig: {
-      maxOutputTokens: 300,
-      temperature: 0.85,
-      topP: 0.9,
-    },
-    safetySettings: [
-      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
-      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
-    ],
-  };
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      signal,
-    }
-  );
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Gemini error ${res.status}: ${err}`);
-  }
-
-  const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('Empty Gemini response');
-  return text.trim();
-}
-
-// ─── Groq API call ────────────────────────────────────────────────────────────
-async function callGroq(
-  userMessage: string,
-  history: ChatMessage[],
-  systemPrompt: string,
-  signal?: AbortSignal
-): Promise<string> {
-  if (!GROQ_KEY) throw new Error('No Groq key');
-
-  const messages = [
-    { role: 'system', content: systemPrompt },
-    ...history
-      .filter(m => m.role === 'user' || m.role === 'assistant')
-      .map(m => ({ role: m.role as 'user' | 'assistant', content: m.content })),
-    { role: 'user', content: userMessage },
-  ];
-
-  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  const res = await fetch('/api/ai/text', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${GROQ_KEY}`,
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile', // free Groq model
-      messages,
-      max_tokens: 300,
-      temperature: 0.85,
+      toolId: 'custom',
+      input: prompt,
+      systemPrompt,
+      maxTokens,
     }),
     signal,
   });
 
   if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Groq error ${res.status}: ${err}`);
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.error || `Server error ${res.status}`);
   }
 
   const data = await res.json();
-  const text = data?.choices?.[0]?.message?.content;
-  if (!text) throw new Error('Empty Groq response');
-  return text.trim();
+  if (!data.success) throw new Error(data.error || 'AI call failed');
+  return data.result?.trim() || '';
 }
 
-// ─── Main AI call — Gemini first, Groq fallback ───────────────────────────────
+// ─── Main AI call ─────────────────────────────────────────────────────────────
 export async function callAI(
   userMessage: string,
   history: ChatMessage[],
@@ -130,36 +55,20 @@ export async function callAI(
 ): Promise<string> {
   const systemPrompt = buildSystemPrompt(lang, toolSlug, toolName);
 
-  // Try Gemini first
-  if (GEMINI_KEY) {
-    try {
-      return await callGemini(userMessage, history, systemPrompt, signal);
-    } catch (e: any) {
-      if (e?.name === 'AbortError') throw e;
-      console.warn('[Texly AI] Gemini failed, trying Groq...', e?.message);
-    }
-  }
+  // Build prompt with history context
+  const historyText = history
+    .slice(-6) // last 6 messages only for context
+    .map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
+    .join('\n');
 
-  // Fallback to Groq
-  if (GROQ_KEY) {
-    try {
-      // Groq uses 'assistant' role, convert history
-      const groqHistory = history.map(m => ({
-        ...m,
-        role: m.role === 'model' ? 'assistant' as const : m.role as 'user' | 'assistant',
-      }));
-      return await callGroq(userMessage, groqHistory, systemPrompt, signal);
-    } catch (e: any) {
-      if (e?.name === 'AbortError') throw e;
-      console.warn('[Texly AI] Groq also failed', e?.message);
-    }
-  }
+  const fullPrompt = historyText
+    ? `${historyText}\nUser: ${userMessage}`
+    : userMessage;
 
-  throw new Error('Both AI providers failed');
+  return callServerAI(fullPrompt, systemPrompt, 400, signal);
 }
 
 // ─── Text tool AI helper ──────────────────────────────────────────────────────
-// Jab text tool fail ho, AI directly kaam kar ke de
 export async function aiDoTextWork(
   task: string,
   inputText: string,
@@ -174,58 +83,5 @@ export async function aiDoTextWork(
     ? `Kaam: ${task}\n\nText:\n${inputText}`
     : `Task: ${task}\n\nText:\n${inputText}`;
 
-  // Try Gemini first for text work too
-  if (GEMINI_KEY) {
-    try {
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: systemPrompt }] },
-            contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            generationConfig: { maxOutputTokens: 2000, temperature: 0.3 },
-          }),
-          signal,
-        }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) return text.trim();
-      }
-    } catch (e: any) {
-      if (e?.name === 'AbortError') throw e;
-    }
-  }
-
-  // Fallback to Groq
-  if (GROQ_KEY) {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${GROQ_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: prompt },
-        ],
-        max_tokens: 2000,
-        temperature: 0.3,
-      }),
-      signal,
-    });
-    if (res.ok) {
-      const data = await res.json();
-      const text = data?.choices?.[0]?.message?.content;
-      if (text) return text.trim();
-    }
-  }
-
-  throw new Error('AI text work failed');
+  return callServerAI(prompt, systemPrompt, 2000, signal);
 }
-
