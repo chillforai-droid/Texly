@@ -102,9 +102,9 @@ async function buildFileTree(zip: JSZip): Promise<{ nodes: FileNode[]; files: Re
         for (let i = 0; i < parts.length - 1; i++) {
           const part = parts[i];
           if (!current[part]) {
-            current[part] = { name: part, path: parts.slice(0, i + 1).join('/'), type: 'folder', children: {} };
+            current[part] = { name: part, path: parts.slice(0, i + 1).join('/'), type: 'folder', children: [] };
           }
-          current = current[part].children as Record<string, FileNode>;
+          current = current[part].children as unknown as Record<string, FileNode>;
         }
         const fname = parts[parts.length - 1];
         current[fname] = { name: fname, path: relativePath, type: 'file', language: getLanguage(fname), icon: getFileIcon(fname) };
@@ -118,7 +118,7 @@ async function buildFileTree(zip: JSZip): Promise<{ nodes: FileNode[]; files: Re
     return Object.values(obj)
       .map((node) => ({
         ...node,
-        children: node.type === 'folder' ? mapToArray(node.children as Record<string, FileNode>) : undefined,
+        children: node.type === 'folder' ? mapToArray(node.children as unknown as Record<string, FileNode>) : undefined,
       }))
       .sort((a, b) => {
         if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;

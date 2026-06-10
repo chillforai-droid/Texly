@@ -8,7 +8,7 @@ import {
   Sparkles, RefreshCw, AlertTriangle, CheckCircle, BarChart2, Zap, 
   TrendingUp, Globe, CornerDownRight, Check, Play, Terminal, HelpCircle
 } from "lucide-react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { ToolGap, SEOPage } from "./types";
 
 interface GapAnalyzerTabProps {

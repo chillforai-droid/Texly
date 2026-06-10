@@ -220,7 +220,7 @@ export default function SEOPanelPage() {
       case "config":
         return (
           <ConfigTab
-            initialConfig={config}
+            initialConfig={config as any}
             onSaveConfig={handleSaveConfig}
           />
         );

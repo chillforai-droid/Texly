@@ -979,7 +979,7 @@ export default function SitemapTab({ pages, onRefreshPages, getAuthHeaders }: Si
                               >
                                 <span className="shrink-0">
                                   {isSelf ? (
-                                    <AlertCircle size={12} className="text-zinc-600" title="यह वही प्रोग्रामेटिक पेज है" />
+                                    <AlertCircle size={12} className="text-zinc-600"  />
                                   ) : isMapped ? (
                                     <CheckSquare size={12} className="text-cyan-400" />
                                   ) : (

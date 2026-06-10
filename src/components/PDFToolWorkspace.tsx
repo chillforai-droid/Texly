@@ -177,7 +177,7 @@ const TOOL_META: Record<string, {
 
 // ─── Accept types ─────────────────────────────────────────────────────────────
 
-function getAcceptTypes(toolId: string) {
+function getAcceptTypes(toolId: string): Record<string, string[]> {
   switch (toolId) {
     case 'image-to-pdf':
       return { 'image/*': ['.jpg', '.jpeg', '.png', '.webp'] };
