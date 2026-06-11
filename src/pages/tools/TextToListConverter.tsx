@@ -6,6 +6,8 @@
 
 import React, { useState, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 
 // ─── SEO Constants ──────────────────────────────────────────────────────────
 const SEO_TITLE = 'Text to List Converter — Convert Text to Bulleted, Numbered or Comma List | Texly';
@@ -512,6 +514,14 @@ export default function TextToListConverter() {
             ].map(([href, label]) => (
               <a key={href} href={href} className="ttl-tool-link">{label}</a>
             ))}
+          </div>
+        </div>
+
+        {/* Rating & Comments */}
+        <div style={{ paddingBottom: 48 }}>
+          <RatingSystem toolId="text-to-list" theme={{ border: 'slate-200' }} />
+          <div style={{ marginTop: 24 }}>
+            <CommentSection targetId="text-to-list" targetType="tool" theme={{ border: 'slate-200' }} />
           </div>
         </div>
       </div>

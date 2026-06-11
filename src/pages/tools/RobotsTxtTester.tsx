@@ -7,6 +7,9 @@ import {
   Wrench,
   Sparkles
 } from 'lucide-react';
+import AIToolSEOContent from '../../components/AIToolSEOContent';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 
 export default function RobotsTxtTester() {
   const [robotsTxt, setRobotsTxt] = useState(
@@ -72,6 +75,7 @@ export default function RobotsTxtTester() {
   };
 
   return (
+    <>
     <div className="bg-white dark:bg-[#0e0e16] border border-slate-200 dark:border-zinc-900 rounded-3xl p-6 sm:p-8 shadow-sm">
       <div className="flex items-center gap-3 mb-6 border-b border-slate-200 dark:border-zinc-850 pb-4">
         <Wrench className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
@@ -152,5 +156,15 @@ export default function RobotsTxtTester() {
         </div>
       </div>
     </div>
+
+    {/* SEO Content */}
+    <AIToolSEOContent toolId="robots-txt-tester" />
+
+    {/* Rating & Comments */}
+    <div className="max-w-4xl mx-auto mt-8 space-y-6">
+      <RatingSystem toolId="robots-txt-tester" theme={{ border: 'slate-200' }} />
+      <CommentSection targetId="robots-txt-tester" targetType="tool" theme={{ border: 'slate-200' }} />
+    </div>
+    </>
   );
 }

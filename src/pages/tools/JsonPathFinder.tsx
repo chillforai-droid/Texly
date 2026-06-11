@@ -8,6 +8,9 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Copy, Check, ChevronDown, ChevronUp, ChevronRight, FileJson, Trash2 } from 'lucide-react';
+import AIToolSEOContent from '../../components/AIToolSEOContent';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 
 const BASE = 'https://www.texlyonline.in';
 const CANONICAL = `${BASE}/tools/json-path-finder`;
@@ -361,6 +364,15 @@ export default function JsonPathFinder() {
               <Link key={to} to={to} className="px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm">{name}</Link>
             ))}
           </div>
+        </section>
+
+        {/* SEO Content */}
+        <AIToolSEOContent toolId="json-path-finder" />
+
+        {/* Rating & Comments */}
+        <section className="max-w-4xl mx-auto mt-8 space-y-6">
+          <RatingSystem toolId="json-path-finder" theme={{ border: 'slate-200' }} />
+          <CommentSection targetId="json-path-finder" targetType="tool" theme={{ border: 'slate-200' }} />
         </section>
       </div>
     </main>

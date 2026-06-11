@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 import { 
   Upload, 
   Download
@@ -95,6 +97,7 @@ export default function ImageFormatConverter() {
   };
 
   return (
+    <>
     <div className="bg-[#0e0e16] border border-zinc-900 rounded-3xl p-6 sm:p-8">
       <div className="flex items-center justify-between mb-6 border-b border-zinc-850 pb-4">
         <div>
@@ -181,5 +184,12 @@ export default function ImageFormatConverter() {
         </div>
       )}
     </div>
+
+    {/* Rating & Comments */}
+    <div className="mt-8 space-y-6">
+      <RatingSystem toolId="image-format-converter" theme={{ border: 'slate-200' }} />
+      <CommentSection targetId="image-format-converter" targetType="tool" theme={{ border: 'slate-200' }} />
+    </div>
+    </>
   );
 }

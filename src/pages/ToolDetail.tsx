@@ -5,6 +5,8 @@ import { ArrowLeft, Sparkles, AlertCircle, Wrench } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import SEO from '../components/SEO';
 import AIToolSEOContent from '../components/AIToolSEOContent';
+import RatingSystem from '../components/RatingSystem';
+import CommentSection from '../components/CommentSection';
 
 // Lazy load key category hubs
 const TextCleaningHub = lazy(() => import('./tools/TextCleaningHub'));
@@ -190,6 +192,12 @@ export default function ToolDetail() {
             <AIToolSEOContent toolId={tool.id} />
           </div>
         )}
+
+        {/* Rating & Comments */}
+        <div className="mb-12 border-t border-slate-200 dark:border-zinc-900 pt-12 space-y-6">
+          <RatingSystem toolId={tool.id} theme={{ border: 'slate-200' }} />
+          <CommentSection targetId={tool.id} targetType="tool" theme={{ border: 'slate-200' }} />
+        </div>
 
         {/* Sister tools / Related items section */}
         {relatedTools.length > 0 && (

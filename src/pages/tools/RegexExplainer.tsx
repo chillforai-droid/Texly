@@ -8,6 +8,9 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Copy, Check, ChevronDown, ChevronUp, Sparkles, AlertTriangle } from 'lucide-react';
+import AIToolSEOContent from '../../components/AIToolSEOContent';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 
 const BASE = 'https://www.texlyonline.in';
 const CANONICAL = `${BASE}/tools/regex-explainer`;
@@ -500,6 +503,15 @@ export default function RegexExplainer() {
               <Link key={to} to={to} className="px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-rose-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors shadow-sm">{name}</Link>
             ))}
           </div>
+        </section>
+
+        {/* SEO Content */}
+        <AIToolSEOContent toolId="regex-explainer" />
+
+        {/* Rating & Comments */}
+        <section className="max-w-4xl mx-auto mt-8 space-y-6">
+          <RatingSystem toolId="regex-explainer" theme={{ border: 'slate-200' }} />
+          <CommentSection targetId="regex-explainer" targetType="tool" theme={{ border: 'slate-200' }} />
         </section>
       </div>
     </main>

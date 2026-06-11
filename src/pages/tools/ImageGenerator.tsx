@@ -1,4 +1,6 @@
 import { useState, useRef } from 'react';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 import { 
   Sparkles, 
   Download,
@@ -211,6 +213,7 @@ export default function ImageGenerator() {
   };
 
   return (
+    <>
     <div className="bg-[#0e0e16] border border-zinc-900 rounded-3xl p-6 sm:p-8">
       <div className="flex items-center gap-3 mb-6">
         <Wand2 className="w-6 h-6 text-cyan-400" />
@@ -312,5 +315,12 @@ export default function ImageGenerator() {
       </div>
       <canvas ref={canvasRef} className="hidden" />
     </div>
+
+    {/* Rating & Comments */}
+    <div className="mt-8 space-y-6">
+      <RatingSystem toolId="image-generator" theme={{ border: 'slate-200' }} />
+      <CommentSection targetId="image-generator" targetType="tool" theme={{ border: 'slate-200' }} />
+    </div>
+    </>
   );
 }

@@ -19,6 +19,8 @@ import {
   Wand2, ArrowRight, Zap
 } from 'lucide-react';
 import AdPlaceholder from '../../components/AdPlaceholder';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 
 // ─── Server-side AI call (keys stay secure on server) ────────────────────────
 // Calls /api/ai/text → server uses GROQ_API_KEY + GEMINI_API_KEY (Vercel env vars)
@@ -526,6 +528,12 @@ Return ONLY the final text, no explanations.`;
             </div>
           </div>
 
+        </div>
+
+        {/* Rating & Comments */}
+        <div className="mt-8 space-y-6">
+          <RatingSystem toolId="ai-text-suite" theme={{ border: 'slate-200' }} />
+          <CommentSection targetId="ai-text-suite" targetType="tool" theme={{ border: 'slate-200' }} />
         </div>
       </div>
     </>

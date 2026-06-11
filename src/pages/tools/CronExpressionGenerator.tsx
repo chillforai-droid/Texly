@@ -7,6 +7,9 @@
 import { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import AIToolSEOContent from '../../components/AIToolSEOContent';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 import {
   Copy,
   Check,
@@ -415,6 +418,15 @@ export default function CronExpressionGenerator() {
               </Link>
             ))}
           </div>
+        </section>
+
+        {/* SEO Content */}
+        <AIToolSEOContent toolId="cron-expression-generator" />
+
+        {/* Rating & Comments */}
+        <section className="max-w-4xl mx-auto mt-8 space-y-6">
+          <RatingSystem toolId="cron-expression-generator" theme={{ border: 'slate-200' }} />
+          <CommentSection targetId="cron-expression-generator" targetType="tool" theme={{ border: 'slate-200' }} />
         </section>
       </div>
     </main>

@@ -83,13 +83,41 @@ const HomePage = () => {
 
   const filteredTools = useMemo(() => {
     if (!searchQuery.trim()) return ALL_TOOLS;
-    const s = searchQuery.toLowerCase();
-    return ALL_TOOLS.filter(tool =>
-      tool.name.toLowerCase().includes(s) ||
-      tool.category.toLowerCase().includes(s) ||
-      tool.keywords.some(k => k.toLowerCase().includes(s)) ||
-      (t.toolNames[tool.id as keyof typeof t.toolNames] || '').toLowerCase().includes(s)
-    );
+    const s = searchQuery.toLowerCase().trim();
+
+    const getScore = (tool: typeof ALL_TOOLS[number]) => {
+      const name = tool.name.toLowerCase();
+      const localized = (t.toolNames[tool.id as keyof typeof t.toolNames] || '').toLowerCase();
+      const primary = (tool.primaryKeyword || '').toLowerCase();
+      const keywords = tool.keywords.map(k => k.toLowerCase());
+
+      // Exact match
+      if (name === s || localized === s || primary === s) return 100;
+      // Name/localized name starts with query
+      if (name.startsWith(s) || localized.startsWith(s)) return 90;
+      // Primary keyword starts with query
+      if (primary.startsWith(s)) return 80;
+      // Name contains query as a whole word
+      if (new RegExp(`\\b${s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')}`).test(name)) return 70;
+      // Name/localized contains query
+      if (name.includes(s) || localized.includes(s)) return 60;
+      // Any keyword starts with query
+      if (keywords.some(k => k.startsWith(s))) return 50;
+      // Primary keyword contains query
+      if (primary.includes(s)) return 45;
+      // Any keyword contains query
+      if (keywords.some(k => k.includes(s))) return 40;
+      // Category match
+      if (tool.category.toLowerCase().includes(s)) return 10;
+
+      return 0;
+    };
+
+    return ALL_TOOLS
+      .map(tool => ({ tool, score: getScore(tool) }))
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(({ tool }) => tool);
   }, [searchQuery, t.toolNames]);
 
   useEffect(() => {
@@ -221,6 +249,42 @@ const HomePage = () => {
                 <span className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg items-center gap-1 select-none"><kbd>ESC</kbd> to clear</span>
               )}
             </div>
+
+            {searchQuery.trim() && (
+              <div className="absolute left-0 right-0 top-full mt-2 z-30 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl shadow-slate-200/60 dark:shadow-slate-950/60 overflow-hidden text-left max-h-[60vh] overflow-y-auto">
+                {filteredTools.length > 0 ? (
+                  <>
+                    {filteredTools.slice(0, 8).map(tool => (
+                      <Link
+                        key={tool.id}
+                        to={getToolPath(tool)}
+                        onClick={() => setSearchQuery('')}
+                        className="flex items-center gap-3 px-4 py-3 border-b border-slate-100 dark:border-slate-800 last:border-b-0 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
+                      >
+                        <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center shrink-0">
+                          <DynamicIcon name={tool.icon} className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-slate-800 dark:text-white truncate">
+                            {t.toolNames[tool.id as keyof typeof t.toolNames] || tool.name.split(' – ')[0] || tool.name}
+                          </p>
+                          <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{tool.shortDescription}</p>
+                        </div>
+                      </Link>
+                    ))}
+                    {filteredTools.length > 8 && (
+                      <div className="px-4 py-2 text-center text-xs font-bold text-slate-400 dark:text-slate-500">
+                        +{filteredTools.length - 8} more results below
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+                    No tools found for "{searchQuery}"
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap justify-center gap-2">

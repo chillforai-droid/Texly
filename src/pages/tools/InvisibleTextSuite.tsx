@@ -12,6 +12,8 @@
 
 import { useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 import {
   Copy, Check, EyeOff, MessageSquare, Hash,
   Type, Sparkles, Zap, ChevronDown,
@@ -639,6 +641,12 @@ export default function InvisibleTextSuite() {
             <FAQItem key={i} question={faq.q} answer={faq.a} />
           ))}
         </div>
+      </section>
+
+      {/* Rating & Comments */}
+      <section className="max-w-4xl mx-auto px-4 pb-16 space-y-6">
+        <RatingSystem toolId="invisible-text-suite" theme={{ border: 'slate-200' }} />
+        <CommentSection targetId="invisible-text-suite" targetType="tool" theme={{ border: 'slate-200' }} />
       </section>
     </main>
   );

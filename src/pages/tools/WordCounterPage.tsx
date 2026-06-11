@@ -9,6 +9,8 @@ import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Copy, Check, Trash2, ChevronRight, FileText, Type, AlignLeft, Clock, Hash, BarChart2 } from 'lucide-react';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 
 // ─── SEO ─────────────────────────────────────────────────────────────────────
 const SEO_TITLE = 'Word Counter & Character Counter Online Free ⚡ — Letter Count, Word Count Tool';
@@ -317,6 +319,12 @@ export default function WordCounterPage() {
               </Link>
             ))}
           </div>
+        </section>
+
+        {/* Rating & Comments */}
+        <section className="mb-8 space-y-6">
+          <RatingSystem toolId="word-counter" theme={{ border: 'slate-200' }} />
+          <CommentSection targetId="word-counter" targetType="tool" theme={{ border: 'slate-200' }} />
         </section>
 
       </div>

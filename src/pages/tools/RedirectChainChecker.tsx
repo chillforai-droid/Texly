@@ -7,6 +7,9 @@
 import React, { useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import AIToolSEOContent from '../../components/AIToolSEOContent';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 import {
   ArrowRight,
   Copy,
@@ -478,6 +481,15 @@ export default function RedirectChainChecker() {
               </Link>
             ))}
           </div>
+        </section>
+
+        {/* SEO Content */}
+        <AIToolSEOContent toolId="redirect-chain-checker" />
+
+        {/* Rating & Comments */}
+        <section className="max-w-4xl mx-auto mt-8 space-y-6">
+          <RatingSystem toolId="redirect-chain-checker" theme={{ border: 'slate-200' }} />
+          <CommentSection targetId="redirect-chain-checker" targetType="tool" theme={{ border: 'slate-200' }} />
         </section>
       </div>
     </main>
