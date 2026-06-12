@@ -1,50 +1,35 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
-import { 
-  FileText, 
-  Sparkles, 
-  Upload, 
-  Trash2, 
-  Copy, 
-  Check, 
-  ChevronRight,
-  ShieldCheck,
-  ChevronDown,
-  Download,
-  Lock,
-  Layers,
-  Settings,
-  Grid
-} from 'lucide-react';
+import { ChevronRight, ChevronDown, ShieldCheck } from 'lucide-react';
+import { PDFToolWorkspace } from '../../components/PDFToolWorkspace';
 
 const SEO_TITLE = "PDF Tools Suite — Compress, Merge, Split, Convert & Protect PDFs ⚡ Free Online";
 const SEO_DESC = "Free all-in-one PDF tools helper. Compress PDF, select multiple pages to merge, split margins, rotate pages, encrypt passwords, unlock permissions, and convert formats (PDF to JPG, Word, Excel). Free and safe.";
 const SEO_KEYWORDS = "pdf tools online, compress pdf free, merge pdf online, split pdf pages free, convert pdf to word, protect pdf password, unlock pdf online";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/pdf-tools-hub";
 
-type PDFToolId = 
-  | 'compress' | 'merge' | 'split' | 'rotate' | 'protect' 
+type PDFToolId =
+  | 'compress' | 'merge' | 'split' | 'rotate' | 'protect'
   | 'unlock' | 'pdf2word' | 'word2pdf' | 'pdf2jpg' | 'jpg2pdf';
 
-interface PDFFile {
-  name: string;
-  size: number;
-  type: string;
-}
+// Maps the hub's friendly tool keys to PDFToolWorkspace's real toolId + name
+const TOOL_MAP: Record<PDFToolId, { toolId: string; toolName: string }> = {
+  compress: { toolId: 'pdf-compress', toolName: 'Compress PDF' },
+  merge: { toolId: 'merge-pdf', toolName: 'Merge PDF' },
+  split: { toolId: 'split-pdf', toolName: 'Split PDF' },
+  rotate: { toolId: 'rotate-pdf', toolName: 'Rotate PDF' },
+  protect: { toolId: 'pdf-editor', toolName: 'PDF Editor' },
+  unlock: { toolId: 'pdf-password-remover', toolName: 'PDF Password Remover' },
+  pdf2word: { toolId: 'pdf-to-word', toolName: 'PDF to Word' },
+  word2pdf: { toolId: 'word-to-pdf', toolName: 'Word to PDF' },
+  pdf2jpg: { toolId: 'pdf-to-image', toolName: 'PDF to Image' },
+  jpg2pdf: { toolId: 'image-to-pdf', toolName: 'Image to PDF' },
+};
 
 export default function PDFToolsHub({ activeToolId }: { activeToolId?: string } = {}) {
   const [searchParams] = useSearchParams();
   const [activeTool, setActiveTool] = useState<PDFToolId>('compress');
-  const [dragActive, setDragActive] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState<PDFFile[]>([]);
-  const [password, setPassword] = useState('');
-  const [compressLevel, setCompressLevel] = useState<'high' | 'medium' | 'low'>('medium');
-  const [splitRange, setSplitRange] = useState('1-3');
-  const [rotationAngle, setRotationAngle] = useState<'90' | '180' | '270'>('90');
-  
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [downloadReady, setDownloadReady] = useState(false);
   const [faqOpen, setFaqOpen] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
@@ -67,80 +52,8 @@ export default function PDFToolsHub({ activeToolId }: { activeToolId?: string } 
 
     if (target) {
       setActiveTool(target);
-      setUploadedFiles([]);
-      setDownloadReady(false);
     }
   }, [activeToolId, searchParams]);
-
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const files = Array.from(e.dataTransfer.files).map(f => ({
-        name: f.name,
-        size: f.size,
-        type: f.type
-      }));
-      setUploadedFiles(prev => [...prev, ...files]);
-      setDownloadReady(false);
-    }
-  };
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const files = Array.from(e.target.files).map(f => ({
-        name: f.name,
-        size: f.size,
-        type: f.type
-      }));
-      setUploadedFiles(prev => [...prev, ...files]);
-      setDownloadReady(false);
-    }
-  };
-
-  const handleRemoveFile = (index: number) => {
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
-    if (uploadedFiles.length <= 1) {
-      setDownloadReady(false);
-    }
-  };
-
-  const executePDFTool = () => {
-    if (uploadedFiles.length === 0) return;
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      setDownloadReady(true);
-    }, 1800);
-  };
-
-  const triggerDownload = () => {
-    // Generate simple dummy blob depending on action
-    const content = `Mock PDF processed with Texly PDF Tools Hub:
-Action: ${activeTool.toUpperCase()}
-Source FileCount: ${uploadedFiles.length}
-Parameters: ${activeTool === 'protect' ? 'Password Locked' : 'N/A'}`;
-    const blob = new Blob([content], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `processed_${uploadedFiles[0]?.name || 'document.pdf'}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   const faqs = [
     { q: "Is it safe to upload sensitive contracts and financial statements here?", a: "Extremely safe. Texly handles documents entirely client-side. Unlike other internet converters that upload your PDFs to server stacks, nothing leaves your personal device, upholding 100% privacy." },
@@ -238,194 +151,80 @@ Parameters: ${activeTool === 'protect' ? 'Password Locked' : 'N/A'}`;
           {/* Left Category Selection Panel */}
           <div className="md:col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col gap-2">
             <span className="text-[10px] uppercase font-black tracking-widest text-slate-400 border-b border-slate-100 dark:border-slate-850 pb-2 mb-2 block">PDF Toolkits</span>
-            
-            <button 
-              onClick={() => { setActiveTool('compress'); setDownloadReady(false); }}
+
+            <button
+              onClick={() => setActiveTool('compress')}
               className={`py-2 px-3 rounded-lg text-left text-xs font-bold transition-all ${activeTool === 'compress' ? 'bg-amber-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800/55 text-slate-600'}`}
             >
               Compress PDF
             </button>
-            <button 
-              onClick={() => { setActiveTool('merge'); setDownloadReady(false); }}
+            <button
+              onClick={() => setActiveTool('merge')}
               className={`py-2 px-3 rounded-lg text-left text-xs font-bold transition-all ${activeTool === 'merge' ? 'bg-amber-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800/55 text-slate-600'}`}
             >
               Merge PDFs
             </button>
-            <button 
-              onClick={() => { setActiveTool('split'); setDownloadReady(false); }}
+            <button
+              onClick={() => setActiveTool('split')}
               className={`py-2 px-3 rounded-lg text-left text-xs font-bold transition-all ${activeTool === 'split' ? 'bg-amber-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800/55 text-slate-600'}`}
             >
               Split Pages
             </button>
-            <button 
-              onClick={() => { setActiveTool('rotate'); setDownloadReady(false); }}
+            <button
+              onClick={() => setActiveTool('rotate')}
               className={`py-2 px-3 rounded-lg text-left text-xs font-bold transition-all ${activeTool === 'rotate' ? 'bg-amber-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800/55 text-slate-600'}`}
             >
-              Rotate Layout
+              Rotate Pages
             </button>
-            <button 
-              onClick={() => { setActiveTool('protect'); setDownloadReady(false); }}
+            <button
+              onClick={() => setActiveTool('protect')}
               className={`py-2 px-3 rounded-lg text-left text-xs font-bold transition-all ${activeTool === 'protect' ? 'bg-amber-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800/55 text-slate-600'}`}
             >
-              Protect PDF
+              Add Text / Edit PDF
             </button>
-            <button 
-              onClick={() => { setActiveTool('unlock'); setDownloadReady(false); }}
+            <button
+              onClick={() => setActiveTool('unlock')}
               className={`py-2 px-3 rounded-lg text-left text-xs font-bold transition-all ${activeTool === 'unlock' ? 'bg-amber-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800/55 text-slate-600'}`}
             >
               Unlock PDF
             </button>
 
             <span className="text-[10px] uppercase font-black tracking-widest text-slate-400 border-t border-slate-100 dark:border-slate-850 pt-3 mt-2 block">Formats Converters</span>
-            
-            <button 
-              onClick={() => { setActiveTool('pdf2word'); setDownloadReady(false); }}
+
+            <button
+              onClick={() => setActiveTool('pdf2word')}
               className={`py-2 px-3 rounded-lg text-left text-xs font-bold transition-all ${activeTool === 'pdf2word' ? 'bg-amber-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800/55 text-slate-600'}`}
             >
               PDF to Word
             </button>
-            <button 
-              onClick={() => { setActiveTool('word2pdf'); setDownloadReady(false); }}
+            <button
+              onClick={() => setActiveTool('word2pdf')}
               className={`py-2 px-3 rounded-lg text-left text-xs font-bold transition-all ${activeTool === 'word2pdf' ? 'bg-amber-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800/55 text-slate-600'}`}
             >
               Word to PDF
             </button>
-            <button 
-              onClick={() => { setActiveTool('pdf2jpg'); setDownloadReady(false); }}
+            <button
+              onClick={() => setActiveTool('pdf2jpg')}
               className={`py-2 px-3 rounded-lg text-left text-xs font-bold transition-all ${activeTool === 'pdf2jpg' ? 'bg-amber-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800/55 text-slate-600'}`}
             >
               PDF to Image
             </button>
+            <button
+              onClick={() => setActiveTool('jpg2pdf')}
+              className={`py-2 px-3 rounded-lg text-left text-xs font-bold transition-all ${activeTool === 'jpg2pdf' ? 'bg-amber-500 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800/55 text-slate-600'}`}
+            >
+              Image to PDF
+            </button>
           </div>
 
-          {/* Right Workshop Playground Panel */}
+          {/* Right Workshop Playground Panel — real PDF processing */}
           <div className="md:col-span-3 flex flex-col gap-6">
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
-              <h2 className="text-base font-black text-slate-900 dark:text-white capitalize mb-4 flex items-center gap-1.5">
-                <Settings className="w-5 h-5 text-amber-500" />
-                Configure {activeTool} Workspace
-              </h2>
-
-              {/* Dynamic Settings controls based on Selected Option */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 bg-slate-50/50 dark:bg-slate-900/50 p-4 border border-slate-200/40 dark:border-slate-850 rounded-2xl">
-                {activeTool === 'compress' && (
-                  <div>
-                    <label className="text-[10px] uppercase font-black tracking-wider text-slate-400 block mb-1">Compression Grade</label>
-                    <div className="flex gap-2">
-                      <button onClick={() => setCompressLevel('high')} className={`flex-1 py-1 px-3 text-xs font-bold border rounded ${compressLevel==='high'?'bg-amber-500 text-white border-amber-500':'text-slate-450 border-slate-200'}`}>Extreme (Small size)</button>
-                      <button onClick={() => setCompressLevel('medium')} className={`flex-1 py-1 px-3 text-xs font-bold border rounded ${compressLevel==='medium'?'bg-amber-500 text-white border-amber-500':'text-slate-450 border-slate-200'}`}>Recommended</button>
-                    </div>
-                  </div>
-                )}
-                {activeTool === 'split' && (
-                  <div>
-                    <label className="text-[10px] uppercase font-black tracking-wider text-slate-400 block mb-1">Select Page Ranges</label>
-                    <input type="text" value={splitRange} onChange={(e) => setSplitRange(e.target.value)} className="w-full bg-transparent border border-slate-200 dark:border-slate-800 rounded px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 outline-none" placeholder="e.g. 1-3, 5, 8" />
-                  </div>
-                )}
-                {activeTool === 'protect' && (
-                  <div>
-                    <label className="text-[10px] uppercase font-black tracking-wider text-slate-400 block mb-1">Add Security Password</label>
-                    <div className="relative">
-                      <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-transparent border border-slate-200 dark:border-slate-800 rounded pl-9 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 outline-none" placeholder="Define passkey..." />
-                    </div>
-                  </div>
-                )}
-                {activeTool === 'unlock' && (
-                  <div>
-                    <label className="text-[10px] uppercase font-black tracking-wider text-slate-400 block mb-1">Supply Credentials (If required)</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-transparent border border-slate-200 dark:border-slate-800 rounded px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 outline-none" placeholder=" decryption key..." />
-                  </div>
-                )}
-                {activeTool === 'rotate' && (
-                  <div>
-                    <label className="text-[10px] uppercase font-black tracking-wider text-slate-400 block mb-1">Orientation Angle</label>
-                    <select value={rotationAngle} onChange={(e) => setRotationAngle(e.target.value as any)} className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded px-3 py-1.5 text-xs text-slate-800 dark:text-slate-350 outline-none">
-                      <option value="90">90° clockwise</option>
-                      <option value="180">180° rotation</option>
-                      <option value="270">270° counterclockwise</option>
-                    </select>
-                  </div>
-                )}
-                {activeTool !== 'compress' && activeTool !== 'split' && activeTool !== 'protect' && activeTool !== 'unlock' && activeTool !== 'rotate' && (
-                  <div className="col-span-2">
-                    <span className="text-[10px] text-slate-400 tracking-wide font-semibold block">Fully optimized settings. No custom options array needed.</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Upload Drag zone area */}
-              <div 
-                className={`border-2 border-dashed rounded-3xl p-8 mb-6 flex flex-col items-center justify-center text-center transition-all ${dragActive ? 'border-amber-500 bg-amber-500/5' : 'border-slate-200 dark:border-slate-800 hover:border-amber-500/40 bg-slate-50/20'}`}
-                onDragEnter={handleDrag}
-                onDragOver={handleDrag}
-                onDragLeave={handleDrag}
-                onDrop={handleDrop}
-              >
-                <div className="p-3 bg-amber-500/10 rounded-full mb-3 text-amber-500">
-                  <Upload className="w-6 h-6" />
-                </div>
-                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 mb-1">Drag and drop document files onto this stage</h4>
-                <p className="text-[10px] text-slate-500 mb-4">Supports multi-PDF layouts, Excel tables, Word drafts or images up to 100MB</p>
-                <label className="py-2 px-4 bg-amber-500 hover:bg-amber-600 transition-colors text-white font-black text-[10px] uppercase tracking-widest rounded-lg cursor-pointer">
-                  Browse Files
-                  <input type="file" multiple onChange={handleFileInput} className="hidden" />
-                </label>
-              </div>
-
-              {/* File list */}
-              {uploadedFiles.length > 0 && (
-                <div className="mb-6 space-y-2 border border-slate-100 dark:border-slate-850 p-4 rounded-xl">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Staged Documents ({uploadedFiles.length})</span>
-                  {uploadedFiles.map((file, idx) => (
-                    <div key={idx} className="flex justify-between items-center bg-slate-50 dark:bg-slate-900/40 p-2.5 rounded-lg border border-slate-150 dark:border-slate-800/80">
-                      <div className="flex items-center gap-2 overflow-hidden">
-                        <FileText className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                        <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">{file.name}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-mono text-slate-400">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
-                        <button onClick={() => handleRemoveFile(idx)} className="text-red-500 hover:text-red-600">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Execute / Process */}
-              {uploadedFiles.length > 0 && !downloadReady && (
-                <button 
-                  onClick={executePDFTool}
-                  disabled={isProcessing}
-                  className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:shadow cursor-pointer transition-colors"
-                >
-                  {isProcessing ? 'Processing Layout Nodes...' : 'Process Document and Download'}
-                </button>
-              )}
-
-              {/* Download Screen */}
-              {downloadReady && (
-                <div className="bg-emerald-500/5 border border-emerald-500/20 px-5 py-4 rounded-2xl flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-emerald-500/10 text-emerald-500 rounded-full">
-                      <Check className="w-5 h-5 animate-pulse" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">Document Ready!</h4>
-                      <p className="text-[10px] text-slate-600 dark:text-slate-400">PDF compiled client-side in standard secure format.</p>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={triggerDownload}
-                    className="py-2.5 px-4 bg-emerald-500 hover:bg-emerald-600 transition-colors text-white text-xs font-bold rounded-xl flex items-center gap-1.5"
-                  >
-                    <Download className="w-4 h-4" /> Download PDF
-                  </button>
-                </div>
-              )}
+              <PDFToolWorkspace
+                key={activeTool}
+                toolId={TOOL_MAP[activeTool].toolId}
+                toolName={TOOL_MAP[activeTool].toolName}
+              />
             </div>
           </div>
         </div>

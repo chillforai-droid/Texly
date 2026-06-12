@@ -13,7 +13,7 @@ const TextCleaningHub = lazy(() => import('./tools/TextCleaningHub'));
 const TextConverterHub = lazy(() => import('./tools/TextConverterHub'));
 const TextAnalysisHub = lazy(() => import('./tools/TextAnalysisHub'));
 const TextUtilityHub = lazy(() => import('./tools/TextUtilityHub'));
-const PDFToolsHub = lazy(() => import('./tools/PDFToolsHub'));
+const PDFToolWorkspace = lazy(() => import('../components/PDFToolWorkspace').then(m => ({ default: m.PDFToolWorkspace })));
 const GeneratorsHub = lazy(() => import('./tools/GeneratorsHub'));
 
 // Lazy load the tool components
@@ -98,7 +98,7 @@ export default function ToolDetail() {
           case 'converter': return <TextConverterHub activeToolId={tool.id} />;
           case 'analysis': return <TextAnalysisHub activeToolId={tool.id} />;
           case 'utility': return <TextUtilityHub activeToolId={tool.id} />;
-          case 'pdf': return <PDFToolsHub activeToolId={tool.id} />;
+          case 'pdf': return <PDFToolWorkspace toolId={tool.id} toolName={tool.name} />;
           case 'generator': return <GeneratorsHub activeToolId={tool.id} />;
           default:
             return (

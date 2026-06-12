@@ -218,7 +218,7 @@ export const PDFToolWorkspace: React.FC<PDFToolWorkspaceProps> = ({ toolId, tool
   const [pdfPages, setPdfPages] = useState<PDFPage[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoadingPages, setIsLoadingPages] = useState(false);
-  const [result, setResult] = useState<{ url: string; name: string; size?: number } | null>(null);
+  const [result, setResult] = useState<{ url: string; name: string; size?: number; blob: Blob } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
 
@@ -345,6 +345,7 @@ export const PDFToolWorkspace: React.FC<PDFToolWorkspaceProps> = ({ toolId, tool
   };
 
   const reset = () => {
+    if (result?.url) URL.revokeObjectURL(result.url);
     setFiles([]);
     setPdfPages([]);
     setResult(null);
@@ -477,7 +478,7 @@ export const PDFToolWorkspace: React.FC<PDFToolWorkspaceProps> = ({ toolId, tool
 
       tick(100);
       const url = URL.createObjectURL(blob);
-      setResult({ url, name: fileName, size: blob.size });
+      setResult({ url, name: fileName, size: blob.size, blob });
     } catch (err: any) {
       console.error('[PDFTool] Error:', err);
       setError(err?.message || 'An unexpected error occurred. Please try again.');
@@ -898,7 +899,7 @@ export const PDFToolWorkspace: React.FC<PDFToolWorkspaceProps> = ({ toolId, tool
           </div>
           <div className="p-5 flex flex-col sm:flex-row gap-3">
             <button
-              onClick={() => saveAs(result.url, result.name)}
+              onClick={() => saveAs(result.blob, result.name)}
               className="flex-1 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:brightness-105 transition-all shadow-md hover:shadow-lg"
             >
               <Download className="w-5 h-5" />
