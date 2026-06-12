@@ -8,6 +8,7 @@ export interface HubToolContent {
   description: string; // 60-100 word unique description
   howToUse: string[]; // 3-5 steps
   faq: { q: string; a: string };
+  relatedToolIds?: string[]; // ids of other tools in the SAME hub (for internal linking)
 }
 
 interface HubToolsContentProps {
@@ -72,6 +73,25 @@ const HubToolsContent: React.FC<HubToolsContentProps> = ({ hubPath, tools, headi
             >
               Open {tool.name} <ArrowRight className="w-3 h-3" />
             </Link>
+
+            {tool.relatedToolIds && tool.relatedToolIds.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mr-1">Related:</span>
+                {tool.relatedToolIds.map((rid) => {
+                  const rt = tools.find((t) => t.id === rid);
+                  if (!rt) return null;
+                  return (
+                    <a
+                      key={rid}
+                      href={`#tool-${rid}`}
+                      className="text-[11px] px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                    >
+                      {rt.name}
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </div>
         ))}
       </div>
