@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
+import HubToolsContent from '../../components/HubToolsContent';
+import { textUtilityHubTools } from '../../data/hubContent/textUtilityHub';
 import { 
   Copy, 
   Check, 
@@ -762,6 +764,8 @@ export default function TextUtilityHub({ activeToolId }: { activeToolId?: string
           </div>
         </section>
 
+        <HubToolsContent hubPath="/tools/text-utility-hub" tools={textUtilityHubTools} />
+
         {/* FAQ list */}
         <section className="mb-12">
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-6">
@@ -811,4 +815,4 @@ export default function TextUtilityHub({ activeToolId }: { activeToolId?: string
       </div>
     </main>
   );
-}
+  }
