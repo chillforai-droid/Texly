@@ -8,6 +8,10 @@
 import { supabase } from '../lib/supabase';
 import { ALL_TOOLS, Tool } from '../data/tools';
 
+// ── In-memory cache: same slug ke liye bar-bar Supabase call nahi hogi ──────
+// null = checked, tool nahi mila | Tool = found
+const _slugCache = new Map<string, Tool | null>();
+
 // Supabase ai_tools row ko Tool interface mein map karo
 const mapFromSupabase = (row: any): Tool => ({
   id: row.slug, // slug hi unique id hai
@@ -38,8 +42,14 @@ export const getToolBySlug = async (slug: string): Promise<Tool | null> => {
   const hardcoded = ALL_TOOLS.find((t) => t.slug === slug);
   if (hardcoded) return hardcoded;
 
-  // 2. Agar nahi mila toh Supabase se dhundho
-  if (!supabase) return null;
+  // 2. In-memory cache check — agar pehle se check ho chuka hai toh Supabase skip karo
+  if (_slugCache.has(slug)) return _slugCache.get(slug) ?? null;
+
+  // 3. Agar nahi mila toh Supabase se dhundho
+  if (!supabase) {
+    _slugCache.set(slug, null);
+    return null;
+  }
 
   try {
     const { data, error } = await supabase
@@ -51,12 +61,16 @@ export const getToolBySlug = async (slug: string): Promise<Tool | null> => {
 
     if (error) {
       console.error('[toolStorage] Supabase error:', error.message);
+      _slugCache.set(slug, null);
       return null;
     }
 
-    return data ? mapFromSupabase(data) : null;
+    const result = data ? mapFromSupabase(data) : null;
+    _slugCache.set(slug, result);
+    return result;
   } catch (err) {
     console.error('[toolStorage] Unexpected error:', err);
+    _slugCache.set(slug, null);
     return null;
   }
 };

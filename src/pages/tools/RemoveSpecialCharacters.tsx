@@ -8,6 +8,7 @@ import React, { useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import RatingSystem from '../../components/RatingSystem';
 import CommentSection from '../../components/CommentSection';
+import RemoveSpecialCharactersSEORichContent from '../../components/seo/RemoveSpecialCharactersSEORichContent';
 
 // ─── SEO Constants ──────────────────────────────────────────────────────────
 const SEO_TITLE = 'Remove Special Characters Online — Free, Instant, No Signup | Texly';
@@ -113,6 +114,7 @@ export default function RemoveSpecialCharacters() {
         <link rel="canonical" href={CANONICAL} />
         <meta property="og:title" content="Remove Special Characters Online — Free & Instant | Texly" />
         <meta property="og:description" content="Paste text, remove special chars in one click. No signup. Works for CSV, SEO, emails, code and databases." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={CANONICAL} />
         <script type="application/ld+json">{JSON.stringify({
@@ -494,7 +496,8 @@ export default function RemoveSpecialCharacters() {
 
         {/* Rating & Comments */}
         <div style={{ paddingBottom: 48 }}>
-          <RatingSystem toolId="remove-special-characters" theme={{ border: 'slate-200' }} />
+          <RemoveSpecialCharactersSEORichContent />
+        <RatingSystem toolId="remove-special-characters" theme={{ border: 'slate-200' }} />
           <div style={{ marginTop: 24 }}>
             <CommentSection targetId="remove-special-characters" targetType="tool" theme={{ border: 'slate-200' }} />
           </div>

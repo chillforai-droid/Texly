@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
+import HubToolsContent from '../../components/HubToolsContent';
+import { textCleaningHubTools } from '../../data/hubContent/textCleaningHub';
 import { 
   Trash2, 
   Sparkles, 
@@ -313,6 +315,7 @@ Normalizing diacritics like é, à, and ö.`);
         <link rel="canonical" href={CANONICAL_URL} />
         <meta property="og:title" content={SEO_TITLE} />
         <meta property="og:description" content={SEO_DESC} />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:url" content={CANONICAL_URL} />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify({
@@ -686,6 +689,8 @@ Normalizing diacritics like é, à, and ö.`);
             })}
           </div>
         </section>
+
+        <HubToolsContent hubPath="/tools/text-cleaning-hub" tools={textCleaningHubTools} />
 
         {/* Related Hubs Directory */}
         <section className="bg-slate-100 dark:bg-slate-900/40 rounded-3xl border border-slate-200/50 dark:border-slate-800/40 p-6 sm:p-8">

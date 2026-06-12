@@ -414,6 +414,7 @@ export default function TextUtilityHub({ activeToolId }: { activeToolId?: string
         <link rel="canonical" href={CANONICAL_URL} />
         <meta property="og:title" content={SEO_TITLE} />
         <meta property="og:description" content={SEO_DESC} />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:url" content={CANONICAL_URL} />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify({

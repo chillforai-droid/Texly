@@ -17,6 +17,7 @@ import AIToolSEOContent from '../../components/AIToolSEOContent';
 import BeforeAfterSlider from '../../components/BeforeAfterSlider';
 import SocialShare from '../../components/SocialShare';
 import { useToolSuccess, useToolFailure } from '../../components/TexlyAI';
+import BackgroundRemoverSEORichContent from '../../components/seo/BackgroundRemoverSEORichContent';
 
 const BackgroundRemover = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -136,6 +137,7 @@ const BackgroundRemover = () => {
         <link rel="canonical" href="https://www.texlyonline.in/tools/bg-remover" />
         <meta property="og:title" content="Free AI Background Remover Online - Transparent PNG | Texly" />
         <meta property="og:description" content="Remove backgrounds from any image instantly with high precision. 100% free and secure." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.texlyonline.in/tools/bg-remover" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -349,6 +351,7 @@ const BackgroundRemover = () => {
         </div>
 
         {/* SEO Content Section */}
+        <BackgroundRemoverSEORichContent />
         <AIToolSEOContent toolId="bg-remover" />
       </div>
     </div>

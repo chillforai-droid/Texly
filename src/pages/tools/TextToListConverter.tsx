@@ -7,6 +7,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import RatingSystem from '../../components/RatingSystem';
+import TextToListConverterSEORichContent from '../../components/seo/TextToListConverterSEORichContent';
 import CommentSection from '../../components/CommentSection';
 
 // ─── SEO Constants ──────────────────────────────────────────────────────────
@@ -121,6 +122,7 @@ export default function TextToListConverter() {
         <link rel="canonical" href={CANONICAL} />
         <meta property="og:title" content="Text to List Converter — Free Online Tool | Texly" />
         <meta property="og:description" content="Turn any text into a structured list in one click — bullets, numbers, comma-separated. Free, instant, no signup." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={CANONICAL} />
         <script type="application/ld+json">{JSON.stringify({
@@ -519,6 +521,7 @@ export default function TextToListConverter() {
 
         {/* Rating & Comments */}
         <div style={{ paddingBottom: 48 }}>
+          <TextToListConverterSEORichContent />
           <RatingSystem toolId="text-to-list" theme={{ border: 'slate-200' }} />
           <div style={{ marginTop: 24 }}>
             <CommentSection targetId="text-to-list" targetType="tool" theme={{ border: 'slate-200' }} />

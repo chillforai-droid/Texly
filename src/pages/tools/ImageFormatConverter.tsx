@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useDropzone } from 'react-dropzone';
 import RatingSystem from '../../components/RatingSystem';
 import CommentSection from '../../components/CommentSection';
+import ImageFormatConverterSEORichContent from '../../components/seo/ImageFormatConverterSEORichContent';
 import { 
   Upload, 
   Download
@@ -98,6 +100,48 @@ export default function ImageFormatConverter() {
 
   return (
     <>
+    <Helmet>
+      <title>Bulk Image Format Converter — Convert JPG, PNG, WebP, AVIF Free Online | Texly</title>
+      <meta name="description" content="Convert images between JPG, PNG, WebP, AVIF, GIF and more formats instantly in your browser. Bulk conversion, no upload to servers, 100% free." />
+      <link rel="canonical" href="https://www.texlyonline.in/tools/image-format-converter" />
+      <meta property="og:url" content="https://www.texlyonline.in/tools/image-format-converter" />
+      <meta property="og:title" content="Bulk Image Format Converter — JPG, PNG, WebP, AVIF Free | Texly" />
+      <meta property="og:description" content="Convert images between JPG, PNG, WebP, AVIF, GIF instantly. Bulk conversion, browser-side, no upload, 100% free." />
+      <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="Bulk Image Format Converter — Free Online | Texly" />
+      <meta name="twitter:description" content="Convert JPG, PNG, WebP, AVIF, GIF images in bulk. Browser-side, no upload, instant download." />
+      <meta name="twitter:image" content="https://www.texlyonline.in/og-image.png" />
+      <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Bulk Image Format Converter",
+        "url": "https://www.texlyonline.in/tools/image-format-converter",
+        "description": "Convert images between JPG, PNG, WebP, AVIF, GIF formats instantly in your browser.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "featureList": ["JPG to PNG", "PNG to WebP", "WebP to JPG", "AVIF conversion", "GIF conversion", "Bulk processing", "No upload required"]
+      })}</script>
+      <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.texlyonline.in" },
+          { "@type": "ListItem", "position": 2, "name": "Image Format Converter", "item": "https://www.texlyonline.in/tools/image-format-converter" }
+        ]
+      })}</script>
+      <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "What image formats can I convert?", "acceptedAnswer": { "@type": "Answer", "text": "You can convert between JPG/JPEG, PNG, WebP, AVIF, and GIF formats. All conversions happen in your browser with no server upload." } },
+          { "@type": "Question", "name": "Is bulk image conversion supported?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, you can upload multiple images at once and convert them all to your chosen format in a single batch operation." } },
+          { "@type": "Question", "name": "Are my images uploaded to a server?", "acceptedAnswer": { "@type": "Answer", "text": "No. All image format conversion happens locally in your browser using HTML5 Canvas. Your images never leave your device." } }
+        ]
+      })}</script>
+    </Helmet>
     <div className="bg-[#0e0e16] border border-zinc-900 rounded-3xl p-6 sm:p-8">
       <div className="flex items-center justify-between mb-6 border-b border-zinc-850 pb-4">
         <div>
@@ -187,7 +231,8 @@ export default function ImageFormatConverter() {
 
     {/* Rating & Comments */}
     <div className="mt-8 space-y-6">
-      <RatingSystem toolId="image-format-converter" theme={{ border: 'slate-200' }} />
+              <ImageFormatConverterSEORichContent />
+        <RatingSystem toolId="image-format-converter" theme={{ border: 'slate-200' }} />
       <CommentSection targetId="image-format-converter" targetType="tool" theme={{ border: 'slate-200' }} />
     </div>
     </>

@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
+import { Helmet } from 'react-helmet-async';
 import RatingSystem from '../../components/RatingSystem';
 import CommentSection from '../../components/CommentSection';
+import ImageGeneratorSEORichContent from '../../components/seo/ImageGeneratorSEORichContent';
 import { 
   Sparkles, 
   Download,
@@ -214,6 +216,48 @@ export default function ImageGenerator() {
 
   return (
     <>
+    <Helmet>
+      <title>AI Image Generator — Create Images from Text Free Online | Texly</title>
+      <meta name="description" content="Generate stunning AI images from text prompts instantly. Multiple styles: cyberpunk, anime, realistic, oil painting. Free, no login, browser-based." />
+      <link rel="canonical" href="https://www.texlyonline.in/tools/image-generator" />
+      <meta property="og:url" content="https://www.texlyonline.in/tools/image-generator" />
+      <meta property="og:title" content="AI Image Generator — Create Images from Text Free | Texly" />
+      <meta property="og:description" content="Generate AI images from text prompts. Cyberpunk, anime, realistic, oil painting styles. Free, no login." />
+      <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="AI Image Generator — Text to Image Free | Texly" />
+      <meta name="twitter:description" content="Generate AI images from text prompts. Cyberpunk, anime, realistic styles. Free, no login." />
+      <meta name="twitter:image" content="https://www.texlyonline.in/og-image.png" />
+      <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "AI Image Generator",
+        "url": "https://www.texlyonline.in/tools/image-generator",
+        "description": "Generate stunning AI images from text prompts instantly. Multiple styles including cyberpunk, anime, realistic, and oil painting.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "featureList": ["Text to image", "Cyberpunk style", "Anime style", "Realistic style", "Oil painting style", "Instant generation", "Free download"]
+      })}</script>
+      <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.texlyonline.in" },
+          { "@type": "ListItem", "position": 2, "name": "AI Image Generator", "item": "https://www.texlyonline.in/tools/image-generator" }
+        ]
+      })}</script>
+      <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "What styles are available in the AI Image Generator?", "acceptedAnswer": { "@type": "Answer", "text": "Available styles include cyberpunk, anime, realistic, oil painting, and more. Each style uses different visual parameters to generate unique results." } },
+          { "@type": "Question", "name": "Is the AI Image Generator free to use?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, the AI Image Generator on Texly is completely free. No login, no subscription, and no watermarks on downloaded images." } },
+          { "@type": "Question", "name": "How do I write a good image prompt?", "acceptedAnswer": { "@type": "Answer", "text": "Be descriptive and specific. Include subject, style, lighting, and mood. For example: 'A futuristic cityscape at night with neon lights, cyberpunk style, cinematic lighting.'" } }
+        ]
+      })}</script>
+    </Helmet>
     <div className="bg-[#0e0e16] border border-zinc-900 rounded-3xl p-6 sm:p-8">
       <div className="flex items-center gap-3 mb-6">
         <Wand2 className="w-6 h-6 text-cyan-400" />
@@ -318,7 +362,8 @@ export default function ImageGenerator() {
 
     {/* Rating & Comments */}
     <div className="mt-8 space-y-6">
-      <RatingSystem toolId="image-generator" theme={{ border: 'slate-200' }} />
+              <ImageGeneratorSEORichContent />
+        <RatingSystem toolId="image-generator" theme={{ border: 'slate-200' }} />
       <CommentSection targetId="image-generator" targetType="tool" theme={{ border: 'slate-200' }} />
     </div>
     </>

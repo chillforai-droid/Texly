@@ -19,6 +19,7 @@ import AIToolSEOContent from '../../components/AIToolSEOContent';
 import BeforeAfterSlider from '../../components/BeforeAfterSlider';
 import SocialShare from '../../components/SocialShare';
 import { useToolSuccess, useToolFailure } from '../../components/TexlyAI';
+import ImageUpscaleSEORichContent from '../../components/seo/ImageUpscaleSEORichContent';
 
 const ImageUpscale = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -146,6 +147,7 @@ const ImageUpscale = () => {
         <link rel="canonical" href="https://www.texlyonline.in/tools/image-upscale" />
         <meta property="og:title" content="AI Image Upscaler Online - Increase Resolution for Free | Texly" />
         <meta property="og:description" content="Transform low-resolution photos into high-definition masterpieces instantly using AI." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.texlyonline.in/tools/image-upscale" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -370,6 +372,7 @@ const ImageUpscale = () => {
         </div>
 
         {/* SEO Content Section */}
+        <ImageUpscaleSEORichContent />
         <AIToolSEOContent toolId="image-upscale" />
       </div>
     </div>

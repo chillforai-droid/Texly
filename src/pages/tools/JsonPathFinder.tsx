@@ -11,6 +11,7 @@ import { Copy, Check, ChevronDown, ChevronUp, ChevronRight, FileJson, Trash2 } f
 import AIToolSEOContent from '../../components/AIToolSEOContent';
 import RatingSystem from '../../components/RatingSystem';
 import CommentSection from '../../components/CommentSection';
+import JsonPathFinderSEORichContent from '../../components/seo/JsonPathFinderSEORichContent';
 
 const BASE = 'https://www.texlyonline.in';
 const CANONICAL = `${BASE}/tools/json-path-finder`;
@@ -228,6 +229,7 @@ export default function JsonPathFinder() {
         <link rel="canonical" href={CANONICAL} />
         <meta property="og:title" content="JSON Path Finder — Free JSON Structure Analyzer & Path Generator" />
         <meta property="og:description" content="Paste JSON to explore its structure as an interactive tree and copy JSON paths instantly." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:url" content={CANONICAL} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -367,6 +369,7 @@ export default function JsonPathFinder() {
         </section>
 
         {/* SEO Content */}
+        <JsonPathFinderSEORichContent />
         <AIToolSEOContent toolId="json-path-finder" />
 
         {/* Rating & Comments */}

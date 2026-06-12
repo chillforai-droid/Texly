@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { Copy, Check, Trash2, ChevronRight, FileText, Type, AlignLeft, Clock, Hash, BarChart2 } from 'lucide-react';
 import RatingSystem from '../../components/RatingSystem';
 import CommentSection from '../../components/CommentSection';
+import WordCounterPageSEORichContent from '../../components/seo/WordCounterPageSEORichContent';
 
 // ─── SEO ─────────────────────────────────────────────────────────────────────
 const SEO_TITLE = 'Word Counter & Character Counter Online Free ⚡ — Letter Count, Word Count Tool';
@@ -100,6 +101,7 @@ export default function WordCounterPage() {
         <link rel="canonical" href={CANONICAL} />
         <meta property="og:title" content={SEO_TITLE} />
         <meta property="og:description" content={SEO_DESC} />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:url" content={CANONICAL} />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify({
@@ -111,6 +113,16 @@ export default function WordCounterPage() {
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "What is the difference between a character counter and a letter counter?", "acceptedAnswer": { "@type": "Answer", "text": "A character counter counts every character — spaces, numbers, punctuation included. A letter counter counts only A-Z letters, ignoring everything else." } },
+            { "@type": "Question", "name": "How accurate is this word counter?", "acceptedAnswer": { "@type": "Answer", "text": "Words are split on whitespace, matching the logic used by Google Docs, Microsoft Word, and most publishing platforms." } },
+            { "@type": "Question", "name": "Does the word counter count emojis?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — emojis count as characters (sometimes 2, since many emoji are encoded as Unicode surrogate pairs)." } },
+            { "@type": "Question", "name": "Is my text private when using this tool?", "acceptedAnswer": { "@type": "Answer", "text": "100% yes. All counting happens in your browser. No text is ever sent to any server." } }
+          ]
         })}</script>
       </Helmet>
 
@@ -323,7 +335,8 @@ export default function WordCounterPage() {
 
         {/* Rating & Comments */}
         <section className="mb-8 space-y-6">
-          <RatingSystem toolId="word-counter" theme={{ border: 'slate-200' }} />
+          <WordCounterPageSEORichContent />
+        <RatingSystem toolId="word-counter" theme={{ border: 'slate-200' }} />
           <CommentSection targetId="word-counter" targetType="tool" theme={{ border: 'slate-200' }} />
         </section>
 

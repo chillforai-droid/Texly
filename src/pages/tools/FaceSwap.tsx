@@ -18,6 +18,7 @@ import AIToolSEOContent from '../../components/AIToolSEOContent';
 import BeforeAfterSlider from '../../components/BeforeAfterSlider';
 import SocialShare from '../../components/SocialShare';
 import { useToolSuccess, useToolFailure } from '../../components/TexlyAI';
+import FaceSwapSEORichContent from '../../components/seo/FaceSwapSEORichContent';
 
 const FaceSwap = () => {
   const [sourceImage, setSourceImage] = useState<string | null>(null);
@@ -164,6 +165,7 @@ const FaceSwap = () => {
         <link rel="canonical" href="https://www.texlyonline.in/tools/face-swap" />
         <meta property="og:title" content="AI Face Swap Online - Free Face Swapper Tool | Texly" />
         <meta property="og:description" content="Swap faces between two images instantly using advanced AI. Professional results in seconds." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.texlyonline.in/tools/face-swap" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -422,6 +424,7 @@ const FaceSwap = () => {
         </div>
 
         {/* SEO Content Section */}
+        <FaceSwapSEORichContent />
         <AIToolSEOContent toolId="face-swap" />
       </div>
     </div>

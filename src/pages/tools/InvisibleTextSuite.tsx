@@ -14,6 +14,7 @@ import { useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import RatingSystem from '../../components/RatingSystem';
 import CommentSection from '../../components/CommentSection';
+import InvisibleTextSuiteSEORichContent from '../../components/seo/InvisibleTextSuiteSEORichContent';
 import {
   Copy, Check, EyeOff, MessageSquare, Hash,
   Type, Sparkles, Zap, ChevronDown,
@@ -523,6 +524,7 @@ export default function InvisibleTextSuite() {
         {/* Open Graph */}
         <meta property="og:title" content={SEO_TITLE} />
         <meta property="og:description" content={SEO_DESC} />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:url" content={CANONICAL} />
         <meta property="og:type" content="website" />
         {/* Twitter */}
@@ -645,6 +647,7 @@ export default function InvisibleTextSuite() {
 
       {/* Rating & Comments */}
       <section className="max-w-4xl mx-auto px-4 pb-16 space-y-6">
+        <InvisibleTextSuiteSEORichContent />
         <RatingSystem toolId="invisible-text-suite" theme={{ border: 'slate-200' }} />
         <CommentSection targetId="invisible-text-suite" targetType="tool" theme={{ border: 'slate-200' }} />
       </section>

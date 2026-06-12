@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import AIToolSEOContent from '../../components/AIToolSEOContent';
 import RatingSystem from '../../components/RatingSystem';
 import CommentSection from '../../components/CommentSection';
+import RedirectChainCheckerSEORichContent from '../../components/seo/RedirectChainCheckerSEORichContent';
 import {
   ArrowRight,
   Copy,
@@ -255,6 +256,7 @@ export default function RedirectChainChecker() {
         <link rel="canonical" href={CANONICAL} />
         <meta property="og:title" content="Redirect Chain Checker — Free URL Redirect Path Analyzer" />
         <meta property="og:description" content="Analyze URL redirect chains, detect loops, and check HTTP status codes for free." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:url" content={CANONICAL} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -484,6 +486,7 @@ export default function RedirectChainChecker() {
         </section>
 
         {/* SEO Content */}
+        <RedirectChainCheckerSEORichContent />
         <AIToolSEOContent toolId="redirect-chain-checker" />
 
         {/* Rating & Comments */}

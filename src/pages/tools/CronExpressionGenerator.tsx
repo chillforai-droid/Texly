@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import AIToolSEOContent from '../../components/AIToolSEOContent';
 import RatingSystem from '../../components/RatingSystem';
 import CommentSection from '../../components/CommentSection';
+import CronExpressionGeneratorSEORichContent from '../../components/seo/CronExpressionGeneratorSEORichContent';
 import {
   Copy,
   Check,
@@ -230,6 +231,7 @@ export default function CronExpressionGenerator() {
         <link rel="canonical" href={CANONICAL} />
         <meta property="og:title" content="Cron Expression Generator — Free Cron Builder & Parser" />
         <meta property="og:description" content="Build cron schedules visually, get human-readable explanations, and validate cron syntax instantly." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:url" content={CANONICAL} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -421,6 +423,7 @@ export default function CronExpressionGenerator() {
         </section>
 
         {/* SEO Content */}
+        <CronExpressionGeneratorSEORichContent />
         <AIToolSEOContent toolId="cron-expression-generator" />
 
         {/* Rating & Comments */}

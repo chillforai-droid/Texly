@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
+import HubToolsContent from '../../components/HubToolsContent';
+import { textConverterHubTools } from '../../data/hubContent/textConverterHub';
 import { 
   RefreshCw, 
   Sparkles, 
@@ -478,6 +480,7 @@ export default function TextConverterHub({ activeToolId }: { activeToolId?: stri
         <link rel="canonical" href={CANONICAL_URL} />
         <meta property="og:title" content={SEO_TITLE} />
         <meta property="og:description" content={SEO_DESC} />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:url" content={CANONICAL_URL} />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify({
@@ -914,6 +917,8 @@ export default function TextConverterHub({ activeToolId }: { activeToolId?: stri
             })}
           </div>
         </section>
+
+        <HubToolsContent hubPath="/tools/text-converter-hub" tools={textConverterHubTools} />
 
         {/* Footer directories */}
         <section className="bg-slate-100 dark:bg-slate-900/40 rounded-3xl border border-slate-200/50 dark:border-slate-800/40 p-6 sm:p-8">

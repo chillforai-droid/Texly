@@ -1,10 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Home, Search, AlertCircle } from 'lucide-react';
 
 const NotFound = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <Helmet>
+        <title>404 — Page Not Found | Texly</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <div className="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-10 border border-slate-100 text-center">
         <div
           className="w-24 h-24 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-blue-600"

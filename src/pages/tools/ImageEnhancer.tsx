@@ -19,6 +19,7 @@ import AIToolSEOContent from '../../components/AIToolSEOContent';
 import BeforeAfterSlider from '../../components/BeforeAfterSlider';
 import SocialShare from '../../components/SocialShare';
 import { useToolSuccess, useToolFailure } from '../../components/TexlyAI';
+import ImageEnhancerSEORichContent from '../../components/seo/ImageEnhancerSEORichContent';
 
 const ImageEnhancer = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -140,6 +141,7 @@ const ImageEnhancer = () => {
         <link rel="canonical" href="https://www.texlyonline.in/tools/enhancer" />
         <meta property="og:title" content="AI Image Enhancer Online - Upscale Photos for Free | Texly" />
         <meta property="og:description" content="Transform low-quality photos into high-definition masterpieces instantly using AI." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.texlyonline.in/tools/enhancer" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -358,6 +360,7 @@ const ImageEnhancer = () => {
         </div>
 
         {/* SEO Content Section */}
+        <ImageEnhancerSEORichContent />
         <AIToolSEOContent toolId="enhancer" />
       </div>
     </div>

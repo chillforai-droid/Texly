@@ -13,6 +13,7 @@ const AIToolPlaceholder = ({ name, description }: Props) => {
     <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
       <Helmet>
         <title>{name} - Texly AI</title>
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <div className="max-w-md w-full text-center">
         <div

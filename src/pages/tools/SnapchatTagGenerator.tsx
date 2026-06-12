@@ -17,6 +17,7 @@ import AIToolSEOContent from '../../components/AIToolSEOContent';
 import SocialShare from '../../components/SocialShare';
 import RatingSystem from '../../components/RatingSystem';
 import { useToolSuccess, useToolFailure } from '../../components/TexlyAI';
+import SnapchatTagGeneratorSEORichContent from '../../components/seo/SnapchatTagGeneratorSEORichContent';
 
 const TAG_TYPES = [
   "Restored from Snapchat",
@@ -178,10 +179,46 @@ const SnapchatTagGenerator = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 pb-12 transition-colors duration-300">
       <Helmet>
-        <title>Restored from Snapchat Tag Generator - Add Authentic Snapchat Tags | Texly</title>
-        <meta name="description" content="Add 'Restored from Snapchat' or 'Restored from Camera Roll' tags to your images instantly. 100% free, authentic font and style." />
+        <title>Snapchat Tag Generator — Add "Restored from Snapchat" Tag to Images Free | Texly</title>
+        <meta name="description" content="Add authentic 'Restored from Snapchat' or 'Restored from Camera Roll' tags to your images instantly. 100% free, browser-side, authentic Snapchat font and style. No upload needed." />
         <link rel="canonical" href="https://www.texlyonline.in/tools/snapchat-tag-generator" />
         <meta property="og:url" content="https://www.texlyonline.in/tools/snapchat-tag-generator" />
+        <meta property="og:title" content="Snapchat Tag Generator — Add Restored from Snapchat Tag Free | Texly" />
+        <meta property="og:description" content="Add authentic 'Restored from Snapchat' or 'Restored from Camera Roll' tags to images instantly. Free, no upload, authentic style." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Snapchat Tag Generator — Add Restored from Snapchat Tag Free | Texly" />
+        <meta name="twitter:description" content="Add authentic 'Restored from Snapchat' or 'Restored from Camera Roll' tags to images instantly. Free, no upload." />
+        <meta name="twitter:image" content="https://www.texlyonline.in/og-image.png" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Snapchat Tag Generator",
+          "url": "https://www.texlyonline.in/tools/snapchat-tag-generator",
+          "description": "Add authentic 'Restored from Snapchat' or 'Restored from Camera Roll' tags to your images instantly.",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Any",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": ["Restored from Snapchat tag", "Restored from Camera Roll tag", "Authentic font style", "Browser-side processing", "Free download"]
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.texlyonline.in" },
+            { "@type": "ListItem", "position": 2, "name": "Snapchat Tag Generator", "item": "https://www.texlyonline.in/tools/snapchat-tag-generator" }
+          ]
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "What is a 'Restored from Snapchat' tag?", "acceptedAnswer": { "@type": "Answer", "text": "The 'Restored from Snapchat' tag is a watermark that Snapchat adds when you save a snap or memory from the app. It shows the image originally came from Snapchat." } },
+            { "@type": "Question", "name": "Is this tool free to use?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, Texly's Snapchat Tag Generator is 100% free. No login, no signup, and no image upload to any server — everything runs in your browser." } },
+            { "@type": "Question", "name": "Does my image get uploaded anywhere?", "acceptedAnswer": { "@type": "Answer", "text": "No. All image processing happens locally in your browser using HTML5 Canvas. Your images never leave your device." } }
+          ]
+        })}</script>
       </Helmet>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -406,6 +443,7 @@ const SnapchatTagGenerator = () => {
         <canvas ref={canvasRef} className="hidden" />
 
         {/* SEO Content Section */}
+        <SnapchatTagGeneratorSEORichContent />
         <AIToolSEOContent toolId="snapchat-tag-generator" />
       </div>
     </div>

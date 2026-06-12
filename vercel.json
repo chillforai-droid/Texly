@@ -101,6 +101,17 @@
     },
     {
       "source": "/((?!api/|sitemap.xml|robots.txt|llms.txt|_next/|static/|assets/|favicon.ico).*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(Googlebot|bingbot|Baiduspider|YandexBot|DuckDuckBot|facebookexternalhit|LinkedInBot|Twitterbot|WhatsApp|Slackbot|TelegramBot).*"
+        }
+      ],
+      "destination": "/api/prerender"
+    },
+    {
+      "source": "/((?!api/|sitemap.xml|robots.txt|llms.txt|_next/|static/|assets/|favicon.ico).*)",
       "destination": "/index.html"
     }
   ],
@@ -676,10 +687,6 @@
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "X-Frame-Options",
-          "value": "ALLOWALL"
-        },
         {
           "key": "Content-Security-Policy",
           "value": "frame-ancestors *"

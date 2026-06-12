@@ -572,8 +572,8 @@ function AppContent() {
             {/* ══ OLD TOOL SLUGS → 301 REDIRECTS TO HUB PAGES ══ */}
 
             {/* Text Analysis Hub redirects */}
-            <Route path="/tool/word-counter-online-free"         element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/character-counter-tool"           element={<Navigate to="/tools/text-analysis-hub" replace />} />
+            {/* /tool/word-counter-online-free — standalone page defined below (line ~782) */}
+            {/* /tool/character-counter-tool — Navigate to word-counter defined below (line ~790) */}
             <Route path="/tool/letter-counter-online-free"       element={<Navigate to="/tools/text-analysis-hub" replace />} />
             <Route path="/tool/reading-time-calculator-online"   element={<Navigate to="/tools/text-analysis-hub" replace />} />
             <Route path="/tool/line-counter-online"              element={<Navigate to="/tools/text-analysis-hub" replace />} />
@@ -681,6 +681,10 @@ function AppContent() {
             <Route path="/tool/qr-code-generator-online"         element={<Navigate to="/tools/generators-hub" replace />} />
             <Route path="/tool/color-palette-generator-online"   element={<Navigate to="/tools/generators-hub" replace />} />
             <Route path="/tool/invisible-text-suite"             element={<Navigate to="/tools/generators-hub" replace />} />
+            <Route path="/tool/base64-to-image-converter"        element={<Navigate to="/tools/text-converter-hub" replace />} />
+
+            {/* ── Generated Tool Pages — must be BEFORE /tool/:slug and /:slug catch-alls ── */}
+            <Route path="/tool/image-size-reducer" element={<RouteErrorBoundary><ImageSizeReducerPage /></RouteErrorBoundary>} />
 
             <Route
               path="/tools/face-swap"
@@ -951,7 +955,6 @@ function AppContent() {
             />
 
             {/* * wildcard हटाया — /:slug route ऊपर NotFound handle करता है */}
-          <Route path="/tool/image-size-reducer" element={<RouteErrorBoundary><ImageSizeReducerPage /></RouteErrorBoundary>} />
           </Routes>
         </Suspense>
       </main>

@@ -11,6 +11,7 @@ import { Copy, Check, ChevronDown, ChevronUp, Sparkles, AlertTriangle } from 'lu
 import AIToolSEOContent from '../../components/AIToolSEOContent';
 import RatingSystem from '../../components/RatingSystem';
 import CommentSection from '../../components/CommentSection';
+import RegexExplainerSEORichContent from '../../components/seo/RegexExplainerSEORichContent';
 
 const BASE = 'https://www.texlyonline.in';
 const CANONICAL = `${BASE}/tools/regex-explainer`;
@@ -334,6 +335,7 @@ export default function RegexExplainer() {
         <link rel="canonical" href={CANONICAL} />
         <meta property="og:title" content="AI Regex Explainer — Explain & Analyze Regex Patterns Free" />
         <meta property="og:description" content="Paste any regex and get a token-by-token breakdown with human-readable explanations." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:url" content={CANONICAL} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -506,6 +508,7 @@ export default function RegexExplainer() {
         </section>
 
         {/* SEO Content */}
+        <RegexExplainerSEORichContent />
         <AIToolSEOContent toolId="regex-explainer" />
 
         {/* Rating & Comments */}

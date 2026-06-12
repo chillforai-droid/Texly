@@ -111,6 +111,7 @@ Return ONLY the cleaned text, nothing else. Do not add any explanation.`,
 
 // ─── Workaround for ShieldAlert import ───────────────────────────────────────
 import { ShieldAlert } from 'lucide-react';
+import AITextSuiteSEORichContent from '../../components/seo/AITextSuiteSEORichContent';
 
 // ─── Color map ────────────────────────────────────────────────────────────────
 const COLOR = {
@@ -248,10 +249,46 @@ Return ONLY the final text, no explanations.`;
   return (
     <>
       <Helmet>
-        <title>AI Text Suite — Remove Special Chars, Text to List, Cleaner & More | Texly</title>
-        <meta name="description" content="5 powerful AI text tools in one place — Remove Special Characters, Text to List, Text Repeater, Find & Replace, Text Cleaner. Free, fast, no signup." />
+        <title>AI Text Suite — Remove Special Chars, Text to List, Cleaner &amp; More | Texly</title>
+        <meta name="description" content="5 powerful AI text tools in one place — Remove Special Characters, Text to List, Text Repeater, Find &amp; Replace, Text Cleaner. Free, fast, no signup." />
         <link rel="canonical" href="https://www.texlyonline.in/tools/ai-text-suite" />
         <meta property="og:url" content="https://www.texlyonline.in/tools/ai-text-suite" />
+        <meta property="og:title" content="AI Text Suite — 5 Free Text Tools in One Place | Texly" />
+        <meta property="og:description" content="Remove Special Characters, Text to List, Text Repeater, Find &amp; Replace, Text Cleaner — all free, no signup." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Text Suite — 5 Free Text Tools | Texly" />
+        <meta name="twitter:description" content="Remove Special Characters, Text to List, Text Repeater, Find &amp; Replace, Text Cleaner. Free, no signup." />
+        <meta name="twitter:image" content="https://www.texlyonline.in/og-image.png" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "AI Text Suite",
+          "url": "https://www.texlyonline.in/tools/ai-text-suite",
+          "description": "5 powerful AI text tools — Remove Special Characters, Text to List, Text Repeater, Find & Replace, Text Cleaner.",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": ["Remove Special Characters", "Text to List Converter", "Text Repeater", "Find & Replace", "Text Cleaner"]
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.texlyonline.in" },
+            { "@type": "ListItem", "position": 2, "name": "AI Text Suite", "item": "https://www.texlyonline.in/tools/ai-text-suite" }
+          ]
+        })}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "What tools are included in the AI Text Suite?", "acceptedAnswer": { "@type": "Answer", "text": "The AI Text Suite includes 5 tools: Remove Special Characters, Text to List Converter, Text Repeater, Find & Replace, and Text Cleaner — all free with no login required." } },
+            { "@type": "Question", "name": "Is the AI Text Suite free to use?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, all tools in the AI Text Suite are completely free. No account, no subscription, and no usage limits." } },
+            { "@type": "Question", "name": "Does the AI Text Suite store my text?", "acceptedAnswer": { "@type": "Answer", "text": "No. All text processing happens locally in your browser. Nothing is sent to any server." } }
+          ]
+        })}</script>
       </Helmet>
 
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-8 px-4">
@@ -532,7 +569,8 @@ Return ONLY the final text, no explanations.`;
 
         {/* Rating & Comments */}
         <div className="mt-8 space-y-6">
-          <RatingSystem toolId="ai-text-suite" theme={{ border: 'slate-200' }} />
+          <AITextSuiteSEORichContent />
+        <RatingSystem toolId="ai-text-suite" theme={{ border: 'slate-200' }} />
           <CommentSection targetId="ai-text-suite" targetType="tool" theme={{ border: 'slate-200' }} />
         </div>
       </div>

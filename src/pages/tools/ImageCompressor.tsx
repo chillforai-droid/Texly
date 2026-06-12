@@ -18,6 +18,7 @@ import { addWatermarkToImage } from '../../utils/watermark';
 import AIToolSEOContent from '../../components/AIToolSEOContent';
 import SocialShare from '../../components/SocialShare';
 import { useToolSuccess, useToolFailure } from '../../components/TexlyAI';
+import ImageCompressorSEORichContent from '../../components/seo/ImageCompressorSEORichContent';
 
 const ImageCompressor = () => {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -135,6 +136,7 @@ const ImageCompressor = () => {
         <link rel="canonical" href="https://www.texlyonline.in/tools/compressor" />
         <meta property="og:title" content="Smart Image Compressor - Reduce Image Size Online | Texly" />
         <meta property="og:description" content="Reduce image file size instantly while maintaining professional quality. 100% private." />
+        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.texlyonline.in/tools/compressor" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -389,6 +391,7 @@ const ImageCompressor = () => {
         </div>
 
         {/* SEO Content Section */}
+        <ImageCompressorSEORichContent />
         <AIToolSEOContent toolId="compressor" />
       </div>
     </div>
