@@ -3681,6 +3681,198 @@ const toolSpecificDetails: Record<string, ToolContent> = {
     `
   },
 
+  // ── Dev Utility Tools ──────────────────────────────────────────────────────
+
+  'robots-txt-tester': {
+    title: 'Robots.txt Tester — Free Robots Validator & Crawler Checker Online',
+    metaDescription: 'Test any URL against your robots.txt rules instantly. Check if Googlebot, Bingbot, or any crawler is allowed or blocked. Free robots.txt validator — no login required.',
+    h1: 'Robots.txt Tester & Validator — Check Crawler Access Instantly',
+    intro: 'A misconfigured robots.txt can silently block Googlebot from crawling your entire site — and you may not discover it until rankings drop. The Robots.txt Tester lets you paste any robots.txt content, enter a URL path, and choose a bot (Googlebot, Bingbot, GPTBot, or any custom user-agent) to instantly see whether that crawler is allowed or blocked. It highlights the exact rule that matched, making it easy to debug complex Allow/Disallow combinations and wildcard patterns. Use it before deploying a new robots.txt, after a site migration, or to audit why specific pages are missing from Google Search Console.',
+    howToUse: [
+      'Paste your robots.txt content into the left panel.',
+      'Enter the URL path you want to test (e.g. /admin/ or /api/v2/).',
+      'Select the user-agent to simulate (Googlebot, Bingbot, custom, etc.).',
+      'Click "Test" to instantly see whether the crawler is allowed or blocked.',
+      'Review the matched rule highlighted in the robots.txt content.'
+    ],
+    faqs: [
+      { q: 'What is a robots.txt file?', a: 'Robots.txt is a plain-text file at the root of your website (e.g. example.com/robots.txt) that tells search engine crawlers which pages or sections they are allowed or not allowed to access.' },
+      { q: 'Does blocking in robots.txt remove pages from Google?', a: 'No. Blocking a URL in robots.txt prevents crawling but does not de-index the page. To remove a page from Google Search, use the noindex meta tag or the URL Removal Tool in Google Search Console.' },
+      { q: 'Why is Googlebot still crawling a disallowed page?', a: 'Google may have a cached version of the URL or discovered it via a sitemap. Robots.txt is a crawling hint, not an access control mechanism. Remove the page from your sitemap and use noindex for complete removal.' },
+      { q: 'What is the difference between Disallow: / and Disallow: /*?', a: 'Disallow: / blocks access to the root and all paths under it. Disallow: /* is technically equivalent for most bots, but some crawlers interpret the wildcard differently. The safer choice is Disallow: /.' },
+      { q: 'Does this tool fetch the actual robots.txt from my site?', a: 'No — you paste the robots.txt content manually. This keeps the tool private and lets you test robots.txt files before deploying them live.' },
+      { q: 'Can I test multiple URLs at once?', a: 'Currently you can test one URL at a time. Run multiple tests by changing the path field and clicking Test again — no page reloads needed.' }
+    ],
+    benefits: [
+      'Instantly identify crawler access issues before they affect SEO rankings.',
+      'Test against any user-agent including Googlebot, Bingbot, and GPTBot.',
+      'Highlights the exact matched rule for fast debugging.',
+      'Works offline — paste your robots.txt without uploading it to a server.',
+      'Free, no login, runs entirely in your browser.'
+    ],
+    useCases: [
+      'Validating a new robots.txt before deploying to production.',
+      'Diagnosing why specific pages are missing from Google Search Console.',
+      'Checking crawler access after a site migration or domain change.',
+      'Auditing robots.txt inherited from a previous developer.',
+      'Verifying that /admin, /checkout, and /api paths are properly protected from crawlers.'
+    ],
+    relatedTools: ['redirect-chain-checker', 'json-path-finder', 'cron-expression-generator']
+  },
+
+  'json-path-finder': {
+    title: 'JSON Path Finder — Free JSON Structure Analyzer & JSONPath Generator',
+    metaDescription: 'Paste any JSON and explore it as an interactive tree. Click any node to instantly copy its JSONPath expression. Free JSON path finder — no signup required.',
+    h1: 'JSON Path Finder — Explore JSON Structure & Copy JSONPath Expressions',
+    intro: 'When working with deeply nested API responses, config files, or data exports, finding the exact JSONPath to a value is tedious. The JSON Path Finder takes any JSON — no matter how deeply nested — and renders it as a collapsible, interactive tree. Hover over any key or value and its full JSONPath expression (e.g. $.user.address[0].city) appears alongside it. Click to copy it to your clipboard in one action. It handles arrays, nested objects, null values, and mixed-type arrays correctly. Use it when writing jq queries, configuring JSON Schema validators, writing JavaScript selectors, or debugging REST API payloads.',
+    howToUse: [
+      'Paste your JSON into the input field on the left.',
+      'Click "Parse" or press Ctrl+Enter to render the interactive tree.',
+      'Expand and collapse nodes by clicking the arrow icons.',
+      'Hover over any key or value to see its full JSONPath.',
+      'Click the copy icon next to any path to copy it to the clipboard.'
+    ],
+    faqs: [
+      { q: 'What is JSONPath?', a: 'JSONPath is a query language for JSON, analogous to XPath for XML. A JSONPath expression like $.store.book[0].title uniquely identifies a value in a JSON document. It is widely used in JavaScript, Python (jsonpath-ng), AWS Step Functions, and API testing tools like Postman.' },
+      { q: 'Does it support JSON arrays?', a: 'Yes. Arrays are displayed with their index (e.g. [0], [1]) and each element is fully navigable. The generated path includes the array index, e.g. $.items[2].name.' },
+      { q: 'What is the maximum JSON size it can handle?', a: 'The tool handles JSON files up to several megabytes in the browser. Extremely large files (50MB+) may cause slow rendering due to browser memory limits — for those, use a desktop tool like jq.' },
+      { q: 'Is my JSON data sent to a server?', a: 'No. All parsing and tree rendering happens entirely in your browser. Your JSON data never leaves your device.' },
+      { q: 'Does it validate JSON?', a: 'Yes — if your JSON has a syntax error (missing comma, unclosed bracket), the tool will display an error message pointing to the problem location rather than rendering a broken tree.' },
+      { q: 'Can I use the paths with JavaScript?', a: 'JSONPath expressions work directly with libraries like jsonpath-plus in JavaScript or jsonpath-ng in Python. For vanilla JS, the path translates directly to dot and bracket notation: $.user.address[0].city → data.user.address[0].city.' }
+    ],
+    benefits: [
+      'Visual tree explorer — no more manually counting brackets to find a path.',
+      'One-click copy of any JSONPath expression saves debugging time.',
+      'Handles deeply nested objects, arrays, and mixed types.',
+      '100% client-side — JSON data stays private in your browser.',
+      'Free, no login, works on any device.'
+    ],
+    useCases: [
+      'Writing jq queries to extract fields from API responses.',
+      'Configuring AWS Step Functions with JSONPath input/output filters.',
+      'Debugging deeply nested Stripe, Shopify, or GitHub webhook payloads.',
+      'Writing JSON Schema validators with the correct property path.',
+      'Exploring large config files (Kubernetes manifests, OpenAPI specs) to find specific fields.',
+      'Generating JavaScript accessor paths for data transformation scripts.'
+    ],
+    relatedTools: ['robots-txt-tester', 'regex-explainer', 'cron-expression-generator']
+  },
+
+  'regex-explainer': {
+    title: 'AI Regex Explainer — Explain Any Regex Pattern Free Online',
+    metaDescription: 'Paste any regular expression and get an instant token-by-token breakdown in plain English. Understand anchors, quantifiers, groups, and character classes. Free regex explainer.',
+    h1: 'AI Regex Explainer — Understand Any Regular Expression Instantly',
+    intro: 'Regular expressions are powerful but notoriously hard to read. A pattern like ^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$ is valid for validating strong passwords, but understanding why requires knowing anchors, lookaheads, character classes, and quantifiers simultaneously. The AI Regex Explainer breaks any regex down token by token, labeling each component (anchor, quantifier, group, alternation, character class, special escape) and explaining what it matches in plain English. It also runs live match highlighting on a test string you provide, showing exactly which parts of the input match. Use it to understand inherited code, learn regex syntax, document patterns for teammates, or debug why a regex isn't matching as expected.',
+    howToUse: [
+      'Paste your regular expression into the Regex field.',
+      'Optionally enter a test string to see live match highlighting.',
+      'Click "Explain" to get a token-by-token breakdown.',
+      'Review each labeled component with its plain-English description.',
+      'Adjust the test string to verify your understanding of the pattern.'
+    ],
+    faqs: [
+      { q: 'What regex flavors does it support?', a: 'The explainer covers standard regex syntax shared by JavaScript, Python (re module), Java, PHP, and most modern languages. Language-specific extensions (e.g. Python named groups via (?P<name>)) are also explained.' },
+      { q: 'What is a lookahead in regex?', a: 'A lookahead (?=...) asserts that a pattern must be followed by another pattern, without consuming characters. (?=.*\\d) means "followed somewhere ahead by a digit." Negative lookaheads (?!...) assert the opposite.' },
+      { q: 'Can it explain backreferences?', a: 'Yes. Backreferences like \\1 or \\k<name> reference a previously captured group. The explainer identifies the referenced group and explains what it matches.' },
+      { q: 'What is the difference between greedy and lazy quantifiers?', a: 'Greedy quantifiers (*, +, {n,}) match as many characters as possible. Lazy versions (*?, +?, {n,}?) match as few as possible. This difference often causes unexpected behavior when extracting content between HTML tags.' },
+      { q: 'Can I use this to write regex from scratch?', a: 'The explainer is best for understanding existing patterns. To build a regex from a description, try the AI assistant or a visual regex builder — then paste the result here to verify and document it.' },
+      { q: 'Is the explanation generated by AI?', a: 'Yes — the token breakdown is powered by AI, which means it can explain complex patterns including nested groups, conditional expressions, and POSIX character classes in natural language.' }
+    ],
+    benefits: [
+      'Understand any regex in seconds — no manual reference lookups needed.',
+      'Token-by-token breakdown labels every component clearly.',
+      'Live match highlighting confirms your interpretation is correct.',
+      'Speeds up code review when you encounter unfamiliar patterns.',
+      'Free, no login, works on any device.'
+    ],
+    useCases: [
+      'Understanding regex patterns inherited from legacy codebases.',
+      'Learning regex syntax through hands-on exploration of real patterns.',
+      'Documenting regex for code reviews and technical documentation.',
+      'Debugging why a validation regex is rejecting valid inputs.',
+      'Explaining complex patterns to junior developers or non-technical teammates.',
+      'Verifying email, phone, and password validation regex before production use.'
+    ],
+    relatedTools: ['json-path-finder', 'cron-expression-generator', 'robots-txt-tester']
+  },
+
+  'cron-expression-generator': {
+    title: 'Cron Expression Generator — Free Cron Builder, Parser & Validator Online',
+    metaDescription: 'Build cron schedules visually, parse any cron expression into plain English, and validate cron syntax instantly. Supports crontab, AWS EventBridge, GitHub Actions. Free.',
+    h1: 'Cron Expression Generator — Build, Parse & Validate Cron Schedules',
+    intro: 'Cron syntax is compact but cryptic — 0 2 * * 1 tells a server to run something every Monday at 2 AM, but reading that cold is not obvious. The Cron Expression Generator works in both directions: build a schedule visually using dropdowns for minute, hour, day, month, and weekday and get the cron expression instantly, or paste any cron string and get a plain-English explanation. It includes 14 common presets (every minute, hourly, daily at midnight, weekly, monthly, etc.), validates expressions for syntax errors, and explains the next 5 upcoming run times so you can verify the schedule is correct before deploying. Compatible with standard crontab, AWS EventBridge, GitHub Actions, Kubernetes CronJobs, and Heroku Scheduler.',
+    howToUse: [
+      'Use the visual builder: select minute, hour, day-of-month, month, and day-of-week from the dropdowns.',
+      'Or paste an existing cron expression into the input field to parse it.',
+      'Click a preset (e.g. "Every day at midnight") for instant population.',
+      'Read the plain-English schedule description generated automatically.',
+      'Check the "Next 5 runs" preview to confirm the schedule is correct.'
+    ],
+    faqs: [
+      { q: 'What is a cron expression?', a: 'A cron expression is a string of five (or six) fields that defines a recurring schedule: minute (0–59), hour (0–23), day-of-month (1–31), month (1–12), and day-of-week (0–7). Special characters like * (any), / (step), and - (range) allow complex schedules.' },
+      { q: 'What does "0 2 * * 1" mean?', a: 'Minute 0, hour 2, any day-of-month, any month, day-of-week 1 (Monday) — so this runs every Monday at 02:00.' },
+      { q: 'Does it support seconds?', a: 'Some systems (Spring, Quartz, AWS EventBridge) use a 6-field format with seconds as the first field. The generator supports both 5-field (standard crontab) and 6-field expressions.' },
+      { q: 'What is the difference between day-of-month and day-of-week?', a: 'Setting both day-of-month and day-of-week to non-wildcard values runs the job when either condition is true (OR logic) in standard cron. AWS EventBridge uses a question mark ? to indicate "no specific value" for one field when the other is set.' },
+      { q: 'How do I run a job every 15 minutes?', a: 'Use the step operator: */15 * * * * — the */15 in the minute field means "every 15 minutes starting from 0": at :00, :15, :30, :45.' },
+      { q: 'Is @reboot or @daily supported?', a: 'These are crontab macros, not standard cron expressions. @daily is equivalent to 0 0 * * *, @hourly to 0 * * * *, and @reboot runs once at system startup. The parser recognizes these macros and explains them.' }
+    ],
+    benefits: [
+      'Build cron schedules visually — no need to memorize syntax.',
+      'Parse and understand any cron expression in plain English.',
+      'Verify correctness with "Next 5 runs" preview before deploying.',
+      'Supports crontab, AWS EventBridge, GitHub Actions, and Kubernetes.',
+      'Free, no login, runs entirely in your browser.'
+    ],
+    useCases: [
+      'Scheduling database backups, report emails, or cache-clearing jobs.',
+      'Configuring GitHub Actions workflow schedules (on.schedule.cron).',
+      'Setting up AWS EventBridge rules for Lambda triggers.',
+      'Defining Kubernetes CronJob schedules in YAML manifests.',
+      'Understanding cron jobs inherited from legacy servers or hosting panels.',
+      'Documenting scheduled task configurations in technical runbooks.'
+    ],
+    relatedTools: ['regex-explainer', 'json-path-finder', 'robots-txt-tester']
+  },
+
+  'redirect-chain-checker': {
+    title: 'Redirect Chain Checker — Free URL Redirect Path Analyzer Online',
+    metaDescription: 'Trace any URL\'s full redirect chain with HTTP status codes (301, 302, 307). Detect redirect loops, measure hop timing, and get SEO recommendations. Free redirect checker.',
+    h1: 'Redirect Chain Checker — Trace URL Redirects & Detect Loops',
+    intro: 'Every redirect in a chain costs PageRank. Google recommends keeping redirect chains to a single hop — a URL that redirects three or four times before reaching the final destination loses significant link equity at each step, and can also increase page load time for real users. The Redirect Chain Checker traces any URL through its complete redirect path, recording the HTTP status code (301, 302, 307, 308), the destination URL, and the response time at each hop. It detects redirect loops that would cause infinite cycling and provides specific SEO recommendations: consolidate chains to one hop, replace temporary 302s with permanent 301s for link equity transfer, and fix protocol inconsistencies (HTTP → HTTPS). Export results as CSV for site audits and client reports.',
+    howToUse: [
+      'Enter the URL you want to check in the input field (include https://).',
+      'Click "Check Redirects" to trace the full redirect chain.',
+      'Review each hop: status code, destination URL, and response time.',
+      'Check the SEO recommendations panel for any issues detected.',
+      'Use the Export CSV button to save results for a site audit report.'
+    ],
+    faqs: [
+      { q: 'What is a redirect chain?', a: 'A redirect chain occurs when URL A redirects to URL B, which then redirects to URL C, and so on. Each intermediate hop adds latency and dilutes the link equity passed to the final destination.' },
+      { q: 'What is the difference between 301 and 302 redirects?', a: 'A 301 is a permanent redirect — it transfers most link equity (PageRank) to the destination. A 302 is temporary — search engines may continue indexing the original URL and do not reliably pass link equity. Use 301 for permanent moves.' },
+      { q: 'Does Google follow redirect chains?', a: 'Yes, but Googlebot has a crawl budget and may not follow very long chains. More importantly, each 301 hop in a chain causes some loss of link equity. Google recommends a direct redirect from the original URL to the final destination.' },
+      { q: 'What is a redirect loop?', a: 'A redirect loop occurs when a URL eventually redirects back to itself — URL A → B → C → A. Browsers show "Too many redirects" and Googlebot stops following the chain. This tool detects loops and alerts you immediately.' },
+      { q: 'What HTTP status codes indicate a redirect?', a: '301 (Moved Permanently), 302 (Found/Temporary), 303 (See Other), 307 (Temporary Redirect), and 308 (Permanent Redirect) all indicate redirects. 301 and 308 are preferred for SEO-critical permanent moves.' },
+      { q: 'Can I check redirects on a site I do not own?', a: 'Yes — the tool traces publicly accessible redirects the same way a browser or Googlebot would. It cannot check URLs behind authentication or redirects that require cookies or JavaScript.' }
+    ],
+    benefits: [
+      'Identify multi-hop redirect chains that are leaking link equity.',
+      'Detect redirect loops before they break user experience and crawling.',
+      'See exact HTTP status codes at each hop for accurate diagnosis.',
+      'Get specific SEO recommendations to fix each issue found.',
+      'Export results as CSV for client audits and technical SEO reports.',
+      'Free, no login, browser-based.'
+    ],
+    useCases: [
+      'Auditing redirect chains after a domain migration or site restructure.',
+      'Diagnosing "Too many redirects" errors in browsers and Googlebot.',
+      'Verifying that 302 temporary redirects have been updated to 301 permanently.',
+      'Checking affiliate links and marketing URLs for unexpected redirect hops.',
+      'Preparing pre-launch SEO audits for new websites inheriting old URL structures.',
+      'Documenting redirect paths in technical SEO reports for clients.'
+    ],
+    relatedTools: ['robots-txt-tester', 'json-path-finder', 'regex-explainer']
+  },
+
 };
 
 export const getSEOData = (toolId: string): ToolContent | null => {
