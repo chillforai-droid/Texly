@@ -15,9 +15,9 @@ import {
   ChevronDown
 } from 'lucide-react';
 
-const SEO_TITLE = "Text Cleaning Suite — Remove Spaces, Duplicates, HTML Tags & More ⚡ Free";
-const SEO_DESC = "Free all-in-one text cleaner. Remove extra spaces, duplicate lines, HTML tags, empty lines, emojis, accents, punctuation, numbers, and special characters instantly. No login. Real-time browser-based processing.";
-const SEO_KEYWORDS = "text cleaner online free, remove extra spaces online, remove duplicate lines, remove html tags online, remove emojis from text, text cleaning tool, strip punctuation online";
+const SEO_TITLE = "Text Cleaning Tools — Remove Extra Spaces, Duplicate Lines, HTML Tags & More | Free Online";
+const SEO_DESC = "Free all-in-one text cleaning toolkit. Remove extra spaces, duplicate lines, HTML tags, empty lines, emojis, special characters, accents, and punctuation from text instantly. No login. Works in your browser.";
+const SEO_KEYWORDS = "text cleaner online free, remove extra spaces online, remove duplicate lines, remove html tags online, remove emojis from text, remove special characters online, strip punctuation online, clean text online";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/text-cleaning-hub";
 
 interface CleaningOptions {

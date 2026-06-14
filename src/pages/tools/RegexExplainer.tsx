@@ -36,6 +36,36 @@ const TOKEN_COLORS: Record<string, string> = {
   dot: 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20',
 };
 
+// Moved to module-level to prevent minifier variable naming conflicts inside loops
+const ESCAPE_MAP: Record<string, string> = {
+  d: 'Any digit [0-9]',
+  D: 'Any non-digit [^0-9]',
+  w: 'Any word character [a-zA-Z0-9_]',
+  W: 'Any non-word character',
+  s: 'Any whitespace character (space, tab, newline)',
+  S: 'Any non-whitespace character',
+  b: 'Word boundary — position between a word char and a non-word char',
+  B: 'Non-word boundary',
+  n: 'Newline character',
+  r: 'Carriage return character',
+  t: 'Tab character',
+  0: 'Null character',
+  '.': 'Literal dot (escaped)',
+  '*': 'Literal asterisk (escaped)',
+  '+': 'Literal plus sign (escaped)',
+  '?': 'Literal question mark (escaped)',
+  '(': 'Literal opening parenthesis (escaped)',
+  ')': 'Literal closing parenthesis (escaped)',
+  '[': 'Literal opening bracket (escaped)',
+  ']': 'Literal closing bracket (escaped)',
+  '{': 'Literal opening brace (escaped)',
+  '}': 'Literal closing brace (escaped)',
+  '^': 'Literal caret (escaped)',
+  $: 'Literal dollar sign (escaped)',
+  '|': 'Literal pipe (escaped)',
+  '\\': 'Literal backslash (escaped)',
+};
+
 // ─── Regex Token Parser ───────────────────────────────────────────────────
 function explainRegex(pattern: string): { tokens: RegexToken[]; summary: string; flags: string } {
   // Extract flags from /pattern/flags format
@@ -85,38 +115,10 @@ function explainRegex(pattern: string): { tokens: RegexToken[]; summary: string;
     // Escaped sequences
     if (ch === '\\' && i + 1 < p.length) {
       const next = p[i + 1];
-      const escapeMap: Record<string, string> = {
-        'd': 'Any digit [0-9]',
-        'D': 'Any non-digit [^0-9]',
-        'w': 'Any word character [a-zA-Z0-9_]',
-        'W': 'Any non-word character',
-        's': 'Any whitespace character (space, tab, newline)',
-        'S': 'Any non-whitespace character',
-        'b': 'Word boundary — position between a word char and a non-word char',
-        'B': 'Non-word boundary',
-        'n': 'Newline character',
-        'r': 'Carriage return character',
-        't': 'Tab character',
-        '0': 'Null character',
-        '.': 'Literal dot (escaped)',
-        '*': 'Literal asterisk (escaped)',
-        '+': 'Literal plus sign (escaped)',
-        '?': 'Literal question mark (escaped)',
-        '(': 'Literal opening parenthesis (escaped)',
-        ')': 'Literal closing parenthesis (escaped)',
-        '[': 'Literal opening bracket (escaped)',
-        ']': 'Literal closing bracket (escaped)',
-        '{': 'Literal opening brace (escaped)',
-        '}': 'Literal closing brace (escaped)',
-        '^': 'Literal caret (escaped)',
-        '$': 'Literal dollar sign (escaped)',
-        '|': 'Literal pipe (escaped)',
-        '\\': 'Literal backslash (escaped)',
-      };
       tokens.push({
         raw: '\\' + next,
         type: 'escape',
-        explanation: escapeMap[next] || `Escaped character: \\${next}`,
+        explanation: ESCAPE_MAP[next] || `Escaped character: \\${next}`,
         color: TOKEN_COLORS.escape,
       });
       i += 2; continue;

@@ -18,8 +18,8 @@ import {
   Sliders
 } from 'lucide-react';
 
-const SEO_TITLE = "AI Text Suite — Essay Writer, Grammar, Summarizer & Translator Online ⚡ Free";
-const SEO_DESC = "Free integrated AI text suite powered by Gemini models. Generate copy, write articles, check grammar, summarize docs, change tone, explain code, and translate text instantly. No login required.";
+const SEO_TITLE = "Free AI Text Tools — AI Writing Assistant, Grammar Checker, Summarizer & Translator Online";
+const SEO_DESC = "Free AI text tools online. AI writing assistant, grammar checker, essay writer, text summarizer, paraphraser, tone changer, code explainer, and language translator. Powered by Gemini AI. No login.";
 const SEO_KEYWORDS = "ai text generator free, ai essay writer online, free grammar checker ai, text summarizer ai, code generator ai, text translator free";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/ai-tools-hub";
 

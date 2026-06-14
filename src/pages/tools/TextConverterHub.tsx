@@ -13,9 +13,9 @@ import {
   ChevronDown
 } from 'lucide-react';
 
-const SEO_TITLE = "Text Converter — Case Converter, Binary, Morse, Base64 & 30+ More ⚡ Free";
-const SEO_DESC = "Free all-in-one text converter. Convert text case (upper, lower, title, camel, snake, alternating), encode/decode Base64 and URL, translate to Morse code, Binary, Braille and more. 31 tools. No login. Real-time.";
-const SEO_KEYWORDS = "text converter online free, case converter online, binary to text converter, morse code translator, base64 encoder decoder, url encoder decoder, slug generator";
+const SEO_TITLE = "Text Converter — Uppercase, Lowercase, Title Case, Morse Code, Binary, Base64 & More | Free Online";
+const SEO_DESC = "Free text converter tools. Convert text to uppercase, lowercase, title case, camel case, snake case, alternating case. Encode/decode Base64, URL, Morse code, Binary, Braille. 30+ converters. No login.";
+const SEO_KEYWORDS = "text converter online free, uppercase converter, lowercase converter, title case converter, case converter online, binary to text converter, morse code translator, base64 encoder decoder, url encoder decoder, alternating case converter";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/text-converter-hub";
 
 type ActiveTab = 'case' | 'encode' | 'cipher' | 'special';

@@ -8,9 +8,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
-const SEO_TITLE = 'Best Free Online Text Tools — Uppercase, Find & Replace, Text Cleaner, URL Decoder & More | Texly';
-const SEO_DESC = 'Instantly clean, convert & format text online — free, no login, no download. Top-rated tools: Uppercase Converter, Find & Replace, Text Repeater, URL Decoder, Text Cleaner. Works on all devices!';
-const SEO_KEYWORDS = 'free online text tools, text converter online free, clean text online, uppercase converter free, find and replace text online, text repeater tool, url decode online, text cleaner online free, best text tools 2025, text formatting tools';
+const SEO_TITLE = 'Best Free Online Text Tools 2026 — Uppercase, Find & Replace, Text Cleaner, URL Decoder & More | Texly';
+const SEO_DESC = 'Instantly clean, convert & format text online — free, no login, no download. Best free text tools 2026: Uppercase Converter, Find & Replace, Text Repeater, URL Decoder, Text Cleaner. Works on all devices!';
+const SEO_KEYWORDS = 'free online text tools, text converter online free, clean text online, uppercase converter free, find and replace text online, text repeater tool, url decode online, text cleaner online free, best text tools 2026, text formatting tools';
 const CANONICAL = 'https://www.texlyonline.in/best-free-text-tools-online';
 
 const TOP_TOOLS = [
@@ -405,7 +405,7 @@ export default function TopToolsLanding() {
           </div>
           <h1>
             The Best <em>Free Online</em><br />
-            Text Tools for <strong>2025</strong>
+            Text Tools for <strong>2026</strong>
           </h1>
           <p>
             Clean, convert, format, and transform your text in seconds — no login, no download, no cost. Used by writers, developers, SEO pros, and students daily.

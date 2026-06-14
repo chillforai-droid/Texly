@@ -6,9 +6,9 @@ import { PDFToolWorkspace } from '../../components/PDFToolWorkspace';
 import HubToolsContent from '../../components/HubToolsContent';
 import { pdfToolsHubTools } from '../../data/hubContent/pdfToolsHub';
 
-const SEO_TITLE = "PDF Tools Suite — Compress, Merge, Split, Convert & Protect PDFs ⚡ Free Online";
-const SEO_DESC = "Free all-in-one PDF tools helper. Compress PDF, select multiple pages to merge, split margins, rotate pages, encrypt passwords, unlock permissions, and convert formats (PDF to JPG, Word, Excel). Free and safe.";
-const SEO_KEYWORDS = "pdf tools online, compress pdf free, merge pdf online, split pdf pages free, convert pdf to word, protect pdf password, unlock pdf online";
+const SEO_TITLE = "PDF Tools Online — Compress PDF, PDF to Word, Word to PDF, Merge, Split & More | Free";
+const SEO_DESC = "Free PDF tools online. Compress PDF size, convert PDF to Word, convert Word to PDF, merge PDFs, split PDF pages, rotate, protect with password, and unlock PDF. No signup required.";
+const SEO_KEYWORDS = "compress pdf free, pdf to word converter online, word to pdf online, merge pdf online, split pdf online free, reduce pdf size online, convert pdf online free, pdf tools online";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/pdf-tools-hub";
 
 type PDFToolId =

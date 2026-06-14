@@ -346,6 +346,41 @@ const toolSpecificDetails: Record<string, ToolContent> = {
     ],
     relatedTools: ['word-counter', 'letter-counter', 'reading-time', 'lorem-ipsum']
   },
+  'character-frequency': {
+    title: 'Character Frequency Counter — Letter Frequency Analysis Online Free',
+    metaDescription: 'Count how often each character appears in your text. Free character frequency counter — shows letter frequency, percentage, and rank. No login, instant results.',
+    h1: 'Character Frequency Counter — Analyze Letter & Character Frequency in Text',
+    intro: 'A character frequency counter tells you exactly how many times each letter, digit, or symbol appears in your text — and what percentage of the total each character represents. This is essential for cryptography (frequency analysis to crack ciphers), linguistic research, SEO keyword density analysis, data science, and Scrabble strategy. Our free Character Frequency Analyzer processes any text instantly in your browser, showing each character, its count, and its frequency percentage — all ranked from most to least common.',
+    howToUse: [
+      'Paste or type your text into the input box.',
+      'The tool instantly shows every character and how many times it appears.',
+      'View frequency percentage to understand which characters dominate your text.',
+      'Use the sorted list to quickly spot the most and least frequent characters.',
+      'Copy the results or export for your analysis.'
+    ],
+    faqs: [
+      { q: 'What is character frequency analysis?', a: 'Character frequency analysis counts how often each letter, number, or symbol appears in a text. In English, "e" is typically the most frequent letter. This technique is used in cryptography to crack simple ciphers, in linguistics to study language patterns, and in data science to analyze text distributions.' },
+      { q: 'Does it count spaces and punctuation?', a: 'Yes, by default all characters including spaces, punctuation, and numbers are counted. You can filter to show only letters if needed.' },
+      { q: 'Is this useful for cryptography?', a: 'Absolutely. Frequency analysis is a classic method to crack substitution ciphers. Knowing that "e" appears ~13% of the time in English helps identify the cipher key.' },
+      { q: 'Can I analyze non-English text?', a: 'Yes, the tool works with any Unicode text — Hindi, French, Arabic, Chinese, and more.' },
+      { q: 'Is there a text size limit?', a: 'No limit. You can analyze short sentences or large documents with thousands of characters.' }
+    ],
+    benefits: [
+      'Instantly reveals which characters are most and least frequent in any text.',
+      'Essential for cryptography, frequency analysis, and cipher cracking.',
+      'Useful for SEO keyword density checks and linguistic research.',
+      'Works with any language or character set.',
+      'Free and private — all processing happens in your browser.'
+    ],
+    useCases: [
+      'Cryptography and frequency analysis to decode substitution ciphers.',
+      'Linguistic research and language pattern studies.',
+      'SEO analysis — checking keyword character distribution.',
+      'Data science and NLP preprocessing tasks.',
+      'Educational exercises for computer science and statistics.'
+    ],
+    relatedTools: ['character-counter', 'word-counter', 'text-analysis-hub']
+  },
   'letter-counter': {
     title: 'Letter Counter Online Free — Count Letters in Text Instantly ⚡',
     metaDescription: 'Free letter counter online. Count only the letters (A–Z) in any text — excludes spaces, numbers, and punctuation. Instant, accurate, no login needed.',
@@ -596,29 +631,35 @@ const toolSpecificDetails: Record<string, ToolContent> = {
     ]
   },
   'alternating-case': {
-    title: 'Alternating Case — Sarcastic Text Generator Online Free ⚡',
-    metaDescription: 'Convert any text to AlTeRnAtInG cAsE instantly! Perfect for memes, sarcasm, and social media jokes. Free, fast, and works on any device. Try it now!',
-    h1: 'Alternating Case Text Generator — For Memes & Sarcasm',
-    intro: 'AlTeRnAtInG cAsE is the internet\'s favorite way to add sarcasm, humor, or a quirky aesthetic to any message. Our Alternating Case Converter applies the alternating pattern to your text instantly, making it perfect for memes, social media trolling, or just having a laugh. Works on any length of text, from a single word to an entire paragraph.',
+    title: 'Alternating Case Converter — Alternate Between Uppercase & Lowercase Letters Free',
+    metaDescription: 'Alternating case means text alternates between uppercase and lowercase letters — like tHiS. Convert any text to AlTeRnAtInG cAsE instantly. Free, no login, works on any device.',
+    h1: 'Alternating Case Converter — Alternate Between Uppercase & Lowercase Letters',
+    intro: 'Alternating case is a writing style where letters alternate between uppercase and lowercase — for example, "Hello World" becomes "hElLo wOrLd". This pattern, often called "sarcastic case" or "mocking text", is widely used in internet memes, social media humor, and creative typography. Our free Alternating Case Converter applies this effect to any text instantly — just paste and convert. No login, no limits, works on any device.',
     howToUse: [
       'Type or paste your text into the input field.',
-      'Click "aLtErNaTiNg cAsE" to transform it.',
-      'The tool will alternate between uppercase and lowercase letters for a "mocking" or creative effect.',
-      'Copy the fun text for your social media posts.'
+      'The tool automatically alternates between uppercase and lowercase letters for each character.',
+      'Click "Copy" to grab your alternating case text for social media, memes, or creative projects.',
+      'Use the refresh button to swap which letters start uppercase or lowercase.'
     ],
     faqs: [
-      { q: 'What is alternating case?', a: 'It is a style of writing where every other letter is capitalized, often used to convey a sarcastic or mocking tone online.' },
-      { q: 'Does it work with symbols?', a: 'Symbols and numbers remain unchanged, while letters are toggled.' }
+      { q: 'What does "alternate between uppercase and lowercase letters" mean?', a: 'It means each letter in the text switches between uppercase (capital) and lowercase — so "hello" becomes "hElLo". This is called alternating case or sarcastic case. It is commonly used to express a mocking or sarcastic tone in internet culture.' },
+      { q: 'What is alternating case used for?', a: 'Alternating case is used for sarcastic or mocking text in memes (like the SpongeBob mocking meme), funny social media captions, emphasis in informal writing, and creative typography.' },
+      { q: 'Is this the same as "sarcastic text" or "mocking text"?', a: 'Yes! Alternating case, sarcastic case, mocking case, and "sticky caps" all refer to the same effect — text that alternates between uppercase and lowercase letters.' },
+      { q: 'Does it work with symbols and numbers?', a: 'Symbols and numbers remain unchanged, while letters alternate between uppercase and lowercase as expected.' },
+      { q: 'Is this tool free?', a: 'Yes, 100% free with no login, no signup, and no character limits. Works on mobile and desktop.' }
     ],
     benefits: [
-      'Creates eye-catching and humorous social media content.',
-      'Instantly generates the "SpongeBob mocking" meme style text.',
-      'Saves time on manual shift-key toggling.'
+      'Instantly converts any text to alternating uppercase/lowercase pattern.',
+      'Understand the meaning of "alternate between uppercase and lowercase letters" with live example.',
+      'Creates the popular SpongeBob mocking meme text style.',
+      'No login required — works directly in your browser.',
+      '100% free with no character limits.'
     ],
     useCases: [
-      'Creating funny comments or posts on social media.',
-      'Designing creative digital art or posters.',
-      'Sending playful messages to friends.'
+      'Creating sarcastic or mocking text for social media posts and memes.',
+      'Generating alternating case for creative typography and design.',
+      'Making funny captions for TikTok, Instagram, or Twitter.',
+      'Understanding what alternating case looks like before applying it to a project.'
     ]
   },
   'inverse-case': {
@@ -2076,28 +2117,36 @@ const toolSpecificDetails: Record<string, ToolContent> = {
     ]
   },
   'markdown-to-plain': {
-    title: 'Markdown to Plain Text Converter - Strip Markdown Formatting Free',
-    metaDescription: 'Remove all Markdown syntax and convert .md files to clean plain text instantly. Perfect for editors, bloggers, and content tools. Free Markdown stripper!',
-    h1: 'Markdown to Plain Text — Remove All Markdown Formatting Instantly',
-    intro: 'Markdown files are readable as-is, but the asterisks, pound signs, brackets, and backticks cluttering your formatting syntax become obstacles when you need to paste into a plain text context — a Word document, email body, PDF, presentation, or any system that displays raw formatting characters instead of rendering them. Our Markdown to Plain Text converter strips all Markdown syntax: ATX and Setext headings become plain text with the heading text intact; bold and italic markers are removed; links are replaced by their display text (with the URL optionally appended); code fences and inline code backticks are stripped; blockquotes lose their > characters; and list markers are removed or replaced with unicode bullets.',
+    title: 'Markdown to Plain Text — Strip Markdown Bullet Points, Headers & Formatting Free',
+    metaDescription: 'Strip markdown bullet points, headers, bold, links, and all formatting from text instantly. Get clean plain text for emails, Word docs, and CMS. Free, no login.',
+    h1: 'Markdown to Plain Text Converter — Strip Bullet Points, Headers & All Markdown Formatting',
+    intro: 'Markdown files look great in a renderer, but when you paste them into an email body, Word document, PDF, CMS field, or any plain text context, all those asterisks, pound signs, hyphens, and brackets show up as raw characters instead of formatted text. Our Markdown to Plain Text converter strips all Markdown syntax instantly — bullet points (-, *, +), numbered lists, headers (#, ##, ###), bold (**text**), italic (_text_), links ([text](url)), code blocks, blockquotes (>) — and returns the clean readable text. Perfect for converting Markdown content into plain text emails, presentations, or any system that cannot render Markdown.',
     howToUse: [
       'Paste your Markdown text into the input field.',
-      'The tool will instantly strip all Markdown formatting, leaving only the plain text.',
-      'Copy the resulting clean text for your use.'
+      'The tool instantly removes all Markdown formatting — bullet points, headers, bold, italic, links, and code blocks.',
+      'The plain text output preserves your actual content with all the markup stripped.',
+      'Copy the clean text and paste directly into your email, Word doc, or CMS.'
     ],
     faqs: [
-      { q: 'Does it remove the content inside Markdown tags?', a: 'No, it only removes the formatting (e.g., #, **, []), preserving the text content.' },
-      { q: 'Can it handle complex Markdown?', a: 'Yes, it recursively removes all Markdown formatting regardless of complexity.' }
+      { q: 'How do I strip markdown bullet points from a document to get plain text for email bodies?', a: 'Paste your Markdown into this tool. It removes all bullet point markers (-, *, +), numbered list prefixes (1., 2.), headers (#), bold (**), italic (_), and links, leaving only the readable text — ready to paste into any email client.' },
+      { q: 'Does it remove the text content inside Markdown tags?', a: 'No — it only removes the Markdown syntax characters (like **, #, -, [, ]), preserving all the actual text content. Link text is kept; the URL in parentheses is removed.' },
+      { q: 'Can it handle complex nested Markdown?', a: 'Yes, it recursively removes all standard Markdown formatting including nested bold/italic, nested lists, blockquotes, fenced code blocks, and tables.' },
+      { q: 'Will it work on Markdown exported from Notion, Obsidian, or GitHub?', a: 'Yes. The tool handles standard CommonMark syntax used by Notion, Obsidian, GitHub Markdown, and most static site generators.' },
+      { q: 'Is there a file size limit?', a: 'No limit. You can paste and convert large Markdown documents instantly in your browser.' }
     ],
     benefits: [
-      'Quickly extract plain text from Markdown documents.',
-      'Clean up data for analysis or reporting.',
-      'Saves time on manual formatting removal.'
+      'Strip markdown bullet points and convert lists to clean plain text for emails in one click.',
+      'Removes all Markdown syntax including headers, bold, italic, links, and code blocks.',
+      'Perfect for pasting Markdown content into email clients, Word, or CMS systems.',
+      'Preserves all actual text content — only the formatting characters are removed.',
+      'Free, instant, no login required.'
     ],
     useCases: [
-      'Extracting content from blog posts or articles.',
-      'Cleaning up data from Markdown files.',
-      'Preparing plain text versions of Markdown documents.'
+      'Stripping Markdown bullet points from a document to get plain text for email bodies.',
+      'Cleaning up AI-generated Markdown output for pasting into email or Word.',
+      'Converting .md blog posts or README files to plain text for non-Markdown systems.',
+      'Extracting readable content from Markdown exported from Notion or Obsidian.',
+      'Preparing plain text versions of documentation for PDFs or presentations.'
     ]
   },
   'image-to-text': {

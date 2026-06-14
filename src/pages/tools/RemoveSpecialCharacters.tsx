@@ -11,8 +11,8 @@ import CommentSection from '../../components/CommentSection';
 import RemoveSpecialCharactersSEORichContent from '../../components/seo/RemoveSpecialCharactersSEORichContent';
 
 // ─── SEO Constants ──────────────────────────────────────────────────────────
-const SEO_TITLE = 'Remove Special Characters Online — Free, Instant, No Signup | Texly';
-const SEO_DESC = 'Remove special characters from text instantly. Paste your text and get clean output in one click — free, no login required. Perfect for CSV, SEO, email, coding and more.';
+const SEO_TITLE = 'Remove Special Characters Online — Special Character Remover Free | Texly';
+const SEO_DESC = 'Remove special characters from text online — free, instant, no login. Strip @#$%! symbols, punctuation & non-alphanumeric characters in 1 click. Special character remover for Excel, SQL, CSV, Python, SEO & filenames. 100% private.';
 const SEO_KEYWORDS = 'remove special characters online free, remove special characters from text, special character remover online, strip special characters free, remove symbols from text online, remove punctuation from text online, special character cleaner, remove non alphanumeric characters online, sanitize text online free, remove special chars excel, remove special characters python';
 const CANONICAL = 'https://www.texlyonline.in/tool/remove-special-characters-online';
 

@@ -10,9 +10,9 @@ import {
 } from 'lucide-react';
 import TextAnalysisWorkspace from '../../components/TextAnalysisWorkspace';
 
-const SEO_TITLE = "Text Analysis Hub — Word Counter, Density & Character Statistics Online ⚡ Free";
-const SEO_DESC = "Free integrated text analysis suite. Run word counts, letter frequency statistics, sentence analysis, keyword density calculation, and extract emails/URLs recursively in real-time.";
-const SEO_KEYWORDS = "text analysis hub online, word counter free, keyword density calculator, sentence count online, extract emails from text";
+const SEO_TITLE = "Text Analysis Tools — Word Counter, Character Counter, Letter Frequency & Keyword Density | Free Online";
+const SEO_DESC = "Free text analysis tools. Count words, characters, sentences, and letters. Analyze keyword density, character frequency, and extract emails or URLs from text. Instant, no login needed.";
+const SEO_KEYWORDS = "word counter free, character counter online, letter counter online, character frequency counter, keyword density calculator, sentence count online, extract emails from text, text analysis online free";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/text-analysis-hub";
 
 export default function TextAnalysisHub({ activeToolId }: { activeToolId?: string } = {}) {

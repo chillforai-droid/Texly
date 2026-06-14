@@ -575,89 +575,90 @@ function AppContent() {
             {/* Text Analysis Hub redirects */}
             {/* /tool/word-counter-online-free — standalone page defined below (line ~782) */}
             {/* /tool/character-counter-tool — Navigate to word-counter defined below (line ~790) */}
-            <Route path="/tool/letter-counter-online-free"       element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/reading-time-calculator-online"   element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/line-counter-online"              element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/sentence-counter-online"          element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/paragraph-counter-online"         element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/age-calculator-online"            element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/text-density-analyzer"            element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/case-distribution-analyzer"       element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/extract-emails-from-text"         element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/extract-urls-from-text"           element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/jwt-decoder-online"               element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/text-diff-checker-online"         element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/character-frequency-counter"      element={<Navigate to="/tools/text-analysis-hub" replace />} />
-            <Route path="/tool/word-length-statistics"           element={<Navigate to="/tools/text-analysis-hub" replace />} />
+            {/* Text Analysis Hub redirects — with ?tool= for direct tool focus */}
+            <Route path="/tool/letter-counter-online-free"       element={<Navigate to="/tools/text-analysis-hub?tool=letter-counter" replace />} />
+            <Route path="/tool/reading-time-calculator-online"   element={<Navigate to="/tools/text-analysis-hub?tool=reading-time" replace />} />
+            <Route path="/tool/line-counter-online"              element={<Navigate to="/tools/text-analysis-hub?tool=line-counter" replace />} />
+            <Route path="/tool/sentence-counter-online"          element={<Navigate to="/tools/text-analysis-hub?tool=sentence-counter" replace />} />
+            <Route path="/tool/paragraph-counter-online"         element={<Navigate to="/tools/text-analysis-hub?tool=paragraph-counter" replace />} />
+            <Route path="/tool/age-calculator-online"            element={<Navigate to="/tools/text-analysis-hub?tool=age-calculator" replace />} />
+            <Route path="/tool/text-density-analyzer"            element={<Navigate to="/tools/text-analysis-hub?tool=text-density" replace />} />
+            <Route path="/tool/case-distribution-analyzer"       element={<Navigate to="/tools/text-analysis-hub?tool=case-distribution" replace />} />
+            <Route path="/tool/extract-emails-from-text"         element={<Navigate to="/tools/text-analysis-hub?tool=extract-emails" replace />} />
+            <Route path="/tool/extract-urls-from-text"           element={<Navigate to="/tools/text-analysis-hub?tool=extract-urls" replace />} />
+            <Route path="/tool/jwt-decoder-online"               element={<Navigate to="/tools/text-analysis-hub?tool=jwt-decoder" replace />} />
+            <Route path="/tool/text-diff-checker-online"         element={<Navigate to="/tools/text-analysis-hub?tool=text-diff" replace />} />
+            <Route path="/tool/character-frequency-counter"      element={<Navigate to="/tools/text-analysis-hub?tool=character-frequency" replace />} />
+            <Route path="/tool/word-length-statistics"           element={<Navigate to="/tools/text-analysis-hub?tool=word-length" replace />} />
 
-            {/* Text Cleaning Hub redirects */}
-            <Route path="/tool/remove-extra-spaces-online"       element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/remove-line-breaks-tool"          element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/remove-duplicate-lines-tool"      element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/remove-empty-lines-online"        element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/remove-numbers-from-text"         element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/remove-html-tags-online"          element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/clean-text-online-free"           element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/remove-accents-from-text"         element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/remove-emojis-online"             element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/remove-punctuation-tool"          element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/remove-all-whitespace-online"     element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/remove-duplicate-words-online"    element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/trim-text-online"                 element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/whitespace-remover-online"        element={<Navigate to="/tools/text-cleaning-hub" replace />} />
-            <Route path="/tool/markdown-to-plain-text"           element={<Navigate to="/tools/text-cleaning-hub" replace />} />
+            {/* Text Cleaning Hub redirects — with ?tool= for direct tool focus */}
+            <Route path="/tool/remove-extra-spaces-online"       element={<Navigate to="/tools/text-cleaning-hub?tool=remove-extra-spaces" replace />} />
+            <Route path="/tool/remove-line-breaks-tool"          element={<Navigate to="/tools/text-cleaning-hub?tool=remove-line-breaks" replace />} />
+            <Route path="/tool/remove-duplicate-lines-tool"      element={<Navigate to="/tools/text-cleaning-hub?tool=remove-duplicate-lines" replace />} />
+            <Route path="/tool/remove-empty-lines-online"        element={<Navigate to="/tools/text-cleaning-hub?tool=remove-empty-lines" replace />} />
+            <Route path="/tool/remove-numbers-from-text"         element={<Navigate to="/tools/text-cleaning-hub?tool=remove-numbers" replace />} />
+            <Route path="/tool/remove-html-tags-online"          element={<Navigate to="/tools/text-cleaning-hub?tool=remove-html-tags" replace />} />
+            <Route path="/tool/clean-text-online-free"           element={<Navigate to="/tools/text-cleaning-hub?tool=text-cleaner" replace />} />
+            <Route path="/tool/remove-accents-from-text"         element={<Navigate to="/tools/text-cleaning-hub?tool=remove-accents" replace />} />
+            <Route path="/tool/remove-emojis-online"             element={<Navigate to="/tools/text-cleaning-hub?tool=remove-emojis" replace />} />
+            <Route path="/tool/remove-punctuation-tool"          element={<Navigate to="/tools/text-cleaning-hub?tool=remove-punctuation" replace />} />
+            <Route path="/tool/remove-all-whitespace-online"     element={<Navigate to="/tools/text-cleaning-hub?tool=remove-all-whitespace" replace />} />
+            <Route path="/tool/remove-duplicate-words-online"    element={<Navigate to="/tools/text-cleaning-hub?tool=remove-duplicate-words" replace />} />
+            <Route path="/tool/trim-text-online"                 element={<Navigate to="/tools/text-cleaning-hub?tool=trim-text" replace />} />
+            <Route path="/tool/whitespace-remover-online"        element={<Navigate to="/tools/text-cleaning-hub?tool=whitespace-remover" replace />} />
+            <Route path="/tool/markdown-to-plain-text"           element={<Navigate to="/tools/text-cleaning-hub?tool=markdown-to-plain" replace />} />
 
-            {/* Text Converter Hub redirects */}
-            <Route path="/tool/upper-case-converter"             element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/lower-case-converter"             element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/title-case-converter"             element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/sentence-case-converter"          element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/camel-case-converter"             element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/snake-case-converter"             element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/kebab-case-converter"             element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/pascal-case-converter"            element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/constant-case-converter"          element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/alternating-case-converter"       element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/inverse-case-converter"           element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/base64-encode-online"             element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/base64-decode-online"             element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/url-encode-online"                element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/url-decode-online"                element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/html-entity-encoder"              element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/html-entity-decoder"              element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/text-to-hex-converter"            element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/hex-to-text-converter"            element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/text-to-binary-converter"         element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/binary-to-text-converter"         element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/rot13-cipher-online"              element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/morse-code-translator"            element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/military-alphabet-converter"      element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/slug-generator-online-free"       element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/number-to-words-converter"        element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/braille-translator-online"        element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/nato-phonetic-alphabet-translator" element={<Navigate to="/tools/text-converter-hub" replace />} />
-            <Route path="/tool/unit-converter-online"            element={<Navigate to="/tools/text-converter-hub" replace />} />
+            {/* Text Converter Hub redirects — with ?tool= for direct tool focus */}
+            <Route path="/tool/upper-case-converter"             element={<Navigate to="/tools/text-converter-hub?tool=upper-case" replace />} />
+            <Route path="/tool/lower-case-converter"             element={<Navigate to="/tools/text-converter-hub?tool=lower-case" replace />} />
+            <Route path="/tool/title-case-converter"             element={<Navigate to="/tools/text-converter-hub?tool=title-case" replace />} />
+            <Route path="/tool/sentence-case-converter"          element={<Navigate to="/tools/text-converter-hub?tool=sentence-case" replace />} />
+            <Route path="/tool/camel-case-converter"             element={<Navigate to="/tools/text-converter-hub?tool=camel-case" replace />} />
+            <Route path="/tool/snake-case-converter"             element={<Navigate to="/tools/text-converter-hub?tool=snake-case" replace />} />
+            <Route path="/tool/kebab-case-converter"             element={<Navigate to="/tools/text-converter-hub?tool=kebab-case" replace />} />
+            <Route path="/tool/pascal-case-converter"            element={<Navigate to="/tools/text-converter-hub?tool=pascal-case" replace />} />
+            <Route path="/tool/constant-case-converter"          element={<Navigate to="/tools/text-converter-hub?tool=constant-case" replace />} />
+            <Route path="/tool/alternating-case-converter"       element={<Navigate to="/tools/text-converter-hub?tool=alternating-case" replace />} />
+            <Route path="/tool/inverse-case-converter"           element={<Navigate to="/tools/text-converter-hub?tool=inverse-case" replace />} />
+            <Route path="/tool/base64-encode-online"             element={<Navigate to="/tools/text-converter-hub?tool=base64-encode" replace />} />
+            <Route path="/tool/base64-decode-online"             element={<Navigate to="/tools/text-converter-hub?tool=base64-decode" replace />} />
+            <Route path="/tool/url-encode-online"                element={<Navigate to="/tools/text-converter-hub?tool=url-encode" replace />} />
+            <Route path="/tool/url-decode-online"                element={<Navigate to="/tools/text-converter-hub?tool=url-decode" replace />} />
+            <Route path="/tool/html-entity-encoder"              element={<Navigate to="/tools/text-converter-hub?tool=html-entity-encode" replace />} />
+            <Route path="/tool/html-entity-decoder"              element={<Navigate to="/tools/text-converter-hub?tool=html-entity-decode" replace />} />
+            <Route path="/tool/text-to-hex-converter"            element={<Navigate to="/tools/text-converter-hub?tool=hex-encode" replace />} />
+            <Route path="/tool/hex-to-text-converter"            element={<Navigate to="/tools/text-converter-hub?tool=hex-decode" replace />} />
+            <Route path="/tool/text-to-binary-converter"         element={<Navigate to="/tools/text-converter-hub?tool=text-to-binary" replace />} />
+            <Route path="/tool/binary-to-text-converter"         element={<Navigate to="/tools/text-converter-hub?tool=binary-to-text" replace />} />
+            <Route path="/tool/rot13-cipher-online"              element={<Navigate to="/tools/text-converter-hub?tool=rot13" replace />} />
+            <Route path="/tool/morse-code-translator"            element={<Navigate to="/tools/text-converter-hub?tool=morse-code" replace />} />
+            <Route path="/tool/military-alphabet-converter"      element={<Navigate to="/tools/text-converter-hub?tool=military-alphabet" replace />} />
+            <Route path="/tool/slug-generator-online-free"       element={<Navigate to="/tools/text-converter-hub?tool=slug-generator" replace />} />
+            <Route path="/tool/number-to-words-converter"        element={<Navigate to="/tools/text-converter-hub?tool=number-to-words" replace />} />
+            <Route path="/tool/braille-translator-online"        element={<Navigate to="/tools/text-converter-hub?tool=braille-translator" replace />} />
+            <Route path="/tool/nato-phonetic-alphabet-translator" element={<Navigate to="/tools/text-converter-hub?tool=nato-phonetic" replace />} />
+            <Route path="/tool/unit-converter-online"            element={<Navigate to="/tools/text-converter-hub?tool=unit-converter" replace />} />
 
-            {/* Text Utility Hub redirects */}
-            <Route path="/tool/text-reverser-online"             element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/text-repeater-tool"               element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/sort-lines-alphabetically"        element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/find-and-replace-text-online"     element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/add-prefix-suffix-to-lines"       element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/upside-down-text-generator"       element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/mirror-text-generator"            element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/lorem-ipsum-generator-online"     element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/random-string-generator-online"   element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/fancy-text-generator-online"      element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/zalgo-text-generator"             element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/ascii-banner-generator"           element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/whatsapp-text-formatter"          element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/json-formatter-online"            element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/csv-to-json-converter"            element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/json-to-csv-converter-online"     element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/sql-formatter-online"             element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/pregnancy-due-date-calculator"    element={<Navigate to="/tools/text-utility-hub" replace />} />
-            <Route path="/tool/text-steganography-hidden-message" element={<Navigate to="/tools/text-utility-hub" replace />} />
+            {/* Text Utility Hub redirects — with ?tool= for direct tool focus */}
+            <Route path="/tool/text-reverser-online"             element={<Navigate to="/tools/text-utility-hub?tool=text-reverser" replace />} />
+            <Route path="/tool/text-repeater-tool"               element={<Navigate to="/tools/text-utility-hub?tool=text-repeater" replace />} />
+            <Route path="/tool/sort-lines-alphabetically"        element={<Navigate to="/tools/text-utility-hub?tool=sort-lines" replace />} />
+            <Route path="/tool/find-and-replace-text-online"     element={<Navigate to="/tools/text-utility-hub?tool=find-replace" replace />} />
+            <Route path="/tool/add-prefix-suffix-to-lines"       element={<Navigate to="/tools/text-utility-hub?tool=add-prefix" replace />} />
+            <Route path="/tool/upside-down-text-generator"       element={<Navigate to="/tools/text-utility-hub?tool=upside-down" replace />} />
+            <Route path="/tool/mirror-text-generator"            element={<Navigate to="/tools/text-utility-hub?tool=mirror-text" replace />} />
+            <Route path="/tool/lorem-ipsum-generator-online"     element={<Navigate to="/tools/text-utility-hub?tool=lorem-ipsum" replace />} />
+            <Route path="/tool/random-string-generator-online"   element={<Navigate to="/tools/text-utility-hub?tool=random-string" replace />} />
+            <Route path="/tool/fancy-text-generator-online"      element={<Navigate to="/tools/text-utility-hub?tool=fancy-text" replace />} />
+            <Route path="/tool/zalgo-text-generator"             element={<Navigate to="/tools/text-utility-hub?tool=zalgo-text" replace />} />
+            <Route path="/tool/ascii-banner-generator"           element={<Navigate to="/tools/text-utility-hub?tool=ascii-banner" replace />} />
+            <Route path="/tool/whatsapp-text-formatter"          element={<Navigate to="/tools/text-utility-hub?tool=whatsapp-formatter" replace />} />
+            <Route path="/tool/json-formatter-online"            element={<Navigate to="/tools/text-utility-hub?tool=json-formatter" replace />} />
+            <Route path="/tool/csv-to-json-converter"            element={<Navigate to="/tools/text-utility-hub?tool=csv-to-json" replace />} />
+            <Route path="/tool/json-to-csv-converter-online"     element={<Navigate to="/tools/text-utility-hub?tool=json-to-csv" replace />} />
+            <Route path="/tool/sql-formatter-online"             element={<Navigate to="/tools/text-utility-hub?tool=sql-formatter" replace />} />
+            <Route path="/tool/pregnancy-due-date-calculator"    element={<Navigate to="/tools/text-utility-hub?tool=pregnancy-calculator" replace />} />
+            <Route path="/tool/text-steganography-hidden-message" element={<Navigate to="/tools/text-utility-hub?tool=steganography" replace />} />
             <Route path="/tool/password-generator-strength-meter" element={<Navigate to="/tools/text-utility-hub" replace />} />
             <Route path="/tool/youtube-timestamp-generator"      element={<Navigate to="/tools/text-utility-hub" replace />} />
             <Route path="/tool/invisible-text-generator"         element={<Navigate to="/tools/text-utility-hub" replace />} />

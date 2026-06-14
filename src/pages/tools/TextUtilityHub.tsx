@@ -12,8 +12,8 @@ import {
   Play
 } from 'lucide-react';
 
-const SEO_TITLE = "Text Utility Toolkit — Reverse, Repeat, Sort, Lorem Ipsum, Find & Replace & 25+ Tools ⚡";
-const SEO_DESC = "Free all-in-one text utility toolkit. Reverse text, repeat text, sort lines, generate Lorem Ipsum, find and replace, add prefix/suffix, format JSON and SQL. 25+ tools. No login. Browser-based.";
+const SEO_TITLE = "Text Utility Tools — Find & Replace, Text Repeater, Reverse Text, Sort Lines, Lorem Ipsum & More | Free Online";
+const SEO_DESC = "Free text utility tools. Find and replace text online, repeat text, reverse text, sort lines alphabetically, generate Lorem Ipsum, add prefix/suffix, format JSON and SQL. 25+ tools. No login.";
 const SEO_KEYWORDS = "text utility tools online free, text reverser online, text repeater online, sort lines alphabetically, lorem ipsum generator, find and replace text online, json formatter online";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/text-utility-hub";
 

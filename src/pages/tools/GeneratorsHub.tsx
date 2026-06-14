@@ -11,8 +11,8 @@ import {
   Volume2
 } from 'lucide-react';
 
-const SEO_TITLE = "Generators & Calculators Hub — Signature, Age, QR, Audio Morse & More ⚡ Free";
-const SEO_DESC = "Free all-in-one generator toolkit. Access signature drawer canvas, exact age calculator, QR code builder, Morse Audio synthesizer, security hash calculator, directory ASCII tree generator under one dashboard.";
+const SEO_TITLE = "Online Generators — QR Code Generator, Age Calculator, Random String, Signature & More | Free";
+const SEO_DESC = "Free online generators. Create QR codes, generate random strings, calculate exact age, draw digital signatures, generate ASCII banners, and play Morse code audio. No login required.";
 const SEO_KEYWORDS = "generators hub online free, online signature generator, qr code generator free, morse code audio play, age calculator online free, hash generator sha256";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/generators-hub";
 
