@@ -112,6 +112,19 @@ export const TOOLS: Tool[] = [
     process: (s) => s
   },
   {
+    id: 'image-upscaler-enhancer',
+    name: 'AI Image Upscaler & Enhancer - Upscale & Fix Photos Online Free ⚡',
+    slug: 'image-upscaler-enhancer',
+    category: 'ai',
+    shortDescription: '2-in-1 AI tool: upscale resolution up to 4x or enhance blurry, noisy photos instantly.',
+    description: 'Texly\'s AI Image Upscaler & Enhancer combines two AI tools in one page. Upscale low-resolution images up to 4x, or enhance blurry, noisy, low-quality photos for instant clarity — switch modes instantly, no login required.',
+    icon: 'Maximize',
+    keywords: ['ai image upscaler and enhancer', 'upscale and enhance photo online free', 'increase image resolution ai', 'fix blurry photo online free', 'photo quality booster ai', 'image upscaler enhancer free', '2 in 1 photo enhancer ai'],
+    primaryKeyword: 'ai image upscaler and enhancer',
+    secondaryKeywords: ['upscale and enhance photo online free', 'fix blurry photo online free', 'increase image resolution ai'],
+    process: (s) => s
+  },
+  {
     id: 'image-generator',
     name: 'Free AI Image Generator - Create Stunning Art from Text ⚡',
     slug: 'image-generator',

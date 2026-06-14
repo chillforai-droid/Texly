@@ -80,6 +80,7 @@ const BackgroundRemover = lazy(() => import('./pages/tools/BackgroundRemover'));
 const ImageEnhancer = lazy(() => import('./pages/tools/ImageEnhancer'));
 const ImageCompressor = lazy(() => import('./pages/tools/ImageCompressor'));
 const ImageUpscale = lazy(() => import('./pages/tools/ImageUpscale'));
+const ImageUpscaleEnhancer = lazy(() => import('./pages/tools/ImageUpscaleEnhancer'));
 const ImageGenerator = lazy(() => import('./pages/tools/ImageGenerator'));
 const ImageFormatConverter = lazy(() => import('./pages/tools/ImageFormatConverter'));
 const SnapchatTagGenerator = lazy(
@@ -153,7 +154,7 @@ function ToolRouteWrapper() {
   const { slug } = useParams();
   // Hardcoded special tools jo /tools/ path pe hain
   const HARDCODED_AI_SLUGS = new Set([
-    'face-swap', 'bg-remover', 'enhancer', 'compressor', 'image-upscale',
+    'face-swap', 'bg-remover', 'enhancer', 'compressor', 'image-upscale', 'image-upscaler-enhancer',
     'image-generator', 'ai-text-suite', 'invisible-text-suite',
     'snapchat-tag-generator', 'robots-txt-tester', 'json-path-finder',
     'regex-explainer', 'cron-expression-generator', 'redirect-chain-checker',
@@ -723,6 +724,14 @@ function AppContent() {
               element={
                 <RouteErrorBoundary>
                   <ImageUpscale />
+                </RouteErrorBoundary>
+              }
+            />
+            <Route
+              path="/tools/image-upscaler-enhancer"
+              element={
+                <RouteErrorBoundary>
+                  <ImageUpscaleEnhancer />
                 </RouteErrorBoundary>
               }
             />

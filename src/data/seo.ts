@@ -3498,6 +3498,61 @@ const toolSpecificDetails: Record<string, ToolContent> = {
     `
   },
 
+  'image-upscaler-enhancer': {
+    title: 'AI Image Upscaler & Enhancer Online Free — Upscale + Fix Photos in One Tool ⚡',
+    metaDescription: 'Free 2-in-1 AI tool: upscale image resolution up to 4x or enhance blurry, noisy photos for instant clarity. No login, no signup, fast cloud processing.',
+    h1: 'AI Image Upscaler & Enhancer — One Tool, Two Superpowers',
+    intro: 'Most photo problems fall into one of two buckets: the image is too small, or the image looks rough at its current size. Texly\'s AI Image Upscaler & Enhancer addresses both from a single page. Switch to Upscale mode and a super-resolution model reconstructs plausible new pixels, growing your image up to 4x while keeping edges, skin texture, and fine detail looking natural — ideal for printing, large displays, or meeting marketplace resolution minimums. Switch to Enhance mode and a denoising and sharpening model cleans up grain, JPEG blockiness, and softness without changing the image dimensions — ideal for phone photos taken in low light or images that have been compressed too many times. Many photos benefit from both: enhance first to clean up noise, then upscale the cleaned result for a sharper, larger final image. Everything runs through secure cloud AI with a live before/after slider so you can judge the result before downloading.',
+    howToUse: [
+      'Choose a mode at the top: "Upscale Resolution" to enlarge the image, or "Enhance Quality" to clean up an existing-size photo.',
+      'Upload your image — any common format, up to 10MB.',
+      'Click the action button to start AI processing on a cloud GPU.',
+      'Use the before/after slider to inspect the result at full resolution.',
+      'Optionally switch modes and run the result through the other process for a combined effect.',
+      'Download your final image — original quality, no extra signup required.'
+    ],
+    faqs: [
+      { q: 'What is the difference between Upscale and Enhance?', a: 'Upscale increases the pixel dimensions of your image (e.g. doubling or quadrupling width and height) using AI super-resolution. Enhance keeps the dimensions the same but improves quality — removing noise, sharpening edges, and fixing compression artifacts.' },
+      { q: 'Should I enhance or upscale first?', a: 'If your photo is both small and noisy, enhance first to clean up grain and artifacts, then upscale the cleaned result. Upscaling a noisy image first can make the noise pattern larger and more visible.' },
+      { q: 'How much bigger does Upscale make my image?', a: 'The model typically outputs roughly 2x to 4x the original dimensions depending on the source resolution. A 500x500 image can become approximately 2000x2000 pixels.' },
+      { q: 'Will Enhance fix a completely out-of-focus photo?', a: 'Enhance can sharpen edges and reduce noise, improving perceived clarity, but it cannot recover detail that was never captured. Severely out-of-focus subjects will look sharper but may still be unrecognizable.' },
+      { q: 'Is this tool free and is there a watermark?', a: 'Yes, both modes are completely free with no login required. The raw AI result has no watermark; a small Texly credit is added only to the file you download.' },
+      { q: 'What image formats and sizes are supported?', a: 'JPG, PNG, and WebP images up to 10MB are supported in both modes. For very large source images, processing may take longer.' },
+      { q: 'Can I use this for product photos or profile pictures?', a: 'Yes — Upscale is popular for meeting e-commerce minimum resolution requirements, and Enhance is popular for cleaning up profile pictures and social media uploads taken in low light.' }
+    ],
+    benefits: [
+      'Two AI tools in one interface — switch instantly, no page reload',
+      'Upscale resolution up to 4x with natural-looking detail',
+      'Enhance removes noise, sharpens edges, fixes JPEG artifacts',
+      'Live before/after comparison slider for both modes',
+      'Combine both modes for maximum quality on very low-res photos',
+      'No login, no watermark on the raw AI output, fast cloud processing'
+    ],
+    useCases: [
+      'Enlarging small product photos to meet marketplace resolution requirements',
+      'Cleaning up grainy photos taken in low light before posting on social media',
+      'Restoring old, low-resolution family photos for printing and framing',
+      'Sharpening slightly soft or compressed screenshots for documentation',
+      'Preparing website hero images that need both more detail and higher resolution',
+      'Fixing heavily compressed images downloaded from messaging apps'
+    ],
+    relatedTools: ['image-upscale', 'enhancer', 'bg-remover', 'face-swap'],
+    extraInfo: `
+      <h2>Why Combine Upscaling and Enhancement?</h2>
+      <p>Upscaling and enhancement solve different problems, but real-world photos often suffer from both at once. A photo taken on an older phone in low light might be both small (1200x900) and noisy (visible grain in shadows). Upscaling alone would make the noise pattern larger and more obvious. Enhancing alone would leave the image too small for printing. Running Enhance first removes the grain at the original size, then Upscale enlarges the cleaned image — the noise has nowhere to hide and won't be amplified.</p>
+
+      <h3>Choosing the Right Mode for Your Photo</h3>
+      <ul>
+        <li><strong>Use Upscale when:</strong> the image dimensions (in pixels) are too small for your intended use — printing, large monitors, or platform minimums.</li>
+        <li><strong>Use Enhance when:</strong> the dimensions are fine, but the image looks soft, grainy, or blocky from compression.</li>
+        <li><strong>Use both when:</strong> the photo is small AND rough-looking — enhance first, then upscale the result.</li>
+      </ul>
+
+      <h3>Realistic Expectations</h3>
+      <p>Both AI models add information that wasn't perfectly preserved in the original — Upscale synthesizes plausible new pixels for the larger canvas, and Enhance infers what clean detail likely looked like beneath noise and compression artifacts. Results are visually convincing for everyday use (social media, web, standard prints) but are not a substitute for a higher-quality original capture. For severely damaged or historically important photos, professional manual restoration may still produce more accurate results. After processing, the <a href="/tool/image-compressor">Image Compressor</a> can help manage file size, and the <a href="/tool/bg-remover">Background Remover</a> or <a href="/tool/face-swap">Face Swap</a> tools pair well for further edits.</p>
+    `
+  },
+
   'image-generator': {
     title: 'AI Image Generator — Create Images from Text Free ⚡ (Instant)',
     metaDescription: 'Generate stunning AI images from text prompts in seconds. Art, illustrations, realistic photos — free AI image generator online. No signup, unlimited generations.',
