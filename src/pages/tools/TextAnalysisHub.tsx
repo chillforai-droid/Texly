@@ -89,7 +89,6 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
     let sample = '';
 
     switch (tool) {
-      // Basic tools
       case 'word-counter':
         tab = 'basic'; subTool = 'word-counter'; 
         sample = 'The quick brown fox jumps over the lazy dog. This is a sample sentence for word counting and analysis purposes.'; 
@@ -110,8 +109,6 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
         tab = 'basic'; subTool = 'line-counter'; 
         sample = 'Line one\nLine two\nLine three\nLine four'; 
         break;
-      
-      // Extract tools
       case 'extract-emails':
         tab = 'extract'; subTool = 'extract-emails'; 
         sample = 'Contact us at support@texlyonline.in or admin@texlyonline.in. For sales: sales@example.com'; 
@@ -132,8 +129,6 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
         tab = 'extract'; subTool = 'extract-mentions'; 
         sample = '@john @jane_doe Please contact @support_team for help. @elonmusk tweeted this.'; 
         break;
-      
-      // Advanced tools
       case 'keyword-density':
         tab = 'advanced'; subTool = 'keyword-density'; 
         sample = 'text analysis text processing text tools text utilities text cleaning text conversion text analysis platform text tools are great for text processing'; 
@@ -154,8 +149,6 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
         tab = 'advanced'; subTool = 'readability-score'; 
         sample = 'The Flesch Reading Ease test measures readability. Longer sentences and complex words reduce the score. Short sentences and simple words increase it.'; 
         break;
-      
-      // Special tools
       case 'age-calculator':
         tab = 'special'; subTool = 'age-calculator'; 
         setBirthDate('1995-10-15');
@@ -177,6 +170,8 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
         tab = 'special'; subTool = 'hash-generator'; 
         sample = 'Hello World'; 
         break;
+      default:
+        return;
     }
 
     setActiveTab(tab);
@@ -196,9 +191,6 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
     setOutput('');
     setCompareText('');
     setBirthDate('');
-    if (activeTool === 'jwt-decoder') {
-      setInput('');
-    }
   };
 
   // Word Counter Analysis
@@ -239,7 +231,7 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
 
   // Line Counter
   const analyzeLines = (text: string) => {
-    const lines = text.split('\n').filter(l => l.length > 0);
+    const lines = text.split('\n');
     return { count: lines.length, nonEmpty: lines.filter(l => l.trim().length > 0).length };
   };
 
@@ -285,7 +277,7 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
     const freq: Record<string, number> = {};
     words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
     const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 20);
-    return sorted.map(([word, count]) => ({ word, count, density: ((count / total) * 100).toFixed(2) }));
+    return sorted.map(([word, count]) => ({ word, count, density: total ? ((count / total) * 100).toFixed(2) : '0' }));
   };
 
   // Letter Frequency
@@ -321,7 +313,7 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
     return { upper, lower, titleWords: title, sentenceStarts: sentence + (text[0] >= 'A' && text[0] <= 'Z' ? 1 : 0) };
   };
 
-  // Readability Score (Flesch Reading Ease)
+  // Readability Score
   const analyzeReadability = (text: string) => {
     const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
     const words = text.trim().split(/\s+/).filter(Boolean);
@@ -370,7 +362,7 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
   const decodeJWT = (token: string) => {
     try {
       const parts = token.split('.');
-      if (parts.length !== 3) return { error: 'Invalid JWT format. Expected 3 parts.' };
+      if (parts.length !== 3) return { error: 'Invalid JWT format. Expected 3 parts.', valid: false };
       const header = JSON.parse(atob(parts[0]));
       const payload = JSON.parse(atob(parts[1]));
       return { header, payload, signature: parts[2], valid: true };
@@ -400,11 +392,18 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
 
   // Hash Generator
   const generateHash = async (text: string, type: 'md5' | 'sha1' | 'sha256') => {
+    if (!text) return 'No input provided';
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
     if (type === 'md5') {
-      // Simple MD5 simulation - for real MD5, use a library
-      return `MD5_${btoa(text).slice(0, 32)}`;
+      // Simple hash for MD5 (in production use a proper MD5 library)
+      let hash = 0;
+      for (let i = 0; i < text.length; i++) {
+        const char = text.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      return Math.abs(hash).toString(16);
     }
     const hashBuffer = await crypto.subtle.digest(type === 'sha1' ? 'SHA-1' : 'SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -412,7 +411,7 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
   };
 
   const processText = useCallback(async () => {
-    if (!input && activeTool !== 'age-calculator' && activeTool !== 'text-diff') {
+    if (!input && activeTool !== 'age-calculator' && activeTool !== 'text-diff' && activeTool !== 'base64-decode') {
       setOutput('No input provided. Please enter some text.');
       return;
     }
@@ -578,11 +577,11 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
       case 'text-diff': {
         const diff = compareTexts(compareText, input);
         result = `🔄 TEXT DIFF COMPARISON\n\n`;
-        result += `📝 TEXT 1 (Original): ${diff.firstLength} words\n`;
-        result += `📝 TEXT 2 (Compare): ${diff.secondLength} words\n\n`;
+        result += `📝 TEXT 1 (Compare Text): ${diff.firstLength} words\n`;
+        result += `📝 TEXT 2 (Original): ${diff.secondLength} words\n\n`;
         result += `✅ Common words: ${diff.common.length}\n`;
-        result += `➕ Only in Text 1: ${diff.onlyInFirst.slice(0, 20).join(', ')}${diff.onlyInFirst.length > 20 ? '...' : ''}\n`;
-        result += `➖ Only in Text 2: ${diff.onlyInSecond.slice(0, 20).join(', ')}${diff.onlyInSecond.length > 20 ? '...' : ''}\n`;
+        result += `➕ Only in Compare Text: ${diff.onlyInFirst.slice(0, 20).join(', ')}${diff.onlyInFirst.length > 20 ? '...' : ''}\n`;
+        result += `➖ Only in Original: ${diff.onlyInSecond.slice(0, 20).join(', ')}${diff.onlyInSecond.length > 20 ? '...' : ''}\n`;
         break;
       }
       case 'base64-decode': {
@@ -590,8 +589,8 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
         break;
       }
       case 'hash-generator': {
-        result = await generateHash(input, hashType);
-        result = `${hashType.toUpperCase()} HASH\n\n${result}`;
+        const hash = await generateHash(input, hashType);
+        result = `${hashType.toUpperCase()} HASH\n\n${hash}`;
         break;
       }
       default:
@@ -604,6 +603,8 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
   useEffect(() => {
     if (input || activeTool === 'age-calculator' || activeTool === 'text-diff') {
       processText();
+    } else if (activeTool === 'base64-decode' && !input) {
+      setOutput('');
     } else {
       setOutput('');
     }
@@ -615,6 +616,7 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
     return tool?.description || 'Analyze and extract insights from your text content.';
   };
 
+  // FAQ Data
   const faqs = [
     { q: "What analysis tools reside within this hub?", a: "This workspace integrates word counter, character statistics, sentence analyzers, paragraph trackers, keyword density mapping, email/URL extraction, JWT decoder, age calculator, text diff, and hash generator under one screen." },
     { q: "Is my pasted paragraph secure during analysis?", a: "100% private. All character scanning metrics, token splitting, and density parsing routines are executed in browser volatile memory locally, leaving no trace logs." },
@@ -718,25 +720,25 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
             </div>
             <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible gap-1.5 pb-2 md:pb-0 scrollbar-none snap-x snap-mandatory">
               <button 
-                onClick={() => { setActiveTab('basic'); setActiveTool('word-counter'); setInput(''); setOutput(''); }}
+                onClick={() => { setActiveTab('basic'); setActiveTool('word-counter'); setInput(''); setOutput(''); setCompareText(''); setBirthDate(''); }}
                 className={`flex-shrink-0 md:flex-shrink py-1.5 px-3 rounded-lg text-left text-xs font-bold whitespace-nowrap transition-all snap-start ${activeTab === 'basic' ? 'bg-amber-500 text-white' : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/30 dark:hover:bg-slate-800/80 text-slate-600 dark:text-slate-400 md:bg-transparent md:dark:bg-transparent'}`}
               >
                 Basic Counters
               </button>
               <button 
-                onClick={() => { setActiveTab('extract'); setActiveTool('extract-emails'); setInput(''); setOutput(''); }}
+                onClick={() => { setActiveTab('extract'); setActiveTool('extract-emails'); setInput(''); setOutput(''); setCompareText(''); setBirthDate(''); }}
                 className={`flex-shrink-0 md:flex-shrink py-1.5 px-3 rounded-lg text-left text-xs font-bold whitespace-nowrap transition-all snap-start ${activeTab === 'extract' ? 'bg-amber-500 text-white' : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/30 dark:hover:bg-slate-800/80 text-slate-600 dark:text-slate-400 md:bg-transparent md:dark:bg-transparent'}`}
               >
                 Extractors
               </button>
               <button 
-                onClick={() => { setActiveTab('advanced'); setActiveTool('keyword-density'); setInput(''); setOutput(''); }}
+                onClick={() => { setActiveTab('advanced'); setActiveTool('keyword-density'); setInput(''); setOutput(''); setCompareText(''); setBirthDate(''); }}
                 className={`flex-shrink-0 md:flex-shrink py-1.5 px-3 rounded-lg text-left text-xs font-bold whitespace-nowrap transition-all snap-start ${activeTab === 'advanced' ? 'bg-amber-500 text-white' : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/30 dark:hover:bg-slate-800/80 text-slate-600 dark:text-slate-400 md:bg-transparent md:dark:bg-transparent'}`}
               >
                 Advanced Analysis
               </button>
               <button 
-                onClick={() => { setActiveTab('special'); setActiveTool('age-calculator'); setInput(''); setOutput(''); }}
+                onClick={() => { setActiveTab('special'); setActiveTool('age-calculator'); setInput(''); setOutput(''); setCompareText(''); setBirthDate('1995-10-15'); }}
                 className={`flex-shrink-0 md:flex-shrink py-1.5 px-3 rounded-lg text-left text-xs font-bold whitespace-nowrap transition-all snap-start ${activeTab === 'special' ? 'bg-amber-500 text-white' : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/30 dark:hover:bg-slate-800/80 text-slate-600 dark:text-slate-400 md:bg-transparent md:dark:bg-transparent'}`}
               >
                 Special Tools
@@ -830,17 +832,6 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div className="flex flex-col border border-slate-200 dark:border-slate-800 rounded-xl h-[180px] overflow-hidden">
                     <div className="bg-slate-50 dark:bg-slate-900/50 px-3 py-1.5 border-b border-slate-200 dark:border-slate-800">
-                      <span className="text-[10px] font-bold text-slate-500">Original Text</span>
-                    </div>
-                    <textarea 
-                      value={input} 
-                      onChange={(e) => setInput(e.target.value)}
-                      className="flex-1 p-3 bg-transparent resize-none text-xs text-slate-800 dark:text-slate-200 outline-none leading-relaxed"
-                      placeholder="Original text..."
-                    />
-                  </div>
-                  <div className="flex flex-col border border-slate-200 dark:border-slate-800 rounded-xl h-[180px] overflow-hidden">
-                    <div className="bg-slate-50 dark:bg-slate-900/50 px-3 py-1.5 border-b border-slate-200 dark:border-slate-800">
                       <span className="text-[10px] font-bold text-slate-500">Compare Text</span>
                     </div>
                     <textarea 
@@ -848,6 +839,17 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
                       onChange={(e) => setCompareText(e.target.value)}
                       className="flex-1 p-3 bg-transparent resize-none text-xs text-slate-800 dark:text-slate-200 outline-none leading-relaxed"
                       placeholder="Text to compare..."
+                    />
+                  </div>
+                  <div className="flex flex-col border border-slate-200 dark:border-slate-800 rounded-xl h-[180px] overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-3 py-1.5 border-b border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] font-bold text-slate-500">Original Text</span>
+                    </div>
+                    <textarea 
+                      value={input} 
+                      onChange={(e) => setInput(e.target.value)}
+                      className="flex-1 p-3 bg-transparent resize-none text-xs text-slate-800 dark:text-slate-200 outline-none leading-relaxed"
+                      placeholder="Original text..."
                     />
                   </div>
                 </div>
@@ -886,7 +888,7 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
                   )}
                 </div>
                 <pre className="p-3 bg-transparent text-xs text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap font-mono min-h-[200px] max-h-[300px] overflow-auto">
-                  {output || 'Click "Analyze Now" to see results...'}
+                  {output || 'Select a tool and click "Analyze Now" to see results...'}
                 </pre>
               </div>
 
@@ -975,7 +977,7 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
           </div>
         </section>
 
-        {/* FAQ list */}
+        {/* FAQ SECTION - Now properly added */}
         <section className="mb-12">
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-6">
             Frequently Asked Questions
