@@ -22,6 +22,7 @@ const BackgroundRemover = lazy(() => import('./tools/BackgroundRemover'));
 const ImageEnhancer = lazy(() => import('./tools/ImageEnhancer'));
 const ImageCompressor = lazy(() => import('./tools/ImageCompressor'));
 const ImageUpscale = lazy(() => import('./tools/ImageUpscale'));
+const ImageUpscaleEnhancer = lazy(() => import('./tools/ImageUpscaleEnhancer'));
 const ImageGenerator = lazy(() => import('./tools/ImageGenerator'));
 const ImageFormatConverter = lazy(() => import('./tools/ImageFormatConverter'));
 const RobotsTxtTester = lazy(() => import('./tools/RobotsTxtTester'));
@@ -75,9 +76,10 @@ export default function ToolDetail() {
     switch (tool.id) {
       case 'face-swap': return <FaceSwap />;
       case 'bg-remover': return <BackgroundRemover />;
-      case 'enhancer': return <ImageEnhancer />;
+      case 'enhancer': return <Navigate to="/tools/image-upscaler-enhancer?mode=enhance" replace />;
       case 'compressor': return <ImageCompressor />;
-      case 'image-upscale': return <ImageUpscale />;
+      case 'image-upscale': return <Navigate to="/tools/image-upscaler-enhancer?mode=upscale" replace />;
+      case 'image-upscaler-enhancer': return <ImageUpscaleEnhancer />;
       case 'image-generator': return <ImageGenerator />;
       case 'image-format-converter': return <ImageFormatConverter />;
       case 'robots-txt-tester': return <RobotsTxtTester />;
