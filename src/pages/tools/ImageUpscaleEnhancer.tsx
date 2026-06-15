@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import {
   Upload,
@@ -27,6 +28,8 @@ import BeforeAfterSlider from '../../components/BeforeAfterSlider';
 import SocialShare from '../../components/SocialShare';
 import { useToolSuccess, useToolFailure } from '../../components/TexlyAI';
 import ImageUpscaleEnhancerSEORichContent from '../../components/seo/ImageUpscaleEnhancerSEORichContent';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 
 type Mode = 'upscale' | 'enhance';
 
@@ -68,7 +71,9 @@ const STATS = [
 ];
 
 const ImageUpscaleEnhancer = () => {
-  const [mode, setMode] = useState<Mode>('upscale');
+  const [searchParams] = useSearchParams();
+  const initialMode = searchParams.get('mode') === 'enhance' ? 'enhance' : 'upscale';
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [image, setImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [resultImage, setResultImage] = useState<string | null>(null);
@@ -759,6 +764,8 @@ const ImageUpscaleEnhancer = () => {
         <div className="mt-24">
           <ImageUpscaleEnhancerSEORichContent />
           <AIToolSEOContent toolId="image-upscaler-enhancer" />
+          <RatingSystem toolId="image-upscaler-enhancer" theme={{ border: 'slate-200' }} />
+          <CommentSection targetId="image-upscaler-enhancer" targetType="tool" theme={{ border: 'slate-200' }} />
         </div>
       </div>
     </div>
