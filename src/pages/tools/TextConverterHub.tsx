@@ -13,9 +13,9 @@ import {
   ChevronDown
 } from 'lucide-react';
 
-const SEO_TITLE = "Text Converter — Uppercase, Lowercase, Title Case, Morse Code, Binary, Base64 & More | Free Online";
-const SEO_DESC = "Free text converter tools. Convert text to uppercase, lowercase, title case, camel case, snake case, alternating case. Encode/decode Base64, URL, Morse code, Binary, Braille. 30+ converters. No login.";
-const SEO_KEYWORDS = "text converter online free, uppercase converter, lowercase converter, title case converter, case converter online, binary to text converter, morse code translator, base64 encoder decoder, url encoder decoder, alternating case converter";
+const SEO_TITLE = "Title Case Converter — Snake Case, Camel Case, Uppercase, Lowercase, Morse Code & More | Free Online";
+const SEO_DESC = "Free online text case converter. Convert to title case, snake case, camel case, uppercase, lowercase, alternating case. Also encode/decode Base64, URL, Binary, Morse code. 30+ converters. No login needed.";
+const SEO_KEYWORDS = "title case converter, snake case converter, camel case converter, case converter online, uppercase converter, lowercase converter, alternating case converter, morse code translator, binary to text converter, base64 encoder decoder, url encoder decoder, text converter online free";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/text-converter-hub";
 
 type ActiveTab = 'case' | 'encode' | 'cipher' | 'special';
@@ -532,10 +532,10 @@ export default function TextConverterHub({ activeToolId }: { activeToolId?: stri
             <span className="text-xs font-semibold text-slate-400">31-in-1 Power Converters</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Text Converter Suite
+            Title Case Converter — Snake Case, Camel Case & 30+ Text Converters Free
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
-            Instantly format case styles, encode credentials, solve Morse sequences, translate Braille and numeric systems locally. No server delays, fully client-confined processing.
+            Convert to title case, snake case, camel case, uppercase, lowercase — plus Morse code translator, Base64 encoder/decoder, Binary to text, URL decode and 25+ more. Free, no login.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full border border-green-500/20 shadow-sm">

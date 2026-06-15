@@ -10,9 +10,9 @@ import {
 } from 'lucide-react';
 import TextAnalysisWorkspace from '../../components/TextAnalysisWorkspace';
 
-const SEO_TITLE = "Text Analysis Tools — Word Counter, Character Counter, Letter Frequency & Keyword Density | Free Online";
-const SEO_DESC = "Free text analysis tools. Count words, characters, sentences, and letters. Analyze keyword density, character frequency, and extract emails or URLs from text. Instant, no login needed.";
-const SEO_KEYWORDS = "word counter free, character counter online, letter counter online, character frequency counter, keyword density calculator, sentence count online, extract emails from text, text analysis online free";
+const SEO_TITLE = "Character Counter Online — Word Counter, Sentence Count, Keyword Density & Text Analysis | Free";
+const SEO_DESC = "Free online character counter and word counter tool. Count characters, words, sentences, and paragraphs. Analyze keyword density, letter frequency, and extract emails or URLs from any text. Instant, no login.";
+const SEO_KEYWORDS = "character count tool online, character counter online, word counter online, character counter tool, online character counter tool, sentence counter, word character count, text character counter, character count check, keyword density calculator, text analysis online free, letter frequency counter, extract emails from text";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/text-analysis-hub";
 
 export default function TextAnalysisHub({ activeToolId }: { activeToolId?: string } = {}) {
@@ -212,10 +212,10 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
             <span className="text-xs font-semibold text-slate-400">Word Count & Density Analysis</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Text Analysis Hub
+            Character Counter & Word Counter — Free Online Text Analysis Tools
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
-            Run full readability diagnostics. Analyze keyword density frequencies, extract email contacts, count paragraph structures, and evaluate character spaces instantly in a secure console.
+            Count characters, words, sentences, and paragraphs instantly. Analyze keyword density, letter frequency, extract emails from text — all free, no login, works in your browser.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full border border-green-500/20 shadow-sm">

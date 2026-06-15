@@ -11,9 +11,9 @@ import {
   Volume2
 } from 'lucide-react';
 
-const SEO_TITLE = "Online Generators — QR Code Generator, Age Calculator, Random String, Signature & More | Free";
-const SEO_DESC = "Free online generators. Create QR codes, generate random strings, calculate exact age, draw digital signatures, generate ASCII banners, and play Morse code audio. No login required.";
-const SEO_KEYWORDS = "generators hub online free, online signature generator, qr code generator free, morse code audio play, age calculator online free, hash generator sha256";
+const SEO_TITLE = "Invisible Text Generator — Mirror Text, Banner Text Generator, QR Code, Age Calculator & More | Free Online";
+const SEO_DESC = "Free online generators. Generate invisible text, mirror text online, banner text generator, QR code generator, age calculator, random string generator, digital signature, Morse code audio and more. No login.";
+const SEO_KEYWORDS = "invisible text generator, mirror text generator, banner text generator, hidden text generator, alternating text generator, qr code generator free, age calculator online free, online signature generator, random string generator, zalgo text generator, morse code audio play, text generator online";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/generators-hub";
 
 type GenToolId = 
@@ -399,10 +399,10 @@ export default function GeneratorsHub({ activeToolId }: { activeToolId?: string 
             <span className="text-xs font-semibold text-slate-400">20+ Power Generators</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Generators & Calculators Hub
+            Invisible Text Generator, Mirror Text, Banner Text & More — Free Online Generators
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
-            Construct PNG signatures, draw vector layouts, calculate exact age milestones, generate barcode QR images, and listen to Morse Code audio waves in a secure local dashboard.
+            Generate invisible text, mirror text, banner/ASCII art text, hidden text, Zalgo text, QR codes, calculate your exact age, create digital signatures — all free, no login required.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full border border-green-500/20 shadow-sm">

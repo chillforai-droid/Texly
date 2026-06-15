@@ -18,9 +18,9 @@ import {
   Sliders
 } from 'lucide-react';
 
-const SEO_TITLE = "Free AI Text Tools — AI Writing Assistant, Grammar Checker, Summarizer & Translator Online";
-const SEO_DESC = "Free AI text tools online. AI writing assistant, grammar checker, essay writer, text summarizer, paraphraser, tone changer, code explainer, and language translator. Powered by Gemini AI. No login.";
-const SEO_KEYWORDS = "ai text generator free, ai essay writer online, free grammar checker ai, text summarizer ai, code generator ai, text translator free";
+const SEO_TITLE = "Free AI Writing Tools Online — AI Paraphraser, Grammar Checker, Text Summarizer, Essay Writer | No Login";
+const SEO_DESC = "Free AI text tools online. Paraphrase text with AI, check grammar, summarize text, write essays, rewrite content, change tone, explain code, and translate language. No login, no API key needed.";
+const SEO_KEYWORDS = "ai paraphraser free online, ai grammar checker free, ai text summarizer, ai essay writer online, ai rewrite tool, ai writing tools free, free ai tools online, paraphrase online free, grammar checker online free, text summarizer ai, ai text scrubber, ai writing assistant";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/ai-tools-hub";
 
 type AIToolId = 
@@ -265,10 +265,10 @@ export default function AIToolsHub() {
             <span className="text-xs font-semibold text-slate-400">15+ Expert AI Models</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            AI Text Suite
+            Free AI Writing Tools — Paraphrase, Grammar Check, Summarize & More Online
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
-            Unleash professional Gemini intelligence in one dashboard. Draft essays, inspect syntax, paraphrase titles, humanize copies, check grammar errors, and generate functional code.
+            Paraphrase text with AI, check grammar, summarize content, write essays, rewrite and humanize text, explain code — free AI tools, no login, no API key required.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full border border-green-500/20 shadow-sm">

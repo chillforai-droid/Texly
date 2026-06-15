@@ -12,9 +12,9 @@ import {
   Play
 } from 'lucide-react';
 
-const SEO_TITLE = "Text Utility Tools — Find & Replace, Text Repeater, Reverse Text, Sort Lines, Lorem Ipsum & More | Free Online";
-const SEO_DESC = "Free text utility tools. Find and replace text online, repeat text, reverse text, sort lines alphabetically, generate Lorem Ipsum, add prefix/suffix, format JSON and SQL. 25+ tools. No login.";
-const SEO_KEYWORDS = "text utility tools online free, text reverser online, text repeater online, sort lines alphabetically, lorem ipsum generator, find and replace text online, json formatter online";
+const SEO_TITLE = "Sort Lines Alphabetically Online — Find & Replace, Reverse Text, Lorem Ipsum & 25+ Text Utility Tools | Free";
+const SEO_DESC = "Free online text utility tools. Sort lines alphabetically, find and replace text, reverse text online, repeat text, generate Lorem Ipsum, format JSON, add prefix/suffix and more. 25+ tools. No login needed.";
+const SEO_KEYWORDS = "sort lines alphabetically online, sort lines online, find replace online, reverse text online, text repeater online, lorem ipsum generator, json formatter online, add prefix suffix online, text utility tools online free, reverse text characters online";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/text-utility-hub";
 
 type SectionKey = 'manipulation' | 'generators' | 'formatters' | 'special';
@@ -466,10 +466,10 @@ export default function TextUtilityHub({ activeToolId }: { activeToolId?: string
             <span className="text-xs font-semibold text-slate-400">25+ Pro Text Utilities</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Text Utility Toolkit
+            Sort Lines Alphabetically & 25+ Text Utility Tools — Free Online
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
-            Consolidate paragraph sorting, JSON formatting, CSV mapping, password builders, mock dummy copy creation, and Zalgo stacked ciphers in a secure browser.
+            Sort lines alphabetically, find and replace text, reverse text, repeat text, generate Lorem Ipsum, format JSON — 25+ free text utility tools. No login, instant results.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full border border-green-500/20 shadow-sm">

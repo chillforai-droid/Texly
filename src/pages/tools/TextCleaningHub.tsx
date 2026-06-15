@@ -15,9 +15,9 @@ import {
   ChevronDown
 } from 'lucide-react';
 
-const SEO_TITLE = "Text Cleaning Tools — Remove Extra Spaces, Duplicate Lines, HTML Tags & More | Free Online";
-const SEO_DESC = "Free all-in-one text cleaning toolkit. Remove extra spaces, duplicate lines, HTML tags, empty lines, emojis, special characters, accents, and punctuation from text instantly. No login. Works in your browser.";
-const SEO_KEYWORDS = "text cleaner online free, remove extra spaces online, remove duplicate lines, remove html tags online, remove emojis from text, remove special characters online, strip punctuation online, clean text online";
+const SEO_TITLE = "Remove Special Characters Online — Text Cleaner, Remove Duplicate Lines, HTML Tags & More | Free";
+const SEO_DESC = "Remove special characters from text online — free text cleaner tool. Also remove duplicate lines, extra spaces, HTML tags, emojis, accents & punctuation instantly. No login. Works in browser.";
+const SEO_KEYWORDS = "remove special characters online, remove special characters from text, special character remover, special characters removal, text cleaner online free, remove duplicate lines, remove extra spaces online, remove html tags online, clean special characters, remove emojis from text";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/text-cleaning-hub";
 
 interface CleaningOptions {
@@ -367,10 +367,10 @@ Normalizing diacritics like é, à, and ö.`);
             <span className="text-xs font-semibold text-slate-400">16-in-1 Tool Suite</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Text Cleaning Suite
+            Remove Special Characters & Clean Text Online — Free
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
-            Eliminate double whitespaces, clean broken lines, strip HTML scripts, and remove unneeded symbols safely. Instant client-side workspace with zero data logging tags.
+            Remove special characters from text, strip duplicate lines, delete extra spaces, clean HTML tags, and fix formatting — all free, no login, instant results in your browser.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full border border-green-500/20 shadow-sm">

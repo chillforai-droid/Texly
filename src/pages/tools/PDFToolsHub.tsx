@@ -6,9 +6,9 @@ import { PDFToolWorkspace } from '../../components/PDFToolWorkspace';
 import HubToolsContent from '../../components/HubToolsContent';
 import { pdfToolsHubTools } from '../../data/hubContent/pdfToolsHub';
 
-const SEO_TITLE = "PDF Tools Online — Compress PDF, PDF to Word, Word to PDF, Merge, Split & More | Free";
-const SEO_DESC = "Free PDF tools online. Compress PDF size, convert PDF to Word, convert Word to PDF, merge PDFs, split PDF pages, rotate, protect with password, and unlock PDF. No signup required.";
-const SEO_KEYWORDS = "compress pdf free, pdf to word converter online, word to pdf online, merge pdf online, split pdf online free, reduce pdf size online, convert pdf online free, pdf tools online";
+const SEO_TITLE = "Word to PDF Converter Online — Reduce PDF Size, PDF to Word, Merge, Split PDF | Free Tools";
+const SEO_DESC = "Free PDF tools online. Convert Word to PDF online, reduce PDF file size, convert PDF to Word, merge PDFs, split PDF pages, rotate and protect PDF. No signup, no watermark, works in browser.";
+const SEO_KEYWORDS = "word to pdf online, convert word to pdf online, online convert word to pdf, word to pdf converter, reduce pdf size, reduce pdf file size, pdf to word converter online, convert pdf to word online, split pdf online free, merge pdf online, compress pdf free, pdf tools online";
 const CANONICAL_URL = "https://www.texlyonline.in/tools/pdf-tools-hub";
 
 type PDFToolId =
@@ -128,10 +128,10 @@ export default function PDFToolsHub({ activeToolId }: { activeToolId?: string } 
             <span className="text-xs font-semibold text-slate-400">14-in-1 PDF Suite</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            PDF Tools Suite
+            Word to PDF Online — Reduce PDF Size, PDF to Word & Free PDF Tools
           </h1>
           <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
-            Compress, merge, split, rotate, and encrypt confidential documents instantly. Secure local drag-drop sandbox executing operations without transmitting records across API cloud networks.
+            Convert Word to PDF online, reduce PDF file size, convert PDF to Word, merge PDFs, split pages — all free PDF tools in one place. No signup, no watermark, instant results.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full border border-green-500/20 shadow-sm">
