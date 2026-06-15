@@ -3,11 +3,71 @@ import multer from 'multer';
 
 const router = express.Router();
 const upload = multer({ 
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 }, // बढ़ाकर 10MB किया
   storage: multer.memoryStorage()
 });
 
-// Image Enhancer - returns original (sharp removed for Vercel compatibility)
+// ──────────────────────────────────────────────────────────────────────────────
+// REMOVE.BG FAST MODE API ENDPOINT (नया)
+// ──────────────────────────────────────────────────────────────────────────────
+router.post('/remove-bg-fast', upload.single('image'), async (req: any, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Image file is required' });
+    }
+
+    // Vercel में डाली गई VITE_REMOVEBG_API_KEY use करें
+    const apiKey = process.env.VITE_REMOVEBG_API_KEY || process.env.REMOVEBG_API_KEY;
+    
+    if (!apiKey) {
+      console.error('REMOVEBG_API_KEY not configured');
+      return res.status(500).json({ error: 'API key not configured. Please add VITE_REMOVEBG_API_KEY to environment variables.' });
+    }
+
+    console.log('Calling remove.bg API for file:', req.file.originalname, 'size:', req.file.size);
+
+    // Prepare form data for remove.bg
+    const formData = new FormData();
+    const blob = new Blob([req.file.buffer], { type: req.file.mimetype || 'image/png' });
+    formData.append('image_file', blob, req.file.originalname || 'image.png');
+    formData.append('size', 'auto');
+
+    const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+      method: 'POST',
+      headers: {
+        'X-Api-Key': apiKey,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('remove.bg API error:', response.status, errorText);
+      
+      if (response.status === 401 || response.status === 403) {
+        return res.status(402).json({ error: 'Invalid or expired remove.bg API key. Please check your API key.' });
+      }
+      if (response.status === 429) {
+        return res.status(429).json({ error: 'Rate limit exceeded. Please try again later or use HD mode.' });
+      }
+      return res.status(response.status).json({ error: `remove.bg API error: ${response.status}` });
+    }
+
+    const resultBuffer = await response.arrayBuffer();
+    
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.send(Buffer.from(resultBuffer));
+    
+  } catch (error: any) {
+    console.error('Remove.bg Fast Mode Error:', error);
+    res.status(500).json({ error: error.message || 'Internal server error' });
+  }
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Image Enhancer
+// ──────────────────────────────────────────────────────────────────────────────
 router.post('/enhancer', upload.single('image'), async (req: any, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'Image is required' });
@@ -18,7 +78,9 @@ router.post('/enhancer', upload.single('image'), async (req: any, res) => {
   }
 });
 
-// Image Compressor - returns original (client-side compression preferred)
+// ──────────────────────────────────────────────────────────────────────────────
+// Image Compressor
+// ──────────────────────────────────────────────────────────────────────────────
 router.post('/compressor', upload.single('image'), async (req: any, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'Image is required' });
@@ -29,7 +91,9 @@ router.post('/compressor', upload.single('image'), async (req: any, res) => {
   }
 });
 
+// ──────────────────────────────────────────────────────────────────────────────
 // AI Text Processing Route
+// ──────────────────────────────────────────────────────────────────────────────
 router.post('/text', async (req, res) => {
   try {
     const { input, toolId, options, systemPrompt: customSystemPrompt, maxTokens } = req.body;
@@ -69,7 +133,7 @@ router.post('/text', async (req, res) => {
         prompt = `Upgrade the flow, tone, style, and vocabulary density of the following text to make it stand out as premium. Return ONLY the polished text:\n\n${input}`;
         break;
       case 'ai-emojifier':
-        prompt = `Augment the following text by naturally inserting relevant emojis between expressions and list bullets to make it highly engaging for social media. Return ONLY the emojified text:\n'n${input}`;
+        prompt = `Augment the following text by naturally inserting relevant emojis between expressions and list bullets to make it highly engaging for social media. Return ONLY the emojified text:\n\n${input}`;
         break;
       case 'ai-code-generator':
         prompt = `Write clean, safe, well-commented source code based on the following feature specifications and requested language/framework context. Return ONLY the code block:\n\n${input}`;
@@ -91,14 +155,12 @@ router.post('/text', async (req, res) => {
         prompt = `Analyze the following article and extract the top 15 highest-value semantic SEO search terms and keywords as a simple comma-separated list. Return ONLY the keywords list:\n\n${input}`;
         break;
       case 'custom':
-        // Custom systemPrompt passed from frontend (texlyAIEngine.ts)
         prompt = input;
         break;
       default:
         prompt = `Process the following text and return an improved version:\n\n${input}`;
     }
 
-    // Use custom system prompt if provided (for chat / TexlyAI flows)
     const effectiveSystemPrompt = customSystemPrompt || 
       "You are a helpful, professional writing and editing assistant. Answer the user prompt directly. Do not include conversational filler. Return ONLY the requested output.";
 
@@ -175,7 +237,9 @@ router.post('/text', async (req, res) => {
   }
 });
 
-// ─── HUGGING FACE GRADIO API PROXY ENGINE ─────────────────────────────────────
+// ──────────────────────────────────────────────────────────────────────────────
+// HUGGING FACE GRADIO API PROXY ENGINE
+// ──────────────────────────────────────────────────────────────────────────────
 function extractGradioValue(item: any, spaceUrl: string): string {
   if (!item) return '';
   if (typeof item === 'string') {
@@ -267,7 +331,6 @@ async function fetchGradio4Result(spaceUrl: string, eventId: string): Promise<an
 async function callGradioSpace(spaceUrl: string, dataArray: any[]): Promise<string> {
   const normUrl = spaceUrl.endsWith('/') ? spaceUrl.slice(0, -1) : spaceUrl;
 
-  // Phase 1: Try Gradio v4 API if possible (/call/predict)
   try {
     console.log(`[API PROXY] Trying Gradio v4 endpoint: ${normUrl}/call/predict`);
     const sseResponse = await fetch(`${normUrl}/call/predict`, {
@@ -290,7 +353,6 @@ async function callGradioSpace(spaceUrl: string, dataArray: any[]): Promise<stri
     console.warn(`[API PROXY] Gradio v4 interaction failed or 404, falling back to traditional endpoints:`, gradio4Err.message);
   }
 
-  // Phase 2: Fallback to traditional Gradio v3 endpoints (/run/predict or /api/predict)
   const endpoints = ['/run/predict', '/api/predict'];
   let lastError = null;
 
@@ -298,7 +360,7 @@ async function callGradioSpace(spaceUrl: string, dataArray: any[]): Promise<stri
     try {
       console.log(`[API PROXY] Trying Gradio v3 endpoint: ${normUrl}${endpoint}`);
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 65000); // 65 seconds timeout
+      const timeoutId = setTimeout(() => controller.abort(), 65000);
 
       const res = await fetch(`${normUrl}${endpoint}`, {
         method: 'POST',
@@ -328,14 +390,14 @@ async function callGradioSpace(spaceUrl: string, dataArray: any[]): Promise<stri
   throw lastError || new Error('All Gradio endpoint prediction queries failed');
 }
 
-// 1. Background Remover API Endpoint
+// ──────────────────────────────────────────────────────────────────────────────
+// 1. Background Remover API Endpoint (HD Mode - Gradio)
+// ──────────────────────────────────────────────────────────────────────────────
 router.post('/bg-remover', async (req, res) => {
   try {
     const { image } = req.body;
     if (!image) return res.status(400).json({ error: 'Image base64 is required' });
 
-    // Format the payload to fit typical Bria RMBG spaces
-    // Supports raw base64 string or structured Gradio File Object
     const format1 = [image];
     const format2 = [{
       path: "input.png",
@@ -357,13 +419,11 @@ router.post('/bg-remover', async (req, res) => {
 
     for (const space of spaces) {
       try {
-        // Try formatted object first (modern Gradio v4+)
         resultUrl = await callGradioSpace(space, format2);
         success = true;
         break;
       } catch (err) {
         try {
-          // Fallback to simple base64 (Gradio v3)
           resultUrl = await callGradioSpace(space, format1);
           success = true;
           break;
@@ -385,7 +445,9 @@ router.post('/bg-remover', async (req, res) => {
   }
 });
 
+// ──────────────────────────────────────────────────────────────────────────────
 // 2. Face Swap API Endpoint
+// ──────────────────────────────────────────────────────────────────────────────
 router.post('/face-swap', async (req, res) => {
   try {
     const { sourceImage, targetImage } = req.body;
@@ -393,7 +455,6 @@ router.post('/face-swap', async (req, res) => {
       return res.status(400).json({ error: 'Both Source (Face) and Target (Base Body) images are required' });
     }
 
-    // Format target and source correctly for Roop face swappers
     const spaces = [
       'https://finesand-roop-face-swap.hf.space',
       'https://s061-roop.hf.space',
@@ -404,7 +465,6 @@ router.post('/face-swap', async (req, res) => {
     let success = false;
     let lastError = null;
 
-    // Gradio Face Swap expects [source, target] or structured inputs
     const dataObj = [
       { path: "source.png", url: sourceImage, orig_name: "source.png", mime_type: "image/png" },
       { path: "target.png", url: targetImage, orig_name: "target.png", mime_type: "image/png" }
@@ -417,7 +477,6 @@ router.post('/face-swap', async (req, res) => {
         break;
       } catch (err: any) {
         try {
-          // Backup format: direct base64 strings array
           resultUrl = await callGradioSpace(space, [sourceImage, targetImage]);
           success = true;
           break;
@@ -431,7 +490,6 @@ router.post('/face-swap', async (req, res) => {
     if (success) {
       res.json({ success: true, result: resultUrl });
     } else {
-      // Fallback response with beautiful blended canvas output or upscale mock to let user visualizer remain responsive
       res.status(502).json({ error: 'Face Swap Hugging Face Space was temporarily asleep or busy. Please try again in 10-15 seconds!', details: lastError?.message });
     }
   } catch (error: any) {
@@ -440,7 +498,9 @@ router.post('/face-swap', async (req, res) => {
   }
 });
 
+// ──────────────────────────────────────────────────────────────────────────────
 // 3. Image Enhancer (CodeFormer/GFPGAN)
+// ──────────────────────────────────────────────────────────────────────────────
 router.post('/image-enhancer', async (req, res) => {
   try {
     const { image } = req.body;
@@ -456,12 +516,11 @@ router.post('/image-enhancer', async (req, res) => {
     let success = false;
     let lastError = null;
 
-    // CodeFormer takes: [image, codeformer_fidelity, background_enhance, face_upsample]
     const formatObj = [
       { path: "input.png", url: image, orig_name: "input.png", mime_type: "image/png" },
-      0.7, // Codeformer face fidelity weight
-      true, // bg enhance flag
-      true // face upscale flag
+      0.7,
+      true,
+      true
     ];
 
     for (const space of spaces) {
@@ -471,7 +530,6 @@ router.post('/image-enhancer', async (req, res) => {
         break;
       } catch (err: any) {
         try {
-          // Backup plain array parameters
           resultUrl = await callGradioSpace(space, [image, 0.7, true, true]);
           success = true;
           break;
@@ -493,15 +551,16 @@ router.post('/image-enhancer', async (req, res) => {
   }
 });
 
+// ──────────────────────────────────────────────────────────────────────────────
 // 4. Image Upscaler (Super Resolution)
+// ──────────────────────────────────────────────────────────────────────────────
 router.post('/image-upscale', async (req, res) => {
   try {
     const { image, scale } = req.body;
     if (!image) return res.status(400).json({ error: 'Image is required' });
-    const upscaleFactor = scale ? parseInt(scale) : 2;
 
     const spaces = [
-      'https://sczhou-codeformer.hf.space', // Enhances + upscales beautifully
+      'https://sczhou-codeformer.hf.space',
       'https://janzat-codeformer.hf.space',
       'https://sczhou-gfpgan.hf.space'
     ];
@@ -512,7 +571,7 @@ router.post('/image-upscale', async (req, res) => {
 
     const formatObj = [
       { path: "input.png", url: image, orig_name: "input.png", mime_type: "image/png" },
-      0.9, // Higher fidelity weight for scaling sharpness
+      0.9,
       true,
       true
     ];
