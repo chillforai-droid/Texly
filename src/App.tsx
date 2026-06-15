@@ -706,11 +706,7 @@ function AppContent() {
             />
             <Route
               path="/tools/enhancer"
-              element={
-                <RouteErrorBoundary>
-                  <ImageEnhancer />
-                </RouteErrorBoundary>
-              }
+              element={<Navigate to="/tools/image-upscaler-enhancer?mode=enhance" replace />}
             />
             <Route
               path="/tools/compressor"
@@ -722,11 +718,7 @@ function AppContent() {
             />
             <Route
               path="/tools/image-upscale"
-              element={
-                <RouteErrorBoundary>
-                  <ImageUpscale />
-                </RouteErrorBoundary>
-              }
+              element={<Navigate to="/tools/image-upscaler-enhancer?mode=upscale" replace />}
             />
             <Route
               path="/tools/image-upscaler-enhancer"
