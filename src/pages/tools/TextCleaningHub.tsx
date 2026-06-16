@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
 import HubToolsContent from '../../components/HubToolsContent';
 import { textCleaningHubTools } from '../../data/hubContent/textCleaningHub';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 import { 
   Trash2, 
   Sparkles, 
@@ -691,6 +693,8 @@ Normalizing diacritics like é, à, and ö.`);
         </section>
 
         <HubToolsContent hubPath="/tools/text-cleaning-hub" tools={textCleaningHubTools} />
+        <RatingSystem toolId="face-swap" theme={{ border: 'slate-200' }} />
+<CommentSection targetId="face-swap" targetType="tool" theme={{ border: 'slate-200' }} />
 
         {/* Related Hubs Directory */}
         <section className="bg-slate-100 dark:bg-slate-900/40 rounded-3xl border border-slate-200/50 dark:border-slate-800/40 p-6 sm:p-8">
