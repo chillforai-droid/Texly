@@ -1006,8 +1006,8 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
             })}
           </div>
         </section>
-        <RatingSystem toolId="face-swap" theme={{ border: 'slate-200' }} />
-<CommentSection targetId="face-swap" targetType="tool" theme={{ border: 'slate-200' }} />
+        <RatingSystem toolId="textAnalysisHub" theme={{ border: 'slate-200' }} />
+<CommentSection targetId="textAnalysisHub" targetType="tool" theme={{ border: 'slate-200' }} />
 
         <HubToolsContent hubPath="/tools/text-analysis-hub" tools={textAnalysisHubTools} />
 
