@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
 import HubToolsContent from '../../components/HubToolsContent';
 import { textAnalysisHubTools } from '../../data/hubContent/textAnalysisHub';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 import { 
   Copy, 
   Check, 
@@ -1004,6 +1006,8 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
             })}
           </div>
         </section>
+        <RatingSystem toolId="face-swap" theme={{ border: 'slate-200' }} />
+<CommentSection targetId="face-swap" targetType="tool" theme={{ border: 'slate-200' }} />
 
         <HubToolsContent hubPath="/tools/text-analysis-hub" tools={textAnalysisHubTools} />
 
