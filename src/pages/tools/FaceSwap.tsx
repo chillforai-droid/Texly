@@ -25,6 +25,8 @@ import BeforeAfterSlider from '../../components/BeforeAfterSlider';
 import SocialShare from '../../components/SocialShare';
 import { useToolSuccess, useToolFailure } from '../../components/TexlyAI';
 import FaceSwapSEORichContent from '../../components/seo/FaceSwapSEORichContent';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 
 // ── Example GIF data ────────────────────────────────────────────────────────
 // Using Picsum placeholder images to simulate before/after examples
@@ -560,6 +562,8 @@ const FaceSwap = () => {
         <div className="mt-24">
           <FaceSwapSEORichContent />
           <AIToolSEOContent toolId="face-swap" />
+          <RatingSystem toolId="face-swap" theme={{ border: 'slate-200' }} />
+          <CommentSection targetId="face-swap" targetType="tool" theme={{ border: 'slate-200' }} />
         </div>
       </div>
     </div>
