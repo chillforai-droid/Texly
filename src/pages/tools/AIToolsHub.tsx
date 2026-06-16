@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
 import HubToolsContent from '../../components/HubToolsContent';
 import { aiToolsHubTools } from '../../data/hubContent/aiToolsHub';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 import { 
   Sparkles, 
   Trash2, 
@@ -505,6 +507,9 @@ export default function AIToolsHub() {
         </section>
 
         <HubToolsContent hubPath="/tools/ai-tools-hub" tools={aiToolsHubTools} />
+        <RatingSystem toolId="face-swap" theme={{ border: 'slate-200' }} />
+        <CommentSection targetId="face-swap" targetType="tool" theme={{ border: 'slate-200' }} />
+        
 
         {/* Bottom Related hubs */}
         <section className="bg-slate-100 dark:bg-slate-900/40 rounded-3xl border border-slate-200/50 dark:border-slate-800/40 p-6 sm:p-8">
