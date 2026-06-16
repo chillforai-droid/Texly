@@ -32,7 +32,8 @@ import BeforeAfterSlider from '../../components/BeforeAfterSlider';
 import SocialShare from '../../components/SocialShare';
 import { useToolSuccess, useToolFailure } from '../../components/TexlyAI';
 import BackgroundRemoverSEORichContent from '../../components/seo/BackgroundRemoverSEORichContent';
-
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 const EXAMPLES = [
   {
     id: 1,
@@ -695,6 +696,8 @@ const BackgroundRemover = () => {
         <div className="mt-24">
           <BackgroundRemoverSEORichContent />
           <AIToolSEOContent toolId="bg-remover" />
+          <RatingSystem toolId="face-swap" theme={{ border: 'slate-200' }} />
+          <CommentSection targetId="face-swap" targetType="tool" theme={{ border: 'slate-200' }} />
         </div>
       </div>
     </div>
