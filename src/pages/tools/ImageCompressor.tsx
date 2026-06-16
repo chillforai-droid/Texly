@@ -19,6 +19,8 @@ import AIToolSEOContent from '../../components/AIToolSEOContent';
 import SocialShare from '../../components/SocialShare';
 import { useToolSuccess, useToolFailure } from '../../components/TexlyAI';
 import ImageCompressorSEORichContent from '../../components/seo/ImageCompressorSEORichContent';
+import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
 
 const ImageCompressor = () => {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -393,6 +395,8 @@ const ImageCompressor = () => {
         {/* SEO Content Section */}
         <ImageCompressorSEORichContent />
         <AIToolSEOContent toolId="compressor" />
+        <RatingSystem toolId="face-swap" theme={{ border: 'slate-200' }} />
+        <CommentSection targetId="face-swap" targetType="tool" theme={{ border: 'slate-200' }} />
       </div>
     </div>
   );
