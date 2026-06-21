@@ -20,6 +20,7 @@ import { BlogPost } from '../data/blog';
 import { getBlogs } from '../utils/blogStorage';
 import { Calendar, Clock as ClockIcon } from 'lucide-react';
 import SocialShare from '../components/SocialShare';
+import HeroVideoSlider from '../components/HeroVideoSlider';
 import {
   RecentlyAddedTools,
   MostUsedAITools,
@@ -296,6 +297,9 @@ const HomePage = () => {
             ))}
           </div>
         </div>
+
+        {/* ═══ HERO VIDEO SLIDER ═══ */}
+        <HeroVideoSlider />
 
         <div className="max-w-4xl mx-auto px-4 mt-8 sm:mt-12">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-200 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
