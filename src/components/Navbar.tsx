@@ -83,9 +83,9 @@ const Navbar: React.FC = () => {
       aria-label="Global Navigation"
       className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors duration-300"
     >
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group" aria-label="Texly Home">
+        <Link to="/" className="flex items-center gap-2 group shrink-0" aria-label="Texly Home">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white group-hover:rotate-12 transition-transform">
             <Zap className="w-5 h-5 fill-current" />
           </div>
@@ -95,11 +95,11 @@ const Navbar: React.FC = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-6">
-          <div className="flex items-center gap-1">
+        <div className="hidden lg:flex items-center gap-3 xl:gap-6 min-w-0">
+          <div className="flex items-center gap-0.5 xl:gap-1">
             <Link
               to="/ai-tools"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl transition-all"
+              className="flex items-center gap-1.5 px-2.5 xl:px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl transition-all whitespace-nowrap"
             >
               <Sparkles className="w-4 h-4" />
               {t.navbar.aiTools}
@@ -109,7 +109,7 @@ const Navbar: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => setIsHubsOpen(!isHubsOpen)}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl transition-all select-none"
+                className="flex items-center gap-1.5 px-2.5 xl:px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl transition-all select-none whitespace-nowrap"
                 aria-expanded={isHubsOpen}
                 aria-haspopup="listbox"
               >
@@ -179,14 +179,14 @@ const Navbar: React.FC = () => {
 
             <Link
               to="/blog"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl transition-all"
+              className="flex items-center gap-1.5 px-2.5 xl:px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl transition-all whitespace-nowrap"
             >
               {t.navbar.blog}
             </Link>
             {/* DevStudio link */}
             <Link
               to="/devstudio"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-xl transition-all"
+              className="hidden xl:flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-xl transition-all whitespace-nowrap"
             >
               <Code2 className="w-4 h-4" />
               DevStudio
@@ -194,31 +194,31 @@ const Navbar: React.FC = () => {
             {/* GitHub Push link */}
             <Link
               to="/ai-automation"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all"
+              className="hidden xl:flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all whitespace-nowrap"
             >
               <Bot className="w-4 h-4" />
               GitHub Push
             </Link>
           </div>
 
-          <div className="h-6 w-px bg-slate-200 dark:bg-slate-700" />
+          <div className="hidden xl:block h-6 w-px bg-slate-200 dark:bg-slate-700 shrink-0" />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 xl:gap-2 shrink-0">
             {/* APK Download Button → /download page */}
             <Link
               to="/download"
-              className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-xl transition-all shadow-sm hover:shadow-green-200 dark:hover:shadow-green-900 hover:-translate-y-0.5"
+              className="flex items-center gap-1.5 px-2.5 xl:px-3 py-2 text-sm font-bold text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-xl transition-all shadow-sm hover:shadow-green-200 dark:hover:shadow-green-900 hover:-translate-y-0.5 whitespace-nowrap"
               title="Download Texly Android App"
             >
               <Download className="w-4 h-4" />
-              <span>App Download</span>
+              <span className="hidden xl:inline">App Download</span>
             </Link>
 
             {/* Language Selector */}
             <div className="relative">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all"
+                className="flex items-center gap-1.5 px-2.5 xl:px-3 py-2 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all"
                 aria-expanded={isLangOpen}
                 aria-haspopup="listbox"
               >
@@ -264,7 +264,7 @@ const Navbar: React.FC = () => {
         {/* Mobile Menu Toggle */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden p-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
+          className="lg:hidden p-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
           aria-label="Toggle Mobile Menu"
           aria-expanded={isMobileMenuOpen}
         >
@@ -274,7 +274,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       <div
-        className="md:hidden border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-y-auto transition-all duration-200"
+        className="lg:hidden border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-y-auto transition-all duration-200"
         style={{ maxHeight: isMobileMenuOpen ? '600px' : '0px', opacity: isMobileMenuOpen ? 1 : 0 }}
         aria-hidden={!isMobileMenuOpen}
       >
