@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Youtube, RefreshCw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Youtube, RefreshCw, Volume2, VolumeX } from 'lucide-react';
 
 const CHANNEL_ID  = 'UCwCrRIa28XZ3QI3UOxKaNDw';
 const API_KEY     = import.meta.env.VITE_YOUTUBE_API_KEY as string;
 const MAX_RESULTS = 12;
-const AUTOPLAY_MS = 15000; // 15s per video then auto-next
+const AUTOPLAY_MS = 20000;
 
 const FALLBACK_VIDEOS = [
   { id: 'FloTD4tmP48', title: 'Texly Online — Free AI & Text Tools' },
@@ -16,18 +16,18 @@ const FALLBACK_VIDEOS = [
 interface VideoItem { id: string; title: string; thumbnail: string; }
 
 const HeroVideoSlider = () => {
-  const [videos, setVideos]           = useState<VideoItem[]>([]);
-  const [loading, setLoading]         = useState(true);
-  const [apiError, setApiError]       = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused]       = useState(false);
+  const [videos, setVideos]             = useState<VideoItem[]>([]);
+  const [loading, setLoading]           = useState(true);
+  const [apiError, setApiError]         = useState(false);
+  const [activeIndex, setActiveIndex]   = useState(0);
+  const [isPaused, setIsPaused]         = useState(false);
+  const [isMuted, setIsMuted]           = useState(true);
+  const [iframeKey, setIframeKey]       = useState(0); // force re-render on mute toggle
 
-  // Touch/swipe tracking
-  const touchStartX = useRef<number>(0);
-  const touchEndX   = useRef<number>(0);
-  const timerRef    = useRef<ReturnType<typeof setInterval> | null>(null);
+  const touchStartX  = useRef<number>(0);
+  const timerRef     = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // ── Fetch videos ──────────────────────────────────────────────────────
+  // ── Fetch ─────────────────────────────────────────────────────────────
   const fetchVideos = async () => {
     setLoading(true); setApiError(false);
     try {
@@ -63,18 +63,23 @@ const HeroVideoSlider = () => {
     setActiveIndex(((i % videos.length) + videos.length) % videos.length);
   }, [videos.length]);
 
-  // ── Swipe handlers ────────────────────────────────────────────────────
+  // Mute toggle — iframe src बदलने से re-render होगा
+  const toggleMute = () => {
+    setIsMuted(prev => !prev);
+    setIframeKey(prev => prev + 1);
+  };
+
+  // ── Swipe ─────────────────────────────────────────────────────────────
   const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
   const onTouchEnd   = (e: React.TouchEvent) => {
-    touchEndX.current = e.changedTouches[0].clientX;
-    const diff = touchStartX.current - touchEndX.current;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 50) goTo(activeIndex + (diff > 0 ? 1 : -1));
   };
 
-  // ── Loading skeleton ──────────────────────────────────────────────────
+  // ── Loading ───────────────────────────────────────────────────────────
   if (loading) return (
-    <div className="max-w-3xl mx-auto px-4 mt-10 sm:mt-14">
-      <div className="w-full aspect-video rounded-3xl bg-slate-100 dark:bg-slate-800 animate-pulse flex items-center justify-center">
+    <div className="max-w-sm mx-auto px-4 mt-10 sm:mt-14">
+      <div className="w-full aspect-[9/16] rounded-3xl bg-slate-100 dark:bg-slate-800 animate-pulse flex items-center justify-center">
         <Youtube className="w-12 h-12 text-slate-300 dark:text-slate-600" />
       </div>
     </div>
@@ -83,8 +88,11 @@ const HeroVideoSlider = () => {
   if (videos.length === 0) return null;
   const active = videos[activeIndex];
 
+  // iframe src
+  const embedSrc = `https://www.youtube.com/embed/${active.id}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&modestbranding=1&controls=1&playsinline=1`;
+
   return (
-    <div className="max-w-3xl mx-auto px-4 mt-10 sm:mt-14 select-none">
+    <div className="max-w-sm mx-auto px-4 mt-10 sm:mt-14 select-none">
 
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
@@ -100,40 +108,40 @@ const HeroVideoSlider = () => {
               <RefreshCw className="w-3.5 h-3.5" /> Retry
             </button>
           )}
-          <span className="text-xs font-bold text-slate-400">
-            {activeIndex + 1} / {videos.length}
-          </span>
+          <span className="text-xs font-bold text-slate-400">{activeIndex + 1} / {videos.length}</span>
         </div>
       </div>
 
-      {/* Slider wrapper */}
+      {/* 9:16 Slider */}
       <div
         className="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl shadow-slate-300/30 dark:shadow-black/50 bg-black group"
+        style={{ aspectRatio: '9/16' }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {/* YouTube embed — autoplay, muted so browser allows it */}
-        <div className="w-full aspect-video">
-          <iframe
-            key={active.id}
-            src={`https://www.youtube.com/embed/${active.id}?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&loop=0&enablejsapi=0`}
-            title={active.title}
-            className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
+        {/* YouTube iframe — 9:16 */}
+        <iframe
+          key={`${active.id}-${iframeKey}`}
+          src={embedSrc}
+          title={active.title}
+          className="absolute inset-0 w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
 
-        {/* Progress bar (auto-advance timer) */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/30 z-10">
-          <div
-            key={`bar-${activeIndex}-${isPaused}`}
-            className={`h-full bg-red-500 ${isPaused ? '' : 'animate-ytprogress'}`}
-            style={{ animationDuration: `${AUTOPLAY_MS}ms` }}
-          />
-        </div>
+        {/* Mute / Unmute button */}
+        <button
+          onClick={toggleMute}
+          aria-label={isMuted ? 'Unmute' : 'Mute'}
+          className="absolute top-3 right-3 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/80 text-white text-xs font-bold backdrop-blur-sm transition-all"
+        >
+          {isMuted
+            ? <><VolumeX className="w-4 h-4" /> Unmute</>
+            : <><Volume2 className="w-4 h-4" /> Mute</>
+          }
+        </button>
 
         {/* Prev button */}
         <button
@@ -152,14 +160,23 @@ const HeroVideoSlider = () => {
         >
           <ChevronRight className="w-6 h-6" />
         </button>
+
+        {/* Progress bar */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/30 z-10">
+          <div
+            key={`bar-${activeIndex}-${isPaused}`}
+            className={`h-full bg-red-500 ${isPaused ? '' : 'animate-ytprogress'}`}
+            style={{ animationDuration: `${AUTOPLAY_MS}ms` }}
+          />
+        </div>
       </div>
 
-      {/* Video title */}
-      <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mt-3 px-1 line-clamp-1">
+      {/* Title */}
+      <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mt-3 px-1 line-clamp-2 leading-snug text-center">
         {active.title}
       </p>
 
-      {/* Dot indicators */}
+      {/* Dots */}
       <div className="flex items-center justify-center gap-1.5 mt-3 flex-wrap">
         {videos.map((_, i) => (
           <button
@@ -167,25 +184,24 @@ const HeroVideoSlider = () => {
             onClick={() => goTo(i)}
             aria-label={`Video ${i + 1}`}
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === activeIndex
-                ? 'w-6 bg-red-500'
-                : 'w-1.5 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'
+              i === activeIndex ? 'w-6 bg-red-500' : 'w-1.5 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'
             }`}
           />
         ))}
       </div>
 
       {/* Thumbnail strip */}
-      <div className="hidden sm:flex items-center gap-2 mt-4 overflow-x-auto pb-1 scrollbar-hide">
+      <div className="flex items-center gap-2 mt-4 overflow-x-auto pb-1 scrollbar-hide">
         {videos.map((v, i) => (
           <button
             key={v.id}
             onClick={() => goTo(i)}
-            className={`relative shrink-0 w-24 aspect-video rounded-xl overflow-hidden border-2 transition-all duration-200 ${
+            className={`relative shrink-0 w-14 rounded-xl overflow-hidden border-2 transition-all duration-200 ${
               i === activeIndex
                 ? 'border-red-500 scale-105 shadow-lg shadow-red-500/20'
                 : 'border-transparent opacity-50 hover:opacity-100 hover:border-slate-300 dark:hover:border-slate-600'
             }`}
+            style={{ aspectRatio: '9/16' }}
             aria-label={v.title}
           >
             <img src={v.thumbnail} alt={v.title} className="w-full h-full object-cover" loading="lazy" />
