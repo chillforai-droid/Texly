@@ -67,6 +67,7 @@ export default function SEOPage() {
       <Helmet>
         <title>{page.title}</title>
         <meta name="description" content={page.metaDescription} />
+        <meta name="robots" content="noindex, nofollow" />
         <link rel="canonical" href={canonical} />
         <meta property="og:title" content={page.title} />
         <meta property="og:description" content={page.metaDescription} />

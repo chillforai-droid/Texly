@@ -27,6 +27,97 @@
 
 import fs from "fs";
 import path from "path";
+import { ALL_TOOLS } from "../src/data/tools";
+import { getSEOData } from "../src/data/seo";
+
+// ── Escape text used inside HTML attributes / body to avoid breaking markup ─
+function esc(str: string = ""): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// ── Build unique, real per-tool metadata from tools.ts (+ seo.ts when available) ─
+// This is the fix for the "Low value content" AdSense rejection: previously every
+// /tool/:slug page that wasn't hand-mapped fell back to one generic templated
+// sentence, so crawlers saw near-duplicate descriptions across dozens of pages.
+// Now every tool pulls its own real, unique copy from the actual app data.
+function getToolPageMeta(slug: string): {
+  title: string;
+  description: string;
+  h1: string;
+  intro?: string;
+  howToUse?: string[];
+  faqs?: { q: string; a: string }[];
+  benefits?: string[];
+  useCases?: string[];
+} | null {
+  const tool = ALL_TOOLS.find((t) => t.slug === slug);
+  if (!tool) return null;
+
+  const seo = getSEOData(tool.id);
+
+  const title = seo?.title || tool.metaTitle || `${tool.name}`;
+  const description =
+    seo?.metaDescription ||
+    tool.metaDescription ||
+    tool.description ||
+    tool.shortDescription;
+  const h1 = seo?.h1 || tool.name.replace(/[⚡✨🔥]/g, "").trim();
+
+  return {
+    title,
+    description,
+    h1,
+    intro: seo?.intro,
+    howToUse: seo?.howToUse,
+    faqs: seo?.faqs,
+    benefits: seo?.benefits,
+    useCases: seo?.useCases,
+  };
+}
+
+// ── Render a tool's full unique body so the page isn't just one thin line ──
+function buildToolBody(meta: NonNullable<ReturnType<typeof getToolPageMeta>>, baseUrl: string): string {
+  let body = `<main>\n  <h1>${esc(meta.h1)}</h1>\n  <p>${esc(meta.description)}</p>\n`;
+
+  if (meta.intro) {
+    body += `  <section><p>${esc(meta.intro)}</p></section>\n`;
+  }
+  if (meta.howToUse?.length) {
+    body += `  <section><h2>How to use ${esc(meta.h1)}</h2><ol>\n`;
+    meta.howToUse.forEach((step) => {
+      body += `    <li>${esc(step)}</li>\n`;
+    });
+    body += `  </ol></section>\n`;
+  }
+  if (meta.benefits?.length) {
+    body += `  <section><h2>Benefits</h2><ul>\n`;
+    meta.benefits.forEach((b) => {
+      body += `    <li>${esc(b)}</li>\n`;
+    });
+    body += `  </ul></section>\n`;
+  }
+  if (meta.useCases?.length) {
+    body += `  <section><h2>Use Cases</h2><ul>\n`;
+    meta.useCases.forEach((u) => {
+      body += `    <li>${esc(u)}</li>\n`;
+    });
+    body += `  </ul></section>\n`;
+  }
+  if (meta.faqs?.length) {
+    body += `  <section><h2>Frequently Asked Questions</h2>\n`;
+    meta.faqs.slice(0, 6).forEach((f) => {
+      body += `    <details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>\n`;
+    });
+    body += `  </section>\n`;
+  }
+
+  body += `  <p><a href="${baseUrl}">← Back to Texly — 100+ Free Online Tools</a></p>\n</main>`;
+  return body;
+}
 
 // ── Tool metadata map (slug → title + description) ─────────────────────────
 const TOOL_META: Record<string, { title: string; description: string; h1: string }> = {
@@ -96,18 +187,18 @@ function buildHTML(opts: {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${opts.title}</title>
-  <meta name="description" content="${opts.description}" />
+  <title>${esc(opts.title)}</title>
+  <meta name="description" content="${esc(opts.description)}" />
   <link rel="canonical" href="${opts.canonical}" />
-  <meta property="og:title" content="${opts.title}" />
-  <meta property="og:description" content="${opts.description}" />
+  <meta property="og:title" content="${esc(opts.title)}" />
+  <meta property="og:description" content="${esc(opts.description)}" />
   <meta property="og:url" content="${opts.canonical}" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Texly" />
   <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${opts.title}" />
-  <meta name="twitter:description" content="${opts.description}" />
+  <meta name="twitter:title" content="${esc(opts.title)}" />
+  <meta name="twitter:description" content="${esc(opts.description)}" />
   <meta name="twitter:image" content="https://www.texlyonline.in/og-image.png" />
   <meta name="robots" content="index, follow" />
   <script type="application/ld+json">${schema}</script>
@@ -260,7 +351,8 @@ export default async function handler(req: any, res: any): Promise<void> {
   // ── 3. Tools page (/tools/:slug) ─────────────────────────────────────────
   if (toolsMatch) {
     const slug = toolsMatch[1];
-    const meta = TOOL_META[slug] || {
+    const realMeta = getToolPageMeta(slug);
+    const meta = TOOL_META[slug] || realMeta || {
       title: `${slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())} | Texly`,
       h1:    slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
       description: `Free online ${slug.replace(/-/g, " ")} tool. No signup required. Runs in your browser.`,
@@ -278,9 +370,11 @@ export default async function handler(req: any, res: any): Promise<void> {
       "publisher": { "@type": "Organization", "name": "Texly", "url": baseUrl }
     });
 
-    const body = `<main>
-  <h1>${meta.h1}</h1>
-  <p>${meta.description}</p>
+    const body = "intro" in meta || "faqs" in meta
+      ? buildToolBody(meta as NonNullable<ReturnType<typeof getToolPageMeta>>, baseUrl)
+      : `<main>
+  <h1>${esc(meta.h1)}</h1>
+  <p>${esc(meta.description)}</p>
   <p><a href="${baseUrl}">← Back to Texly — 100+ Free Online Tools</a></p>
 </main>`;
 
@@ -293,16 +387,54 @@ export default async function handler(req: any, res: any): Promise<void> {
   // ── 4. Legacy tool page (/tool/:slug) ────────────────────────────────────
   if (toolMatch) {
     const slug = toolMatch[1];
+    const realMeta = getToolPageMeta(slug);
+
+    // Real tool found in tools.ts → use its actual unique title/description/
+    // intro/FAQs (this is what fixes duplicate "low value content" pages).
+    if (realMeta) {
+      const schema = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": realMeta.title,
+        "description": realMeta.description,
+        "url": canonical,
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        ...(realMeta.faqs?.length
+          ? {
+              "mainEntity": realMeta.faqs.slice(0, 6).map((f) => ({
+                "@type": "Question",
+                "name": f.q,
+                "acceptedAnswer": { "@type": "Answer", "text": f.a },
+              })),
+            }
+          : {}),
+        "publisher": { "@type": "Organization", "name": "Texly", "url": baseUrl },
+      });
+
+      const body = buildToolBody(realMeta, baseUrl);
+
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      res.setHeader("X-Prerender", "1");
+      res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=300");
+      return res.status(200).send(
+        buildHTML({ title: realMeta.title, description: realMeta.description, h1: realMeta.h1, canonical, bodyContent: body, schemaJson: schema })
+      );
+    }
+
+    // Tool not found in tools.ts at all (shouldn't normally happen) — still
+    // avoid the old single boilerplate sentence; at least vary it per-slug.
     const label = slug.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
     const meta = {
       title: `${label} — Free Online Tool | Texly`,
       h1: label,
-      description: `Free online ${label.toLowerCase()} tool. No signup required. Works instantly in your browser.`,
+      description: `${label} online, free and instant — part of Texly's text & utility toolset. No signup, no install, runs entirely in your browser.`,
     };
 
     const body = `<main>
-  <h1>${meta.h1}</h1>
-  <p>${meta.description}</p>
+  <h1>${esc(meta.h1)}</h1>
+  <p>${esc(meta.description)}</p>
   <p><a href="${baseUrl}">← Back to Texly — 100+ Free Online Tools</a></p>
 </main>`;
 

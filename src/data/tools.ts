@@ -147,6 +147,22 @@ export const TOOLS: Tool[] = [
     process: (s) => s
   },
 
+  {
+    id: 'youtube-analyzer',
+    name: 'YouTube Channel Analyzer — AI Keyword & Viral Strategy Tool ⚡',
+    slug: 'youtube-analyzer',
+    category: 'ai',
+    isAI: true,
+    shortDescription: 'Analyze any YouTube channel with AI. Get viral keywords, content strategy, upload time tips & growth insights — free.',
+    description: 'Paste any YouTube channel URL and get a full AI-powered analysis. Discover viral keywords, channel health score, best upload times, ideal video duration, title formulas, thumbnail tips, and a complete growth strategy — powered by Claude AI and YouTube Data API.',
+    icon: 'Youtube',
+    keywords: ['youtube channel analyzer free', 'youtube keyword research tool', 'youtube seo tool free', 'how to make youtube videos viral', 'youtube channel growth tool', 'youtube analytics tool'],
+    primaryKeyword: 'youtube channel analyzer free',
+    secondaryKeywords: ['youtube keyword research tool', 'youtube seo tool free', 'how to make youtube videos viral'],
+    metaTitle: 'YouTube Channel Analyzer — AI Keyword & Viral Strategy | Texly ⚡',
+    metaDescription: 'Analyze any YouTube channel with AI. Get viral keywords, content strategy, best upload times, title formulas & channel score — 100% free.',
+    process: (s: string) => s,
+  },
   // ── Dev Utility Tools ──────────────────────────────────────────────────────
   {
     id: 'robots-txt-tester',

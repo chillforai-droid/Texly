@@ -86,6 +86,7 @@ const ImageFormatConverter = lazy(() => import('./pages/tools/ImageFormatConvert
 const SnapchatTagGenerator = lazy(
   () => import('./pages/tools/SnapchatTagGenerator')
 );
+const YouTubeAnalyzer = lazy(() => import('./pages/tools/YouTubeAnalyzer'));
 const AIToolPlaceholder = lazy(() => import('./pages/tools/AIToolPlaceholder'));
 const AITextSuite = lazy(() => import('./pages/tools/AITextSuite'));
 const InvisibleTextSuite = lazy(() => import('./pages/tools/InvisibleTextSuite'));
@@ -391,13 +392,14 @@ function SEOPageOrNotFound() {
 
   if (checking) return <PageLoader />;
 
-  if (slug && SEO_SLUGS.has(slug)) {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <SEOPage />
-      </Suspense>
-    );
-  }
+  if (slug && SEO_SLUGS.has(slug)) return <Navigate to="/" replace />;
+
+
+
+
+
+
+
 
   if (isDynamicTool) {
     return (
@@ -761,6 +763,14 @@ function AppContent() {
               }
             />
             <Route
+              path="/tools/youtube-analyzer"
+              element={
+                <RouteErrorBoundary>
+                  <YouTubeAnalyzer />
+                </RouteErrorBoundary>
+              }
+            />
+            <Route
               path="/tools/invisible-text-suite"
               element={
                 <RouteErrorBoundary>
@@ -926,16 +936,8 @@ function AppContent() {
               }
             />
 
-            {/* ── AI SEO Automation: Programmatic Landing Pages ─────────────── */}
-            {/* /seo/:slug — legacy route (backward compat) */}
-            <Route
-              path="/seo/:slug"
-              element={
-                <RouteErrorBoundary>
-                  <SEOPage />
-                </RouteErrorBoundary>
-              }
-            />
+            {/* /seo/:slug — legacy route redirected to home (thin content removed) */}
+            <Route path="/seo/:slug" element={<Navigate to="/" replace />} />
             {/* Download App Page */}
             <Route
               path="/download"

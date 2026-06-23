@@ -2,5 +2,10 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /dev-studio/
+Disallow: /seo/
+Disallow: /remove-whitespace-online
+Disallow: /case-converter
+Disallow: /remove-space-online
+Disallow: /duplicate-lines-remover
 
 Sitemap: https://www.texlyonline.in/sitemap.xml
