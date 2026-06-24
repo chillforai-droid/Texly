@@ -9,14 +9,89 @@
  */
 
 import { buildSystemPrompt, Lang } from './texlyPersonality';
+import { supabase } from '../../lib/supabase';
 
 export interface ChatMessage {
   role: 'user' | 'model' | 'assistant';
   content: string;
 }
 
+// Helper to decode username from the admin token
+export function getUsername(): string {
+  try {
+    const token = localStorage.getItem("texly_admin_token");
+    if (!token) return "guest";
+    const decoded = atob(token);
+    const [username] = decoded.split(":");
+    return username || "guest";
+  } catch {
+    return "guest";
+  }
+}
+
+// ─── Supabase storage integrations ──────────────────────────────────────────
+export async function saveProfileToSupabase(profileData: any): Promise<void> {
+  if (!supabase) return;
+  const username = getUsername();
+  const key = `u:${username}:profile`;
+  try {
+    const { error } = await supabase.from('texly_storage').upsert({
+      key,
+      data: profileData
+    });
+    if (error) console.error("Failed to save profile to Supabase:", error.message);
+    else console.log("Profile successfully saved to Supabase!");
+  } catch (err) {
+    console.error("Supabase upsert error:", err);
+  }
+}
+
+export async function loadProfileFromSupabase(): Promise<any | null> {
+  if (!supabase) return null;
+  const username = getUsername();
+  const key = `u:${username}:profile`;
+  try {
+    const { data, error } = await supabase.from('texly_storage').select('data').eq('key', key).maybeSingle();
+    if (!error && data) {
+      return data.data;
+    }
+  } catch (err) {
+    console.error("Supabase load profile error:", err);
+  }
+  return null;
+}
+
+export async function savePageAnalysisToSupabase(slug: string, analysis: string): Promise<void> {
+  if (!supabase) return;
+  const key = `analysis:page:${slug}`;
+  try {
+    const { error } = await supabase.from('texly_storage').upsert({
+      key,
+      data: { analysis, updated_at: Date.now() }
+    });
+    if (error) console.error("Failed to save page analysis to Supabase:", error.message);
+    else console.log("Page analysis successfully saved to Supabase!");
+  } catch (err) {
+    console.error("Supabase upsert analysis error:", err);
+  }
+}
+
+export async function loadPageAnalysisFromSupabase(slug: string): Promise<string | null> {
+  if (!supabase) return null;
+  const key = `analysis:page:${slug}`;
+  try {
+    const { data, error } = await supabase.from('texly_storage').select('data').eq('key', key).maybeSingle();
+    if (!error && data && data.data) {
+      return data.data.analysis;
+    }
+  } catch (err) {
+    console.error("Supabase load page analysis error:", err);
+  }
+  return null;
+}
+
 // ─── Server-side proxy call ───────────────────────────────────────────────────
-async function callServerAI(
+export async function callServerAI(
   prompt: string,
   systemPrompt: string,
   maxTokens = 400,
@@ -51,9 +126,28 @@ export async function callAI(
   lang: Lang,
   toolSlug: string,
   toolName: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  pageAnalysis?: string
 ): Promise<string> {
-  const systemPrompt = buildSystemPrompt(lang, toolSlug, toolName);
+  let userProfileStr = '';
+  try {
+    const profile = localStorage.getItem('texly_user_profile');
+    if (profile) {
+      const parsed = JSON.parse(profile);
+      userProfileStr = Object.entries(parsed)
+        .filter(([k]) => k !== 'lastUpdated')
+        .map(([k, v]) => `- ${k.toUpperCase()}: ${v}`)
+        .join('\n');
+    }
+  } catch (err) {
+    console.error("Failed to read user profile:", err);
+  }
+
+  let systemPrompt = buildSystemPrompt(lang, toolSlug, toolName, userProfileStr);
+
+  if (pageAnalysis) {
+    systemPrompt += `\n\n[CRITICAL SITE KNOWLEDGE - TECHNICAL PAGE AUDIT]:\nHere is your background expert technical analysis of the page the user is currently looking at ("${toolName}"): \n${pageAnalysis}\nUse this knowledge seamlessly to give incredibly smart, context-aware answers! Do NOT output that you read this from a background audit, keep it natural and professional.`;
+  }
 
   // Build prompt with history context
   const historyText = history
@@ -65,7 +159,7 @@ export async function callAI(
     ? `${historyText}\nUser: ${userMessage}`
     : userMessage;
 
-  return callServerAI(fullPrompt, systemPrompt, 400, signal);
+  return callServerAI(fullPrompt, systemPrompt, 700, signal);
 }
 
 // ─── Text tool AI helper ──────────────────────────────────────────────────────

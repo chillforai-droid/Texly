@@ -27,7 +27,9 @@ import {
   APK_SUGGESTIONS, APK_TRIGGER_KEYWORDS, APK_DOWNLOAD_URL, APK_VERSION,
 } from './texlyPersonality';
 import {
-  callAI, aiDoTextWork, ChatMessage,
+  callAI, aiDoTextWork, ChatMessage, callServerAI,
+  loadProfileFromSupabase, saveProfileToSupabase,
+  loadPageAnalysisFromSupabase, savePageAnalysisToSupabase,
 } from './texlyAIEngine';
 import {
   useAIMessages, getKB, getToolData, searchTools,
@@ -103,6 +105,7 @@ export default function TexlyAIAssistant() {
   const [dragPos, setDragPos] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [msgCount, setMsgCount] = useState(0); // APK suggest ke liye counter
+  const [pageAnalysis, setPageAnalysis] = useState<string>('');
 
   // Loading joke cycling
   const [loadingJokeActive, setLoadingJokeActive] = useState(false);
@@ -171,6 +174,61 @@ export default function TexlyAIAssistant() {
     }, 1500);
     return () => clearTimeout(timer);
   }, [toolSlug, kbLoaded]);
+
+  // ── Background Supabase memory load & silent page analysis ──────────────────
+  useEffect(() => {
+    let active = true;
+
+    async function initializeBackgroundData() {
+      // 1. Sync User Profile from Supabase
+      try {
+        const cloudProfile = await loadProfileFromSupabase();
+        if (cloudProfile && active) {
+          const localProfileStr = localStorage.getItem('texly_user_profile') || '{}';
+          const localProfile = JSON.parse(localProfileStr);
+          const merged = { ...localProfile, ...cloudProfile };
+          localStorage.setItem('texly_user_profile', JSON.stringify(merged));
+          console.log("Background synced user profile from Supabase:", merged);
+        }
+      } catch (err) {
+        console.error("Background sync user profile error:", err);
+      }
+
+      // 2. Load or Silently Generate current page analysis
+      if (!toolSlug) return;
+      try {
+        const storedAnalysis = await loadPageAnalysisFromSupabase(toolSlug);
+        if (storedAnalysis) {
+          if (active) {
+            setPageAnalysis(storedAnalysis);
+            console.log(`Loaded stored background page analysis for [${toolSlug}] from Supabase.`);
+          }
+          return;
+        }
+
+        // Silent background AI page analysis
+        console.log(`No existing analysis for [${toolSlug}]. Running silent AI background analysis...`);
+        const systemPromptText = `You are Texly's Lead Technical Architect and Content Strategist. Generate a professional expert SEO, accessibility, performance, and keyword density page analysis report for "${window.location.pathname}" (Tool name: "${toolName || 'Texly'}"). Do not use any introductory conversational text or greetings. Return ONLY the markdown-formatted expert technical report.`;
+        const promptText = `Please analyze the current path: "${window.location.pathname}" (Tool: "${toolName || 'Texly'}"). Outline key features, search optimization benefits, performance tips, accessibility best practices, and companion tool suggestions.`;
+        
+        const result = await callServerAI(promptText, systemPromptText, 1000);
+        
+        if (result && active) {
+          setPageAnalysis(result);
+          await savePageAnalysisToSupabase(toolSlug, result);
+          console.log(`Successfully completed and saved background page analysis for [${toolSlug}] to Supabase.`);
+        }
+      } catch (err) {
+        console.error("Background page analysis error:", err);
+      }
+    }
+
+    initializeBackgroundData();
+
+    return () => {
+      active = false;
+    };
+  }, [toolSlug, toolName]);
 
   // ── Engagement engine ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -456,9 +514,48 @@ export default function TexlyAIAssistant() {
         ? `[Tool: ${toolSlug}] ${text}`
         : text;
 
-      const reply = await callAI(contextMsg, chatHistory, userLang, toolSlug, toolName, abortRef.current.signal);
-      addBot(reply);
-      setChatHistory([...newHistory, { role: 'model', content: reply }]);
+      const reply = await callAI(contextMsg, chatHistory, userLang, toolSlug, toolName, abortRef.current.signal, pageAnalysis);
+      
+      // Intercept and parse learning tags
+      let cleanedReply = reply;
+      const learnRegex = /\[LEARN:\s*([^\]]+)\]/gi;
+      let match;
+      const newFacts: Record<string, string> = {};
+      
+      while ((match = learnRegex.exec(reply)) !== null) {
+        const pairs = match[1].split(',');
+        pairs.forEach(p => {
+          const parts = p.split('=');
+          if (parts.length >= 2) {
+            const k = parts[0].trim().toLowerCase();
+            const v = parts.slice(1).join('=').trim();
+            if (k && v) {
+              newFacts[k] = v;
+            }
+          }
+        });
+      }
+      
+      // Strip tags from visible reply
+      cleanedReply = reply.replace(learnRegex, '').trim();
+      
+      if (Object.keys(newFacts).length > 0) {
+        try {
+          const existing = localStorage.getItem('texly_user_profile') || '{}';
+          const parsed = JSON.parse(existing);
+          const updated = { ...parsed, ...newFacts, lastUpdated: Date.now() };
+          localStorage.setItem('texly_user_profile', JSON.stringify(updated));
+          console.log("Texly AI learned new facts about user:", updated);
+          
+          // Sync dynamically to Supabase for persistent cloud usage
+          saveProfileToSupabase(updated);
+        } catch (err) {
+          console.error("Failed to write user profile:", err);
+        }
+      }
+
+      addBot(cleanedReply);
+      setChatHistory([...newHistory, { role: 'model', content: cleanedReply }]);
 
       // 📱 APK periodic suggestion — har 5 messages mein ek baar
       const newCount = msgCount + 1;
@@ -478,7 +575,7 @@ export default function TexlyAIAssistant() {
     } finally {
       setIsTyping(false);
     }
-  }, [input, isTyping, toolSlug, toolName, chatHistory, lang]);
+  }, [input, isTyping, toolSlug, toolName, chatHistory, lang, pageAnalysis]);
 
   useEffect(() => { handleSendRef.current = handleSend; }, [handleSend]);
 
@@ -653,6 +750,8 @@ export default function TexlyAIAssistant() {
                   ))}
                 </div>
               )}
+
+
 
               <div className="tai-input-row">
                 <input
@@ -995,6 +1094,23 @@ const STYLES = `
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 .tai-exit-secondary:hover { background: #ede9fe; }
+
+/* Action Bar & Page Analysis Button */
+.tai-action-bar { padding: 4px 14px; display: flex; justify-content: center; background: rgba(248,248,255,0.5); }
+.tai-analyze-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff; border: none; border-radius: 12px;
+  padding: 8px 16px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+  transition: all 0.18s; font-family: 'Plus Jakarta Sans', sans-serif;
+  width: 100%; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;
+  box-shadow: 0 4px 12px rgba(16,185,129,0.25);
+}
+.tai-analyze-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(16,185,129,0.35);
+}
+.tai-analyze-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* Mobile */
 @media(max-width:480px){

@@ -7,13 +7,22 @@ const MAX_RESULTS = 12;
 const AUTOPLAY_MS = 20000;
 
 const FALLBACK_VIDEOS = [
-  { id: 'FloTD4tmP48', title: 'Texly Online — Free AI & Text Tools' },
-  { id: 'OrW7ZciseE0', title: 'Texly Online — Tutorial' },
-  { id: 'UOVbCq1t0oM', title: 'Texly Online — Feature Walkthrough' },
-  { id: 'hUr1RXgTw1k', title: 'Texly Online — Demo' },
+  { id: 'FloTD4tmP48', title: 'Texly Online — Free AI & Text Tools', isShort: false },
+  { id: 'OrW7ZciseE0', title: 'Texly Online — Tutorial', isShort: false },
+  { id: 'UOVbCq1t0oM', title: 'Texly Online — Feature Walkthrough', isShort: false },
+  { id: 'hUr1RXgTw1k', title: 'Texly Online — Demo', isShort: false },
 ];
 
-interface VideoItem { id: string; title: string; thumbnail: string; }
+interface VideoItem { id: string; title: string; thumbnail: string; isShort?: boolean; }
+
+const parseISO8601Duration = (duration: string): number => {
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return 0;
+  const hours = parseInt(match[1] || '0', 10);
+  const minutes = parseInt(match[2] || '0', 10);
+  const seconds = parseInt(match[3] || '0', 10);
+  return hours * 3600 + minutes * 60 + seconds;
+};
 
 const HeroVideoSlider = () => {
   const [videos, setVideos]             = useState<VideoItem[]>([]);
@@ -38,18 +47,65 @@ const HeroVideoSlider = () => {
   const fetchVideos = async () => {
     setLoading(true); setApiError(false);
     try {
+      // 1. Search for channel videos
       const res  = await fetch(
         `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=${MAX_RESULTS}&type=video`
       );
-      const data = await res.json();
-      if (data.error || !data.items?.length) throw new Error();
-      setVideos(data.items.map((item: any) => ({
-        id        : item.id.videoId,
-        title     : item.snippet.title,
-        thumbnail : item.snippet.thumbnails?.high?.url || `https://img.youtube.com/vi/${item.id.videoId}/hqdefault.jpg`,
+      const searchData = await res.json();
+      if (searchData.error || !searchData.items?.length) throw new Error();
+
+      const videoIds = searchData.items.map((item: any) => item.id.videoId).join(',');
+
+      // 2. Fetch full contentDetails for duration detection
+      const detailsRes = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds}&part=snippet,contentDetails`
+      );
+      const detailsData = await detailsRes.json();
+
+      let mappedVideos: VideoItem[] = [];
+      if (detailsData?.items && detailsData.items.length > 0) {
+        mappedVideos = detailsData.items.map((item: any) => {
+          const title = item.snippet?.title || '';
+          const durationStr = item.contentDetails?.duration || '';
+          const durationSec = parseISO8601Duration(durationStr);
+          
+          // A video is a Short if duration is 61 seconds or less,
+          // OR if its title contains shorts-related keywords.
+          const titleLower = title.toLowerCase();
+          const isShort = (durationSec > 0 && durationSec <= 61) || 
+            titleLower.includes('short') || 
+            titleLower.includes('#shorts') || 
+            titleLower.includes('reels') || 
+            titleLower.includes('vertical');
+
+          return {
+            id: item.id,
+            title,
+            thumbnail: item.snippet?.thumbnails?.maxres?.url || item.snippet?.thumbnails?.high?.url || `https://img.youtube.com/vi/${item.id}/hqdefault.jpg`,
+            isShort,
+          };
+        });
+      } else {
+        mappedVideos = searchData.items.map((item: any) => {
+          const title = item.snippet.title;
+          return {
+            id: item.id.videoId,
+            title,
+            thumbnail: item.snippet.thumbnails?.high?.url || `https://img.youtube.com/vi/${item.id.videoId}/hqdefault.jpg`,
+            isShort: isShortsVideo(title),
+          };
+        });
+      }
+
+      setVideos(mappedVideos);
+    } catch (err) {
+      console.error('Failed to fetch YouTube videos:', err);
+      setVideos(FALLBACK_VIDEOS.map(v => ({ 
+        id: v.id, 
+        title: v.title, 
+        thumbnail: `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`,
+        isShort: v.isShort
       })));
-    } catch {
-      setVideos(FALLBACK_VIDEOS.map(v => ({ ...v, thumbnail: `https://img.youtube.com/vi/${v.id}/hqdefault.jpg` })));
       setApiError(true);
     } finally { setLoading(false); }
   };
@@ -95,7 +151,7 @@ const HeroVideoSlider = () => {
 
   if (videos.length === 0) return null;
   const active = videos[activeIndex];
-  const isCurrentShort = isShortsVideo(active.title);
+  const isCurrentShort = !!active.isShort;
 
   // Safe youtube embed URL (autoplays only after user clicks our Play button)
   const embedSrc = `https://www.youtube.com/embed/${active.id}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&modestbranding=1&controls=1&playsinline=1&enablejsapi=1`;
@@ -253,7 +309,7 @@ const HeroVideoSlider = () => {
       {/* Responsive Thumbnail Strip */}
       <div className="flex items-center gap-3 mt-5 overflow-x-auto py-1 scrollbar-hide justify-start sm:justify-center">
         {videos.map((v, i) => {
-          const thumbIsShort = isShortsVideo(v.title);
+          const thumbIsShort = !!v.isShort;
           return (
             <button
               key={v.id}
