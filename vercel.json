@@ -117,308 +117,298 @@
   ],
   "redirects": [
     {
-      "source": "/tool/word-counter-online-free",
-      "destination": "/tools/text-analysis-hub",
-      "permanent": true
-    },
-    {
       "source": "/tool/character-counter-tool",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tool/word-counter-online-free",
       "permanent": true
     },
     {
       "source": "/tool/letter-counter-online-free",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=letter-counter",
       "permanent": true
     },
     {
       "source": "/tool/reading-time-calculator-online",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=reading-time",
       "permanent": true
     },
     {
       "source": "/tool/line-counter-online",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=line-counter",
       "permanent": true
     },
     {
       "source": "/tool/sentence-counter-online",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=sentence-counter",
       "permanent": true
     },
     {
       "source": "/tool/paragraph-counter-online",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=paragraph-counter",
       "permanent": true
     },
     {
       "source": "/tool/age-calculator-online",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=age-calculator",
       "permanent": true
     },
     {
       "source": "/tool/text-density-analyzer",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=text-density",
       "permanent": true
     },
     {
       "source": "/tool/case-distribution-analyzer",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=case-distribution",
       "permanent": true
     },
     {
       "source": "/tool/extract-emails-from-text",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=extract-emails",
       "permanent": true
     },
     {
       "source": "/tool/extract-urls-from-text",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=extract-urls",
       "permanent": true
     },
     {
       "source": "/tool/jwt-decoder-online",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=jwt-decoder",
       "permanent": true
     },
     {
       "source": "/tool/text-diff-checker-online",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=text-diff",
       "permanent": true
     },
     {
       "source": "/tool/character-frequency-counter",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=character-frequency",
       "permanent": true
     },
     {
       "source": "/tool/word-length-statistics",
-      "destination": "/tools/text-analysis-hub",
+      "destination": "/tools/text-analysis-hub?tool=word-length",
       "permanent": true
     },
     {
       "source": "/tool/remove-extra-spaces-online",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-extra-spaces",
       "permanent": true
     },
     {
       "source": "/tool/remove-line-breaks-tool",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-line-breaks",
       "permanent": true
     },
     {
       "source": "/tool/remove-duplicate-lines-tool",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-duplicate-lines",
       "permanent": true
     },
     {
       "source": "/tool/remove-empty-lines-online",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-empty-lines",
       "permanent": true
     },
     {
       "source": "/tool/remove-numbers-from-text",
-      "destination": "/tools/text-cleaning-hub",
-      "permanent": true
-    },
-    {
-      "source": "/tool/remove-special-characters-online",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-numbers",
       "permanent": true
     },
     {
       "source": "/tool/remove-html-tags-online",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-html-tags",
       "permanent": true
     },
     {
       "source": "/tool/clean-text-online-free",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=text-cleaner",
       "permanent": true
     },
     {
       "source": "/tool/remove-accents-from-text",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-accents",
       "permanent": true
     },
     {
       "source": "/tool/remove-emojis-online",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-emojis",
       "permanent": true
     },
     {
       "source": "/tool/remove-punctuation-tool",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-punctuation",
       "permanent": true
     },
     {
       "source": "/tool/remove-all-whitespace-online",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-all-whitespace",
       "permanent": true
     },
     {
       "source": "/tool/remove-duplicate-words-online",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=remove-duplicate-words",
       "permanent": true
     },
     {
       "source": "/tool/trim-text-online",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=trim-text",
       "permanent": true
     },
     {
       "source": "/tool/whitespace-remover-online",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=whitespace-remover",
       "permanent": true
     },
     {
       "source": "/tool/markdown-to-plain-text",
-      "destination": "/tools/text-cleaning-hub",
+      "destination": "/tools/text-cleaning-hub?tool=markdown-to-plain",
       "permanent": true
     },
     {
       "source": "/tool/upper-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=upper-case",
       "permanent": true
     },
     {
       "source": "/tool/lower-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=lower-case",
       "permanent": true
     },
     {
       "source": "/tool/title-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=title-case",
       "permanent": true
     },
     {
       "source": "/tool/sentence-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=sentence-case",
       "permanent": true
     },
     {
       "source": "/tool/camel-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=camel-case",
       "permanent": true
     },
     {
       "source": "/tool/snake-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=snake-case",
       "permanent": true
     },
     {
       "source": "/tool/kebab-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=kebab-case",
       "permanent": true
     },
     {
       "source": "/tool/pascal-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=pascal-case",
       "permanent": true
     },
     {
       "source": "/tool/constant-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=constant-case",
       "permanent": true
     },
     {
       "source": "/tool/alternating-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=alternating-case",
       "permanent": true
     },
     {
       "source": "/tool/inverse-case-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=inverse-case",
       "permanent": true
     },
     {
       "source": "/tool/base64-encode-online",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=base64-encode",
       "permanent": true
     },
     {
       "source": "/tool/base64-decode-online",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=base64-decode",
       "permanent": true
     },
     {
       "source": "/tool/url-encode-online",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=url-encode",
       "permanent": true
     },
     {
       "source": "/tool/url-decode-online",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=url-decode",
       "permanent": true
     },
     {
       "source": "/tool/html-entity-encoder",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=html-entity-encode",
       "permanent": true
     },
     {
       "source": "/tool/html-entity-decoder",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=html-entity-decode",
       "permanent": true
     },
     {
       "source": "/tool/text-to-hex-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=hex-encode",
       "permanent": true
     },
     {
       "source": "/tool/hex-to-text-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=hex-decode",
       "permanent": true
     },
     {
       "source": "/tool/text-to-binary-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=text-to-binary",
       "permanent": true
     },
     {
       "source": "/tool/binary-to-text-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=binary-to-text",
       "permanent": true
     },
     {
       "source": "/tool/rot13-cipher-online",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=rot13",
       "permanent": true
     },
     {
       "source": "/tool/morse-code-translator",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=morse-code",
       "permanent": true
     },
     {
       "source": "/tool/military-alphabet-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=military-alphabet",
       "permanent": true
     },
     {
       "source": "/tool/slug-generator-online-free",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=slug-generator",
       "permanent": true
     },
     {
       "source": "/tool/number-to-words-converter",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=number-to-words",
       "permanent": true
     },
     {
       "source": "/tool/braille-translator-online",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=braille-translator",
       "permanent": true
     },
     {
       "source": "/tool/nato-phonetic-alphabet-translator",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=nato-phonetic",
       "permanent": true
     },
     {
       "source": "/tool/unit-converter-online",
-      "destination": "/tools/text-converter-hub",
+      "destination": "/tools/text-converter-hub?tool=unit-converter",
       "permanent": true
     },
     {
@@ -428,97 +418,97 @@
     },
     {
       "source": "/tool/text-reverser-online",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=text-reverser",
       "permanent": true
     },
     {
       "source": "/tool/text-repeater-tool",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=text-repeater",
       "permanent": true
     },
     {
       "source": "/tool/sort-lines-alphabetically",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=sort-lines",
       "permanent": true
     },
     {
       "source": "/tool/find-and-replace-text-online",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=find-replace",
       "permanent": true
     },
     {
       "source": "/tool/add-prefix-suffix-to-lines",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=add-prefix",
       "permanent": true
     },
     {
       "source": "/tool/upside-down-text-generator",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=upside-down",
       "permanent": true
     },
     {
       "source": "/tool/mirror-text-generator",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=mirror-text",
       "permanent": true
     },
     {
       "source": "/tool/lorem-ipsum-generator-online",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=lorem-ipsum",
       "permanent": true
     },
     {
       "source": "/tool/random-string-generator-online",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=random-string",
       "permanent": true
     },
     {
       "source": "/tool/fancy-text-generator-online",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=fancy-text",
       "permanent": true
     },
     {
       "source": "/tool/zalgo-text-generator",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=zalgo-text",
       "permanent": true
     },
     {
       "source": "/tool/ascii-banner-generator",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=ascii-banner",
       "permanent": true
     },
     {
       "source": "/tool/whatsapp-text-formatter",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=whatsapp-formatter",
       "permanent": true
     },
     {
       "source": "/tool/json-formatter-online",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=json-formatter",
       "permanent": true
     },
     {
       "source": "/tool/csv-to-json-converter",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=csv-to-json",
       "permanent": true
     },
     {
       "source": "/tool/json-to-csv-converter-online",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=json-to-csv",
       "permanent": true
     },
     {
       "source": "/tool/sql-formatter-online",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=sql-formatter",
       "permanent": true
     },
     {
       "source": "/tool/pregnancy-due-date-calculator",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=pregnancy-calculator",
       "permanent": true
     },
     {
       "source": "/tool/text-steganography-hidden-message",
-      "destination": "/tools/text-utility-hub",
+      "destination": "/tools/text-utility-hub?tool=steganography",
       "permanent": true
     },
     {
@@ -533,11 +523,6 @@
     },
     {
       "source": "/tool/invisible-text-generator",
-      "destination": "/tools/text-utility-hub",
-      "permanent": true
-    },
-    {
-      "source": "/tool/text-to-list-converter",
       "destination": "/tools/text-utility-hub",
       "permanent": true
     },
