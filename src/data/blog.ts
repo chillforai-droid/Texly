@@ -28,10 +28,11 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Tired of messy text with double spaces and irregular gaps? Learn how to remove extra spaces instantly using Texly and improve your content readability.',
     date: 'March 26, 2026',
     author: 'Texly Content Team',
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjpViYyX_h8xBVbD4X-FMXsddKHsJ0boUE0zsSKRaetTcJSAmRYirT6_yOFJwfSxr_5R5t0zmBn7hmlM5KrgiuITaRVHUWGnXT1kKPmZwaJHYQomy9erxw3CL88QGhn_OgN9LWg_gAD9DRglwMSID_7TuzTCHXyUTH319Hkcz_LAGz9tK71nwaPAdNHk5g/s1536/file_000000000f3c71faae82a5130de75a55.png',
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&h=630&q=80',
     category: 'Text Cleaning',
     readTime: '8 min read',
     tags: ['Text Formatting', 'SEO', 'Content Writing', 'Productivity'],
+    contentType: 'html',
     content: `
       <p>Have you ever copied text from a PDF, a website, or an old document only to find it riddled with annoying double spaces, irregular gaps, and messy formatting? We've all been there. Messy text isn't just an eyesore; it can negatively impact your SEO, professional credibility, and user experience. In today's digital-first world, the clarity of your communication is often the first thing people judge you by. Whether you're a student, a professional writer, or a developer, clean text is non-negotiable.</p>
 
@@ -60,7 +61,7 @@ export const BLOG_POSTS: BlogPost[] = [
       <p>If you are a developer or data analyst, extra spaces are your worst enemy. They can break CSV imports, cause errors in database queries, and lead to incorrect string comparisons in your code. A single trailing space in a username or password field can cause hours of debugging frustration.</p>
 
       <div class="my-12">
-        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjpViYyX_h8xBVbD4X-FMXsddKHsJ0boUE0zsSKRaetTcJSAmRYirT6_yOFJwfSxr_5R5t0zmBn7hmlM5KrgiuITaRVHUWGnXT1kKPmZwaJHYQomy9erxw3CL88QGhn_OgN9LWg_gAD9DRglwMSID_7TuzTCHXyUTH319Hkcz_LAGz9tK71nwaPAdNHk5g/s1536/file_000000000f3c71faae82a5130de75a55.png" alt="How to remove extra spaces from text" class="rounded-3xl shadow-2xl w-full" />
+        <img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=1200&h=630&q=80" alt="How to remove extra spaces from text" class="rounded-3xl shadow-2xl w-full" />
       </div>
 
       <h2>Common Scenarios Where You Need to Fix Messy Text</h2>
@@ -119,10 +120,11 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Discover how AI is revolutionizing image editing. Learn how to use Face Swap, Background Remover, and Image Enhancer tools to create professional-grade visuals instantly.',
     date: 'April 12, 2026',
     author: 'Texly AI Team',
-    image: 'https://picsum.photos/seed/ai-image/1200/630',
+    image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&h=630&q=80',
     category: 'AI Tools',
     readTime: '12 min read',
     tags: ['AI', 'Image Editing', 'Face Swap', 'Background Removal', 'Image Enhancement'],
+    contentType: 'html',
     content: `
       <p>Artificial Intelligence has fundamentally changed how we interact with digital media. What used to take hours of meticulous work in professional software like Photoshop can now be accomplished in seconds with a single click. At Texly, we've integrated the most powerful <strong>AI Image Processing tools</strong> to help you create stunning visuals without any technical expertise.</p>
 
@@ -209,10 +211,11 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Explore the utility of different case structures (Snake, Camel, Kebab, Pascal) for writing copy and coding, and learn how our converters save developers thousands of manual updates.',
     date: 'May 02, 2026',
     author: 'Texly Engineering Team',
-    image: 'https://picsum.photos/seed/case-guide/1200/630',
+    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&h=630&q=80',
     category: 'Text Tools',
     readTime: '9 min read',
     tags: ['Coding', 'Text Formatting', 'Web Development', 'Productivity'],
+    contentType: 'html',
     content: `
       <p>In text editing, copywriting, and software systems engineering, "text casing" is a core convention. Understanding and shifting between distinct casing structures like Camel Case, Pascal Case, Snake Case, Kebab Case, and Title Case can dictate how easily a customer navigates your blog, or how clean a developer keeps code databases. While many modern text editors offer simple lowercase and uppercase conversions, they rarely provide robust solutions for complex system formats.</p>
 
@@ -258,10 +261,11 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Learn the critical differences between risk-prone cloud PDF portals and Texly\'s client-only high-speed PDF architecture for enterprise file safety.',
     date: 'May 10, 2026',
     author: 'Texly Security Team',
-    image: 'https://picsum.photos/seed/pdf-guide/1200/630',
+    image: 'https://images.unsplash.com/photo-1568027762-7416172544ad?auto=format&fit=crop&w=1200&h=630&q=80',
     category: 'PDF Tools',
     readTime: '10 min read',
     tags: ['PDF Tools', 'Security', 'Compliance', 'Privacy'],
+    contentType: 'html',
     content: `
       <p>PDF documents represent the universal baseline for modern commercial files. Contract reviews, accounting invoice registries, physical tax records, and student transcript sheets are shared daily in PDF format. Because these files frequently house sensitive personal and financial databases, editing them securely is paramount. Unfortunately, many users upload these critical payloads onto unsecured third-party cloud services designed to parse, extract, and index records.</p>
 
@@ -298,10 +302,11 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Avoid Google duplicate content triggers and formatting errors that hurt conversion rates by establishing professional text cleaning workflows.',
     date: 'May 18, 2026',
     author: 'Texly Content Team',
-    image: 'https://picsum.photos/seed/clean-seo/1200/630',
+    image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&h=630&q=80',
     category: 'Text Cleaning',
     readTime: '8 min read',
     tags: ['SEO', 'Content Writing', 'Text Cleaning', 'Quality Assurance'],
+    contentType: 'html',
     content: `
       <p>Google's advanced search algorithms now place unprecedented weight on "Content Quality Metrics" and "User Experience (UX)". If users land on your webpage only to find trailing brackets, double spaces, and broken paragraph layouts, they will quickly click away. This signals to Google that your contents are uncurated or auto-spun, hurting your SEO rankings and domain authority.</p>
 
@@ -334,10 +339,11 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Unlock the full power of modern Large Language Models by mastering advanced prompt architectures, structured outputs, and role delegation frameworks.',
     date: 'May 25, 2026',
     author: 'Texly AI Team',
-    image: 'https://picsum.photos/seed/prompt-engineering/1200/630',
+    image: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=1200&h=630&q=80',
     category: 'AI Tools',
     readTime: '11 min read',
     tags: ['AI Tools', 'Prompt Design', 'Gemini', 'Claude', 'AI Automation'],
+    contentType: 'html',
     content: `
       <p>Large Language Models (LLMs) like Gemini, Claude, and GPT-4 are incredibly capable, but their performance heavily depends on the quality of their instructions. "Prompt Engineering" has emerged as a key skill for professional workflows. To get the best results, users must move beyond simple, one-line requests.</p>
 
@@ -369,10 +375,11 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Leverage ASCII symbols, decorative Unicode characters, and custom fonts to make your brand\'s social posts stand out in crowded feeds.',
     date: 'June 01, 2026',
     author: 'Texly Marketing Team',
-    image: 'https://picsum.photos/seed/unicode-marketing/1200/630',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&h=630&q=80',
     category: 'Text Tools',
     readTime: '7 min read',
     tags: ['Marketing', 'Conversion Rate', 'Social Media', 'Generators'],
+    contentType: 'html',
     content: `
       <p>Social media feeds are incredibly crowded, and capturing attention is a major challenge for brands. Stand out in busy streams using customized visual text styles like bold Unicode fonts and eye-catching symbols that demand attention.</p>
 
@@ -404,10 +411,11 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Understand readability calculations like Flesch-Kincaid and Gunning Fog to optimize your writing for search engines and global audiences.',
     date: 'June 05, 2026',
     author: 'Texly Editorial Unit',
-    image: 'https://picsum.photos/seed/text-analysis/1200/630',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&h=630&q=80',
     category: 'Text Tools',
     readTime: '9 min read',
     tags: ['Text Analysis', 'Copywriting', 'SEO', 'Readability'],
+    contentType: 'html',
     content: `
       <p>Writers often evaluate their content based on feel alone. However, search engines and public publishers rely on hard analytical metrics to measure readability and relevance. Understanding parameters like word density, sentence lengths, and readability scores is essential for optimizing content for target audiences.</p>
 
@@ -440,10 +448,11 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Deep-dive into the technical side of SEO. Learn how clean URL formatting, structured server instructions, and JWT configurations protect search indexing.',
     date: 'June 08, 2026',
     author: 'Texly Technical Team',
-    image: 'https://picsum.photos/seed/tech-seo/1200/630',
+    image: 'https://images.unsplash.com/photo-1571786256017-aee7a0c009b6?auto=format&fit=crop&w=1200&h=630&q=80',
     category: 'Text Tools',
     readTime: '10 min read',
     tags: ['Technical SEO', 'Developers', 'Security', 'Web Performance'],
+    contentType: 'html',
     content: `
       <p>Technical SEO form the foundation of successful search engine optimization. Having great copy doesn't matter if search crawlers can't read your site's structure, or if broken URLs trigger bad response codes. Mastering developer tools and directory assets is critical for keeping platforms healthy and search rankings high.</p>
 

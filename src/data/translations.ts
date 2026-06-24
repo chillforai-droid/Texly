@@ -17,6 +17,7 @@ export interface Translations {
     pdf: string;
     ai: string;
     generator: string;
+    youtube: string;
     cleaningDesc: string;
     converterDesc: string;
     analysisDesc: string;
@@ -24,6 +25,7 @@ export interface Translations {
     pdfDesc: string;
     aiDesc: string;
     generatorDesc: string;
+    youtubeDesc: string;
   };
   home: {
     heroTitle: string;
@@ -214,6 +216,7 @@ export const translations: Record<Language, Translations> = {
       pdf: 'PDF Tools',
       ai: 'AI Tools',
       generator: 'Generators',
+      youtube: 'YouTube Growth',
       cleaningDesc: 'Remove unwanted characters, spaces, and formatting.',
       converterDesc: 'Convert between different text formats and cases.',
       analysisDesc: 'Analyze your text for stats, frequency, and more.',
@@ -221,6 +224,7 @@ export const translations: Record<Language, Translations> = {
       pdfDesc: 'Edit, convert, and manage your PDF documents online.',
       aiDesc: 'Powerful AI-powered image processing and generation tools.',
       generatorDesc: 'Create custom assets like QR codes and palettes.',
+      youtubeDesc: 'Optimize your YouTube channel for maximum reach.',
     },
     home: {
       heroTitle: '100+ Free Online Text & AI Tools',
@@ -628,6 +632,7 @@ export const translations: Record<Language, Translations> = {
       pdf: 'PDF टूल्स',
       ai: 'AI टूल्स',
       generator: 'जनरेटर',
+      youtube: 'YouTube ग्रोथ',
       cleaningDesc: 'अवांछित कैरेक्टर्स, स्पेस और फॉर्मेटिंग हटाएं।',
       converterDesc: 'विभिन्न टेक्स्ट फॉर्मेट और केस के बीच बदलें।',
       analysisDesc: 'आंकड़ों, फ्रीक्वेंसी और बहुत कुछ के लिए अपने टेक्स्ट का विश्लेषण करें।',
@@ -635,6 +640,7 @@ export const translations: Record<Language, Translations> = {
       pdfDesc: 'अपने PDF दस्तावेज़ों को ऑनलाइन एडिट, कन्वर्ट और मैनेज करें।',
       aiDesc: 'शक्तिशाली AI-आधारित इमेज प्रोसेसिंग और जनरेशन टूल्स।',
       generatorDesc: 'QR कोड और कलर पैलेट जैसे कस्टम एसेट बनाएं।',
+      youtubeDesc: 'अपने YouTube चैनल की रीच और SEO बढ़ाएं।',
     },
     home: {
       heroTitle: '100+ मुफ़्त AI टूल्स और टेक्स्ट यूटिलिटीज - सरल, तेज़ और सुरक्षित',
@@ -1037,6 +1043,7 @@ export const translations: Record<Language, Translations> = {
       pdf: 'PDF Tools',
       ai: 'AI Tools',
       generator: 'Generators',
+      youtube: 'YouTube Growth',
       cleaningDesc: 'Unwanted characters, spaces, aur formatting hatayein.',
       converterDesc: 'Different text formats aur cases mein badlein.',
       analysisDesc: 'Stats aur frequency ke liye text analyze karein.',
@@ -1044,6 +1051,7 @@ export const translations: Record<Language, Translations> = {
       pdfDesc: 'Apne PDF documents ko online edit, convert, aur manage karein.',
       aiDesc: 'Powerful AI-powered image processing aur generation tools.',
       generatorDesc: 'QR codes aur palettes jaise custom assets banayein.',
+      youtubeDesc: 'Apne YouTube channel ki reach aur SEO badhayein.',
     },
     home: {
       heroTitle: '100+ Free AI Tools aur Text Utilities – Simple, Fast & Secure',

@@ -9,7 +9,8 @@ import {
   ChevronRight,
   ShieldCheck,
   ChevronDown,
-  Play
+  Play,
+  Wrench
 } from 'lucide-react';
 
 const SEO_TITLE = "Sort Lines Alphabetically Online — Find & Replace, Reverse Text, Lorem Ipsum & 25+ Text Utility Tools | Free";
@@ -460,15 +461,22 @@ export default function TextUtilityHub({ activeToolId }: { activeToolId?: string
         </nav>
 
         {/* Header */}
-        <header className="mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-50/10 text-amber-600 dark:text-amber-400">Hub 4</span>
-            <span className="text-xs font-semibold text-slate-400">25+ Pro Text Utilities</span>
+        <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 bg-slate-600 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-slate-500/30">
+              <Wrench className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-slate-500/10 text-slate-600 dark:text-slate-400">Hub 4</span>
+                <span className="text-xs font-semibold text-slate-400">25+ Pro Text Utilities Suite</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Texly Text Utility Suite
+              </h1>
+            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Sort Lines Alphabetically & 25+ Text Utility Tools — Free Online
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed mt-2">
             Sort lines alphabetically, find and replace text, reverse text, repeat text, generate Lorem Ipsum, format JSON — 25+ free text utility tools. No login, instant results.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">

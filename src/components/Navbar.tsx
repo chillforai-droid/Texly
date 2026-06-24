@@ -27,6 +27,7 @@ const hubTranslations: Record<Language, {
   pdf: string;
   ai: string;
   generator: string;
+  youtube: string;
 }> = {
   en: {
     trigger: "Premium Hubs",
@@ -36,7 +37,8 @@ const hubTranslations: Record<Language, {
     utility: "🔧 Text Utility Suite",
     pdf: "📄 PDF Tools Suite",
     ai: "🌌 AI Text & Tools Hub",
-    generator: "⚡ Generators Suite"
+    generator: "⚡ Generators Suite",
+    youtube: "🎥 YouTube Tools Hub"
   },
   hi: {
     trigger: "प्रीमियम हब",
@@ -46,7 +48,8 @@ const hubTranslations: Record<Language, {
     utility: "🔧 टेक्स्ट यूटिलिटी सूट",
     pdf: "📄 पीडीएफ टूल्स सूट",
     ai: "🌌 एआई टेक्स्ट और टूल्स",
-    generator: "⚡ जनरेटर सूट"
+    generator: "⚡ जनरेटर सूट",
+    youtube: "🎥 यूट्यूब टूल्स हब"
   },
   hn: {
     trigger: "Premium Hubs",
@@ -56,7 +59,8 @@ const hubTranslations: Record<Language, {
     utility: "🔧 Text Utility Suite",
     pdf: "📄 PDF Tools Suite",
     ai: "🌌 AI Text & Tools Hub",
-    generator: "⚡ Generators Suite"
+    generator: "⚡ Generators Suite",
+    youtube: "🎥 YouTube Tools Hub"
   }
 };
 
@@ -171,6 +175,13 @@ const Navbar: React.FC = () => {
                       className="flex items-center px-4 py-2.5 text-xs font-black text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       {hubTrans.generator}
+                    </Link>
+                    <Link
+                      to="/tools/youtube-tools-hub"
+                      onClick={() => setIsHubsOpen(false)}
+                      className="flex items-center px-4 py-2.5 text-xs font-black text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    >
+                      {hubTrans.youtube}
                     </Link>
                   </div>
                 </>
@@ -351,6 +362,13 @@ const Navbar: React.FC = () => {
                   className="block p-2 text-xs font-black text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   {hubTrans.generator}
+                </Link>
+                <Link
+                  to="/tools/youtube-tools-hub"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block p-2 text-xs font-black text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  {hubTrans.youtube}
                 </Link>
               </div>
             )}

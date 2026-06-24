@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ChevronRight, ChevronDown, ShieldCheck } from 'lucide-react';
+import { ChevronRight, ChevronDown, ShieldCheck, FileText } from 'lucide-react';
 import { PDFToolWorkspace } from '../../components/PDFToolWorkspace';
 import HubToolsContent from '../../components/HubToolsContent';
 import { pdfToolsHubTools } from '../../data/hubContent/pdfToolsHub';
@@ -122,15 +122,22 @@ export default function PDFToolsHub({ activeToolId }: { activeToolId?: string } 
         </nav>
 
         {/* Header */}
-        <header className="mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400">Hub 5</span>
-            <span className="text-xs font-semibold text-slate-400">14-in-1 PDF Suite</span>
+        <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 bg-rose-600 dark:bg-rose-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-rose-500/30">
+              <FileText className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-rose-500/10 text-rose-600 dark:text-rose-400">Hub 5</span>
+                <span className="text-xs font-semibold text-slate-400">14-in-1 PDF Suite</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Texly Word to PDF & Free PDF Tools Suite
+              </h1>
+            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Word to PDF Online — Reduce PDF Size, PDF to Word & Free PDF Tools
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed mt-2">
             Convert Word to PDF online, reduce PDF file size, convert PDF to Word, merge PDFs, split pages — all free PDF tools in one place. No signup, no watermark, instant results.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">

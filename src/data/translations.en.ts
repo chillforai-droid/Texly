@@ -19,6 +19,7 @@ const en: Translations = {
       pdf: 'PDF Tools',
       ai: 'AI Tools',
       generator: 'Generators',
+      youtube: 'YouTube Growth',
       cleaningDesc: 'Remove unwanted characters, spaces, and formatting.',
       converterDesc: 'Convert between different text formats and cases.',
       analysisDesc: 'Analyze your text for stats, frequency, and more.',
@@ -26,6 +27,7 @@ const en: Translations = {
       pdfDesc: 'Edit, convert, and manage your PDF documents online.',
       aiDesc: 'Powerful AI-powered image processing and generation tools.',
       generatorDesc: 'Create custom assets like QR codes and palettes.',
+      youtubeDesc: 'Optimize your YouTube channel for maximum reach.',
     },
     home: {
       heroTitle: '100+ Free Online Text & AI Tools',

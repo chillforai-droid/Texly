@@ -21,7 +21,8 @@ import {
   AlignLeft,
   Paintbrush,
   Clock,
-  Dice6
+  Dice6,
+  Layers
 } from 'lucide-react';
 
 const SEO_TITLE = "Invisible Text Generator — Mirror Text, Banner Text Generator, QR Code, Age Calculator & More | Free Online";
@@ -818,14 +819,26 @@ export default function GeneratorsHub({ activeToolId }: { activeToolId?: string 
           <span className="text-slate-800 dark:text-slate-200 font-semibold">Generators</span>
         </nav>
 
-        <header className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3">
-            Generators & Calculators Hub — 14+ Free Online Tools
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 max-w-3xl">
+        {/* Header */}
+        <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 bg-purple-600 dark:bg-purple-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
+              <Layers className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-purple-500/10 text-purple-600 dark:text-purple-400">Hub 7</span>
+                <span className="text-xs font-semibold text-slate-400">14+ Instant Generators & Calculators</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Texly Instant Generators & Calculators Hub
+              </h1>
+            </div>
+          </div>
+          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed mt-2">
             Invisible text, mirror text, banner ASCII, Zalgo, QR codes, age calculator, hash generator,
             Morse audio, UUID, fake user data, countdown timer, random choice picker, and more.
-            <strong className="block mt-2 text-amber-600 dark:text-amber-400">✅ 100% client-side — no data leaves your device</strong>
+            <strong className="block mt-2 text-purple-600 dark:text-purple-400">✅ 100% client-side — no data leaves your device</strong>
           </p>
         </header>
 

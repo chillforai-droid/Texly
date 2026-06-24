@@ -31,6 +31,7 @@ export const CATEGORIES = [
   { id: 'analysis', name: 'Text Analysis', icon: 'BarChart3', description: 'Get detailed statistics and insights about your text.', hubUrl: '/tools/text-analysis-hub' },
   { id: 'utility', name: 'Text Utility', icon: 'Wrench', description: 'Useful tools for everyday text manipulation.', hubUrl: '/tools/text-utility-hub' },
   { id: 'generator', name: 'Generators', icon: 'Layout', description: 'Create custom assets like QR codes and color palettes.', hubUrl: '/tools/generators-hub' },
+  { id: 'youtube', name: 'YouTube Growth', icon: 'Youtube', description: 'Powerful tools to optimize video SEO and grow your audience.', hubUrl: '/tools/youtube-tools-hub' },
 ];
 
 export const TOOLS: Tool[] = [
@@ -151,7 +152,7 @@ export const TOOLS: Tool[] = [
     id: 'youtube-analyzer',
     name: 'YouTube Channel Analyzer — AI Keyword & Viral Strategy Tool ⚡',
     slug: 'youtube-analyzer',
-    category: 'ai',
+    category: 'youtube',
     isAI: true,
     shortDescription: 'Analyze any YouTube channel with AI. Get viral keywords, content strategy, upload time tips & growth insights — free.',
     description: 'Paste any YouTube channel URL and get a full AI-powered analysis. Discover viral keywords, channel health score, best upload times, ideal video duration, title formulas, thumbnail tips, and a complete growth strategy — powered by Claude AI and YouTube Data API.',
@@ -161,6 +162,18 @@ export const TOOLS: Tool[] = [
     secondaryKeywords: ['youtube keyword research tool', 'youtube seo tool free', 'how to make youtube videos viral'],
     metaTitle: 'YouTube Channel Analyzer — AI Keyword & Viral Strategy | Texly ⚡',
     metaDescription: 'Analyze any YouTube channel with AI. Get viral keywords, content strategy, best upload times, title formulas & channel score — 100% free.',
+    process: (s: string) => s,
+  },
+  {
+    id: 'youtube-tools-hub',
+    name: 'YouTube Growth & SEO Tools Suite — 9-in-1 Master Hub ⚡',
+    slug: 'youtube-tools-hub',
+    category: 'youtube',
+    isAI: true,
+    shortDescription: 'Free 9-in-1 YouTube tools suite. Download thumbnails, extract tags, check stats, generate titles, summarize videos & audit SEO.',
+    description: 'Optimize your YouTube channel for maximum reach with our 9-in-1 YouTube Growth Suite. Instant free access to Thumbnail Downloader, Tags Extractor, Video Stats Checker, Video Summarizer, Title Generator, and more.',
+    icon: 'Youtube',
+    keywords: ['youtube tools hub', 'youtube growth suite free', 'youtube tag extractor online', 'youtube thumbnail downloader', 'youtube seo analyzer'],
     process: (s: string) => s,
   },
   // ── Dev Utility Tools ──────────────────────────────────────────────────────

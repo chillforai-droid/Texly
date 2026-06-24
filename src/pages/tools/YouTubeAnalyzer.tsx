@@ -1,5 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
+import { supabase } from '../../lib/supabase';
+import { getUsername } from '../../components/TexlyAI/texlyAIEngine';
 import {
   Youtube,
   Search,
@@ -399,6 +402,57 @@ const YouTubeAnalyzer: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'keywords' | 'strategy' | 'videos'>('overview');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showFullAnalysis, setShowFullAnalysis] = useState(false);
+  const [history, setHistory] = useState<any[]>([]);
+
+  const fetchHistory = useCallback(async () => {
+    if (!supabase) return;
+    try {
+      const username = getUsername();
+      const { data, error } = await supabase
+        .from('texly_storage')
+        .select('data')
+        .eq('key', `yt:history:${username}`)
+        .maybeSingle();
+      if (!error && data?.data) {
+        setHistory(data.data);
+      }
+    } catch (err) {
+      console.error("Failed to load history:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
+
+  const handleLoadSaved = async (id: string) => {
+    setError(null);
+    setChannel(null);
+    setInsights(null);
+    setLoadingChannel(true);
+    try {
+      if (supabase) {
+        const { data, error } = await supabase
+          .from('texly_storage')
+          .select('data')
+          .eq('key', `yt:analysis:${id}`)
+          .maybeSingle();
+        if (!error && data?.data) {
+          setChannel(data.data.channel);
+          setInsights(data.data.insights);
+          setChannelInput(data.data.channel.name);
+          setShowFullAnalysis(false);
+        } else {
+          throw new Error("Saved analysis not found.");
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to load saved analysis.");
+    } finally {
+      setLoadingChannel(false);
+    }
+  };
 
   const handleAnalyze = useCallback(async () => {
     if (!channelInput.trim()) { setError('Please enter a YouTube channel URL or handle.'); return; }
@@ -419,13 +473,54 @@ const YouTubeAnalyzer: React.FC = () => {
       setLoadingAI(true);
       const ai = await fetchAIInsights(data);
       setInsights(ai);
+      setShowFullAnalysis(false);
+
+      // Save to Supabase for later use
+      if (supabase) {
+        const username = getUsername();
+        const saveKey = `yt:analysis:${data.id}`;
+        await supabase.from('texly_storage').upsert({
+          key: saveKey,
+          data: {
+            channel: data,
+            insights: ai,
+            analyzedAt: new Date().toISOString(),
+            username
+          }
+        });
+
+        // Also add to the global history list of analyzed channels
+        const historyKey = `yt:history:${username}`;
+        const { data: existingHistory } = await supabase
+          .from('texly_storage')
+          .select('data')
+          .eq('key', historyKey)
+          .maybeSingle();
+
+        let historyList = existingHistory?.data || [];
+        historyList = historyList.filter((item: any) => item.id !== data.id);
+        historyList.unshift({
+          id: data.id,
+          name: data.name,
+          thumbnail: data.thumbnail,
+          subscribers: data.subscribers,
+          analyzedAt: new Date().toISOString()
+        });
+        if (historyList.length > 15) historyList.pop();
+
+        await supabase.from('texly_storage').upsert({
+          key: historyKey,
+          data: historyList
+        });
+        setHistory(historyList);
+      }
     } catch (e: any) {
       setError(e.message || 'Something went wrong. Please check your channel URL/handle or try again later.');
     } finally {
       setLoadingChannel(false);
       setLoadingAI(false);
     }
-  }, [channelInput]);
+  }, [channelInput, fetchHistory]);
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
@@ -542,6 +637,30 @@ const YouTubeAnalyzer: React.FC = () => {
           </div>
         )}
 
+        {/* ── Recent Saved Audits ── */}
+        {!channel && !loadingChannel && history.length > 0 && (
+          <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-8 border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none mb-8">
+            <h3 className="text-sm font-black uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
+              <Clock className="w-4 h-4" /> Recent Saved AI Audits (Supabase Secure Vault)
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {history.map((item, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleLoadSaved(item.id)}
+                  className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 text-left transition-all cursor-pointer"
+                >
+                  <img src={item.thumbnail} alt={item.name} className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-xs font-black text-slate-800 dark:text-slate-200 truncate">{item.name}</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">{formatNum(item.subscribers)} Subscribers</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* ── Results ── */}
         {channel && (
           <>
@@ -577,8 +696,37 @@ const YouTubeAnalyzer: React.FC = () => {
               />
             </div>
 
-            {/* Tabs */}
-            <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
+            {/* IF showFullAnalysis IS FALSE, SHOW THE SUMMARY + TOGGLE BUTTON */}
+            {!showFullAnalysis ? (
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 mb-8 text-center shadow-lg animate-in fade-in zoom-in duration-200">
+                <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">AI Channel Audit Complete!</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">
+                  Advanced AI analysis has successfully finished. All generated keywords, viral strategy guides, and thumbnail recommendations are securely saved to your Supabase Vault.
+                </p>
+                <div className="inline-flex flex-wrap justify-center gap-3 mb-6">
+                  <div className="px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 font-bold">
+                    🛡️ Saved in Supabase
+                  </div>
+                  <div className="px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 font-bold">
+                    📈 Score: <span className="text-red-500 font-extrabold">{insights?.overallScore || 'N/A'}/100</span>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    onClick={() => setShowFullAnalysis(true)}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-red-500 hover:bg-red-600 transition-colors text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-md cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4" /> Full AI Analysis View करें
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Tabs */}
+                <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
               {tabs.map(tab => (
                 <button
                   key={tab.id}
@@ -787,6 +935,8 @@ const YouTubeAnalyzer: React.FC = () => {
             </div>
           </>
         )}
+          </>
+        )}
 
         {/* ── Feature cards (shown before analysis) ── */}
         {!channel && !loadingChannel && (
@@ -807,6 +957,38 @@ const YouTubeAnalyzer: React.FC = () => {
             ))}
           </div>
         )}
+
+        {/* YouTube Growth Hub Promo / Internal Linking Banner */}
+        <section className="mt-12 bg-gradient-to-br from-slate-900 to-slate-950 dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/10 rounded-full blur-3xl -z-10" />
+          <div className="max-w-3xl">
+            <span className="px-2.5 py-1 bg-red-500/25 border border-red-500/30 text-red-400 rounded-lg text-[10px] font-black uppercase tracking-widest mb-3 inline-block">
+              Recommended Creator Utilities
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-black mb-3 tracking-tight">
+              Grow Your Channel Fast with our 9-in-1 YouTube Growth Suite 🚀
+            </h3>
+            <p className="text-slate-300 text-xs sm:text-sm mb-6 leading-relaxed">
+              Looking for more than just channel audits? Explore our all-in-one free <strong className="text-red-400">YouTube Tools Hub</strong> to extract viral tags, check video stats, download thumbnails in 1080p, generate viral titles, summarize videos with AI, and run detailed SEO audits. No login or API keys needed!
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                to="/tools/youtube-tools-hub"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-lg shadow-red-600/20"
+              >
+                <Youtube className="w-4 h-4 text-white" />
+                <span>Open YouTube Tools Hub</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/blog/technical-seo-essentials-decoded"
+                className="inline-flex items-center gap-2 px-4 py-3 bg-white/10 hover:bg-white/15 text-white font-bold text-xs sm:text-sm rounded-xl transition-all border border-white/10"
+              >
+                <span>Read SEO Handbook</span>
+              </Link>
+            </div>
+          </div>
+        </section>
 
         {/* Rating & Share (Always Visible) */}
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 px-2 py-6 border-t border-b border-slate-100 dark:border-slate-800">

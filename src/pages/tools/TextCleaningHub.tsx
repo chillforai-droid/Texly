@@ -363,15 +363,22 @@ Normalizing diacritics like é, à, and ö.`);
         </nav>
 
         {/* Header */}
-        <header className="mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400">Hub 2</span>
-            <span className="text-xs font-semibold text-slate-400">16-in-1 Tool Suite</span>
+        <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 bg-emerald-600 dark:bg-emerald-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+              <Trash2 className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">Hub 2</span>
+                <span className="text-xs font-semibold text-slate-400">16-in-1 Text Cleaner Suite</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Texly Special Characters Remover & Text Cleaner
+              </h1>
+            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Remove Special Characters & Clean Text Online — Free
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed mt-2">
             Remove special characters from text, strip duplicate lines, delete extra spaces, clean HTML tags, and fix formatting — all free, no login, instant results in your browser.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">

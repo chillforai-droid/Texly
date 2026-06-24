@@ -686,15 +686,22 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
         </nav>
 
         {/* Header */}
-        <header className="mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400">Hub 1</span>
-            <span className="text-xs font-semibold text-slate-400">Word Count & Density Analysis</span>
+        <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 bg-amber-500 dark:bg-amber-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-amber-500/30">
+              <BarChart3 className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400">Hub 1</span>
+                <span className="text-xs font-semibold text-slate-400">Word Count & Density Analysis</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Texly Word Counter & Text Analysis Suite
+              </h1>
+            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Character Counter & Word Counter — Free Online Text Analysis Tools
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed mt-2">
             Count characters, words, sentences, and paragraphs instantly. Analyze keyword density, letter frequency, extract emails from text — all free, no login, works in your browser.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">

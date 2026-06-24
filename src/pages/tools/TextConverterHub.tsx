@@ -526,15 +526,22 @@ export default function TextConverterHub({ activeToolId }: { activeToolId?: stri
         </nav>
 
         {/* Header */}
-        <header className="mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400">Hub 3</span>
-            <span className="text-xs font-semibold text-slate-400">31-in-1 Power Converters</span>
+        <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 bg-blue-600 dark:bg-blue-700 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+              <RefreshCw className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-blue-500/10 text-blue-600 dark:text-blue-400">Hub 3</span>
+                <span className="text-xs font-semibold text-slate-400">31-in-1 Power Converters Suite</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Texly Title Case & Case Converter Hub
+              </h1>
+            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-            Title Case Converter — Snake Case, Camel Case & 30+ Text Converters Free
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-3xl leading-relaxed mt-2">
             Convert to title case, snake case, camel case, uppercase, lowercase — plus Morse code translator, Base64 encoder/decoder, Binary to text, URL decode and 25+ more. Free, no login.
           </p>
           <div className="flex flex-wrap gap-2 mt-4">

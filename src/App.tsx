@@ -62,6 +62,8 @@ import {
   Zap,
   ChevronDown,
   ChevronUp,
+  Youtube,
+  Layout,
 } from 'lucide-react';
 
 // ─── Lazy pages ───────────────────────────────────────────────────────────────
@@ -98,7 +100,7 @@ const AIAutomation = lazy(() => import('./pages/AIAutomation'));
 // AI SEO Automation Panel द्वारा push किए गए programmatic landing pages
 const SEOPage = lazy(() => import('./pages/SEOPage'));
 
-// ─── Hub Pages (7 hubs) ─────────────────────────────────────────────────────────
+// ─── Hub Pages (8 hubs) ─────────────────────────────────────────────────────────
 const TextCleaningHub = lazy(() => import('./pages/tools/TextCleaningHub'));
 const TextConverterHub = lazy(() => import('./pages/tools/TextConverterHub'));
 const TextUtilityHub = lazy(() => import('./pages/tools/TextUtilityHub'));
@@ -106,6 +108,7 @@ const PDFToolsHub = lazy(() => import('./pages/tools/PDFToolsHub'));
 const AIToolsHub = lazy(() => import('./pages/tools/AIToolsHub'));
 const GeneratorsHub = lazy(() => import('./pages/tools/GeneratorsHub'));
 const TextAnalysisHub = lazy(() => import('./pages/tools/TextAnalysisHub'));
+const YouTubeToolsHub = lazy(() => import('./pages/tools/YouTubeToolsHub'));
 
 // ─── Dev Utility Tools (5 new) ────────────────────────────────────────────────
 const RobotsTxtTester         = lazy(() => import('./pages/tools/RobotsTxtTester'));
@@ -253,6 +256,15 @@ const CATEGORY_THEMES: Record<
     hoverText: 'group-hover:text-white',
     arrow: 'text-purple-300 dark:text-purple-700',
     hoverArrow: 'group-hover:text-purple-600 dark:group-hover:text-purple-400',
+  },
+  youtube: {
+    border: 'border-red-100 dark:border-red-900/30',
+    bg: 'bg-red-50 dark:bg-red-900/20',
+    text: 'text-red-700 dark:text-red-400',
+    hoverBg: 'group-hover:bg-red-600',
+    hoverText: 'group-hover:text-white',
+    arrow: 'text-red-300 dark:text-red-700',
+    hoverArrow: 'group-hover:text-red-600 dark:group-hover:text-red-400',
   },
 };
 
@@ -564,6 +576,14 @@ function AppContent() {
               element={
                 <RouteErrorBoundary>
                   <GeneratorsHub />
+                </RouteErrorBoundary>
+              }
+            />
+            <Route
+              path="/tools/youtube-tools-hub"
+              element={
+                <RouteErrorBoundary>
+                  <YouTubeToolsHub />
                 </RouteErrorBoundary>
               }
             />
@@ -1027,6 +1047,7 @@ function AppContent() {
                   utility: Wrench,
                   pdf: FileText,
                   generator: Sparkles,
+                  youtube: Youtube,
                 }[category.id] || Zap;
 
               const theme =

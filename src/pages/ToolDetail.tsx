@@ -35,6 +35,8 @@ const TextToListConverter = lazy(() => import('./tools/TextToListConverter'));
 const RemoveSpecialCharacters = lazy(() => import('./tools/RemoveSpecialCharacters'));
 const WordCounterPage = lazy(() => import('./tools/WordCounterPage'));
 const ImageSizeReducer = lazy(() => import('./tools/generated/image-size-reducer'));
+const YouTubeToolsHub = lazy(() => import('./tools/YouTubeToolsHub'));
+const YouTubeAnalyzer = lazy(() => import('./tools/YouTubeAnalyzer'));
 
 export default function ToolDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -93,6 +95,8 @@ export default function ToolDetail() {
       case 'remove-special-characters': return <RemoveSpecialCharacters />;
       case 'word-counter': return <WordCounterPage />;
       case 'image-size-reducer': return <ImageSizeReducer />;
+      case 'youtube-tools-hub': return <YouTubeToolsHub />;
+      case 'youtube-analyzer': return <YouTubeAnalyzer />;
       default:
         // Render corresponding Category Hub dynamically with activeToolId passed as prop
         switch (tool.category) {

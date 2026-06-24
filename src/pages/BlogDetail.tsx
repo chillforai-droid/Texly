@@ -47,7 +47,8 @@ const BlogDetail: React.FC = () => {
   useEffect(() => {
     if (!post) return;
 
-    if (post.contentType === 'html') {
+    const isHTML = post.contentType === 'html' || /<[a-z][\s\S]*>/i.test(post.content);
+    if (isHTML) {
       // HTML blog: extract headings via regex from HTML content
       const headingRegex = /<h([1-3])[^>]*(?:id="([^"]*)")?[^>]*>(.*?)<\/h[1-3]>/gi;
       const tocItems: {id: string, text: string, level: number}[] = [];
@@ -176,9 +177,32 @@ const BlogDetail: React.FC = () => {
   };
 
   // Inject internal links into the content
-  const processedContent = post.contentType === 'html'
+  const isHTML = post.contentType === 'html' || /<[a-z][\s\S]*>/i.test(post.content);
+  let processedContent = isHTML
     ? injectHeadingIds(injectInternalLinks(post.content, ALL_TOOLS))
     : injectInternalLinks(post.content, ALL_TOOLS);
+
+  // If the content is HTML, sometimes translation or processing can escape HTML entities or mangle tags.
+  // Ensure we unescape them and clean up malformed spacing introduced by automated translation.
+  if (isHTML) {
+    processedContent = processedContent
+      .replace(/&amp;\s*lt;/g, '<')
+      .replace(/&amp;\s*gt;/g, '>')
+      .replace(/&amp;\s*amp;/g, '&')
+      .replace(/&amp;\s*quot;/g, '"')
+      .replace(/&amp;\s*#39;/g, "'")
+      .replace(/&amp;\s*apos;/g, "'")
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&apos;/g, "'")
+      .replace(/&amp;/g, '&')
+      .replace(/<\s*(\/?)\s*([a-zA-Z0-9]+)\s*>/g, '<$1$2>')
+      .replace(/<\s*([a-zA-Z0-9]+)\s+([^>]+)\s*>/g, '<$1 $2>')
+      .replace(/<\s*a\s+href\s*=\s*"/g, '<a href="');
+  }
 
   return (
     <main className="min-h-screen bg-white dark:bg-slate-950 py-24 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
@@ -330,7 +354,7 @@ const BlogDetail: React.FC = () => {
               Translating content...
             </div>
           )}
-          {post.contentType === 'html' ? (
+          {isHTML ? (
             <div dangerouslySetInnerHTML={{ __html: processedContent }} />
           ) : post.contentType === 'text' ? (
             <div className="whitespace-pre-wrap font-serif leading-loose text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-8 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm text-sm sm:text-base">

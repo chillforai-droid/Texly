@@ -6,6 +6,7 @@ import {
   Code2, Github, Layers, Cpu, ArrowUpRight,
   Shield, Bolt, Mail, BookOpen, CheckCircle2,
   Globe, LightbulbIcon, Clock, MousePointerClick, User,
+  Youtube,
 } from 'lucide-react';
 import { ALL_TOOLS, CATEGORIES } from '../data/tools';
 import { Helmet } from 'react-helmet-async';
@@ -44,6 +45,7 @@ const categoryThemes: Record<string, { gradient: string; iconBg: string; border:
   pdf:       { gradient: 'from-rose-500 to-pink-500',      iconBg: 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400',             border: 'border-rose-200 dark:border-rose-800/40',   badge: 'bg-rose-50 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300', glow: 'shadow-rose-500/20' },
   ai:        { gradient: 'from-violet-500 to-purple-600',  iconBg: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400',     border: 'border-violet-200 dark:border-violet-800/40', badge: 'bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300', glow: 'shadow-violet-500/20' },
   generator: { gradient: 'from-purple-500 to-fuchsia-500', iconBg: 'bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400',     border: 'border-purple-200 dark:border-purple-800/40', badge: 'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300', glow: 'shadow-purple-500/20' },
+  youtube:   { gradient: 'from-red-500 to-rose-600',       iconBg: 'bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400',                 border: 'border-red-200 dark:border-red-800/40',     badge: 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300',   glow: 'shadow-red-500/20' },
 };
 
 const categoryIcons: Record<string, React.ReactNode> = {
@@ -54,6 +56,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
   pdf: <FileText className="w-4 h-4" />,
   ai: <Cpu className="w-4 h-4" />,
   generator: <Layers className="w-4 h-4" />,
+  youtube: <Youtube className="w-4 h-4" />,
 };
 
 const VIRAL_IDS = ['youtube-analyzer', 'invisible-text-suite', 'whatsapp-text-formatter', 'number-to-words'];
@@ -517,6 +520,7 @@ const HomePage = () => {
                 { to: '/tools/pdf-tools-hub', title: 'PDF Tools Suite', desc: 'Split PDF, merge documents, extract content, and optimize files directly.', icon: '📄', tag: 'No Upload' },
                 { to: '/tools/ai-tools-hub', title: 'AI Automation Hub', desc: 'AI article writers, humanizers, style modifiers, and code helpers.', icon: '🌌', tag: 'Smart AI' },
                 { to: '/tools/generators-hub', title: 'Generators Hub', desc: 'Generate lorem ipsum, strong passwords, dummy emails, regex, hashes.', icon: '⚡', tag: 'Instant' },
+                { to: '/tools/youtube-tools-hub', title: 'YouTube SEO Suite', desc: 'Downloader, stats tracker, summarizer, title generator, tags extractor.', icon: '🎥', tag: '9-in-1 AI' },
               ].map((hub, i) => (
                 <Link
                   key={i}

@@ -91,7 +91,6 @@ router.post('/compressor', upload.single('image'), async (req: any, res) => {
   }
 });
 
-// ──────────────────────────────────────────────────────────────────────────────
 // AI Text Processing Route
 // ──────────────────────────────────────────────────────────────────────────────
 router.post('/text', async (req, res) => {
