@@ -56,7 +56,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
   generator: <Layers className="w-4 h-4" />,
 };
 
-const VIRAL_IDS = ['invisible-text-suite', 'whatsapp-text-formatter', 'number-to-words'];
+const VIRAL_IDS = ['youtube-analyzer', 'invisible-text-suite', 'whatsapp-text-formatter', 'number-to-words'];
 
 // ✅ FIXED: Removed unverifiable "50K+ Daily Users" claim
 const STATS = [

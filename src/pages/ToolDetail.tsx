@@ -19,9 +19,7 @@ const GeneratorsHub = lazy(() => import('./tools/GeneratorsHub'));
 // Lazy load the tool components
 const FaceSwap = lazy(() => import('./tools/FaceSwap'));
 const BackgroundRemover = lazy(() => import('./tools/BackgroundRemover'));
-const ImageEnhancer = lazy(() => import('./tools/ImageEnhancer'));
 const ImageCompressor = lazy(() => import('./tools/ImageCompressor'));
-const ImageUpscale = lazy(() => import('./tools/ImageUpscale'));
 const ImageUpscaleEnhancer = lazy(() => import('./tools/ImageUpscaleEnhancer'));
 const ImageGenerator = lazy(() => import('./tools/ImageGenerator'));
 const ImageFormatConverter = lazy(() => import('./tools/ImageFormatConverter'));
@@ -36,6 +34,7 @@ const AITextSuite = lazy(() => import('./tools/AITextSuite'));
 const TextToListConverter = lazy(() => import('./tools/TextToListConverter'));
 const RemoveSpecialCharacters = lazy(() => import('./tools/RemoveSpecialCharacters'));
 const WordCounterPage = lazy(() => import('./tools/WordCounterPage'));
+const ImageSizeReducer = lazy(() => import('./tools/generated/image-size-reducer'));
 
 export default function ToolDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -93,6 +92,7 @@ export default function ToolDetail() {
       case 'text-to-list-converter': return <TextToListConverter />;
       case 'remove-special-characters': return <RemoveSpecialCharacters />;
       case 'word-counter': return <WordCounterPage />;
+      case 'image-size-reducer': return <ImageSizeReducer />;
       default:
         // Render corresponding Category Hub dynamically with activeToolId passed as prop
         switch (tool.category) {

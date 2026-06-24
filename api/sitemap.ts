@@ -30,7 +30,7 @@ export default async function handler(req: any, res: any) {
       "image-upscaler-enhancer", "image-format-converter", "ai-text-suite",
       "snapchat-tag-generator", "invisible-text-suite", "robots-txt-tester",
       "json-path-finder", "regex-explainer", "cron-expression-generator",
-      "redirect-chain-checker"
+      "redirect-chain-checker", "youtube-analyzer"
     ];
 
     standaloneToolSlugs.forEach(slug => {

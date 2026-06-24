@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Youtube, RefreshCw, Volume2, VolumeX } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Youtube, RefreshCw, Play, Volume2, VolumeX, Pause } from 'lucide-react';
 
 const CHANNEL_ID  = 'UCwCrRIa28XZ3QI3UOxKaNDw';
 const API_KEY     = import.meta.env.VITE_YOUTUBE_API_KEY as string;
@@ -22,12 +22,19 @@ const HeroVideoSlider = () => {
   const [activeIndex, setActiveIndex]   = useState(0);
   const [isPaused, setIsPaused]         = useState(false);
   const [isMuted, setIsMuted]           = useState(true);
-  const [iframeKey, setIframeKey]       = useState(0); // force re-render on mute toggle
+  const [iframeKey, setIframeKey]       = useState(0); 
+  const [isPlaying, setIsPlaying]       = useState(false); // Lazy-load control
 
   const touchStartX  = useRef<number>(0);
   const timerRef     = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // ── Fetch ─────────────────────────────────────────────────────────────
+  // Helper to determine if a video is vertical (YouTube Shorts)
+  const isShortsVideo = (title: string): boolean => {
+    const t = title.toLowerCase();
+    return t.includes('short') || t.includes('shorts') || t.includes('#shorts') || t.includes('reels') || t.includes('vertical');
+  };
+
+  // ── Fetch Videos ──────────────────────────────────────────────────────
   const fetchVideos = async () => {
     setLoading(true); setApiError(false);
     try {
@@ -49,57 +56,62 @@ const HeroVideoSlider = () => {
 
   useEffect(() => { fetchVideos(); }, []);
 
-  // ── Auto-advance ──────────────────────────────────────────────────────
+  // ── Auto-advance Slider ───────────────────────────────────────────────
   useEffect(() => {
-    if (isPaused || videos.length === 0) return;
+    if (isPaused || videos.length === 0 || isPlaying) return;
     timerRef.current = setInterval(() => {
       setActiveIndex(prev => (prev + 1) % videos.length);
     }, AUTOPLAY_MS);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [isPaused, videos.length, activeIndex]);
+  }, [isPaused, videos.length, activeIndex, isPlaying]);
 
   const goTo = useCallback((i: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
+    setIsPlaying(false); // Reset playback state when switching slides
     setActiveIndex(((i % videos.length) + videos.length) % videos.length);
   }, [videos.length]);
 
-  // Mute toggle — iframe src बदलने से re-render होगा
   const toggleMute = () => {
     setIsMuted(prev => !prev);
     setIframeKey(prev => prev + 1);
   };
 
-  // ── Swipe ─────────────────────────────────────────────────────────────
+  // ── Mobile Swipe gestures ─────────────────────────────────────────────
   const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
   const onTouchEnd   = (e: React.TouchEvent) => {
     const diff = touchStartX.current - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 50) goTo(activeIndex + (diff > 0 ? 1 : -1));
   };
 
-  // ── Loading ───────────────────────────────────────────────────────────
+  // ── Loading Placeholder ───────────────────────────────────────────────
   if (loading) return (
-    <div className="max-w-sm mx-auto px-4 mt-10 sm:mt-14">
-      <div className="w-full aspect-[9/16] rounded-3xl bg-slate-100 dark:bg-slate-800 animate-pulse flex items-center justify-center">
-        <Youtube className="w-12 h-12 text-slate-300 dark:text-slate-600" />
+    <div className="max-w-2xl mx-auto px-4 mt-8 sm:mt-12">
+      <div className="w-full aspect-video rounded-3xl bg-slate-100 dark:bg-slate-900/60 animate-pulse flex flex-col items-center justify-center gap-3 border border-slate-200/50 dark:border-slate-800/40">
+        <Youtube className="w-12 h-12 text-red-500 animate-bounce" />
+        <span className="text-xs font-bold text-slate-400">Loading videos...</span>
       </div>
     </div>
   );
 
   if (videos.length === 0) return null;
   const active = videos[activeIndex];
+  const isCurrentShort = isShortsVideo(active.title);
 
-  // iframe src
-  const embedSrc = `https://www.youtube.com/embed/${active.id}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&modestbranding=1&controls=1&playsinline=1`;
+  // Safe youtube embed URL (autoplays only after user clicks our Play button)
+  const embedSrc = `https://www.youtube.com/embed/${active.id}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&modestbranding=1&controls=1&playsinline=1&enablejsapi=1`;
 
   return (
-    <div className="max-w-sm mx-auto px-4 mt-10 sm:mt-14 select-none">
+    <div className="w-full max-w-4xl mx-auto px-4 mt-8 sm:mt-12 select-none">
 
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3">
+      {/* Header/Title row */}
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Youtube className="w-5 h-5 text-red-500" />
-          <span className="text-sm font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">
-            Latest Videos
+          <span className="flex h-2.5 w-2.5 relative">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+          </span>
+          <span className="text-xs sm:text-sm font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest flex items-center gap-1">
+            <Youtube className="w-4 h-4 text-red-600" /> Latest Tutorials & Updates
           </span>
         </div>
         <div className="flex items-center gap-3">
@@ -108,75 +120,123 @@ const HeroVideoSlider = () => {
               <RefreshCw className="w-3.5 h-3.5" /> Retry
             </button>
           )}
-          <span className="text-xs font-bold text-slate-400">{activeIndex + 1} / {videos.length}</span>
+          <span className="text-xs font-bold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-200/30 dark:border-slate-800/30">
+            {activeIndex + 1} / {videos.length}
+          </span>
         </div>
       </div>
 
-      {/* 9:16 Slider */}
-      <div
-        className="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl shadow-slate-300/30 dark:shadow-black/50 bg-black group"
-        style={{ aspectRatio: '9/16' }}
+      {/* Player Container */}
+      <div 
+        className={`relative mx-auto rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800/60 shadow-2xl bg-black group transition-all duration-500 ${
+          isCurrentShort ? 'max-w-sm aspect-[9/16]' : 'max-w-3xl aspect-video'
+        }`}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {/* YouTube iframe — 9:16 */}
-        <iframe
-          key={`${active.id}-${iframeKey}`}
-          src={embedSrc}
-          title={active.title}
-          className="absolute inset-0 w-full h-full"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
+        {isPlaying ? (
+          /* Actual YouTube IFrame - Loaded dynamically ONLY when clicked to maximize PageSpeed */
+          <iframe
+            key={`${active.id}-${iframeKey}`}
+            src={embedSrc}
+            title={active.title}
+            className="absolute inset-0 w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        ) : (
+          /* High Performance Thumbnail Poster & Play CTA */
+          <div 
+            onClick={() => setIsPlaying(true)}
+            className="absolute inset-0 w-full h-full cursor-pointer overflow-hidden group/poster"
+          >
+            {/* Blurred background for a premium dark-room effect */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-110 pointer-events-none"
+              style={{ backgroundImage: `url(${active.thumbnail})` }}
+            />
+            
+            {/* Main sharp image */}
+            <img 
+              src={active.thumbnail} 
+              alt={active.title} 
+              className="absolute inset-0 w-full h-full object-contain transition-transform duration-700 group-hover/poster:scale-102"
+              loading="lazy"
+              referrerPolicy="no-referrer"
+            />
 
-        {/* Mute / Unmute button */}
-        <button
-          onClick={toggleMute}
-          aria-label={isMuted ? 'Unmute' : 'Mute'}
-          className="absolute top-3 right-3 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/80 text-white text-xs font-bold backdrop-blur-sm transition-all"
-        >
-          {isMuted
-            ? <><VolumeX className="w-4 h-4" /> Unmute</>
-            : <><Volume2 className="w-4 h-4" /> Mute</>
-          }
-        </button>
+            {/* Premium Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/40" />
 
-        {/* Prev button */}
+            {/* Centered Pulsing Play Button */}
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-2xl transition-all duration-300 transform group-hover/poster:scale-110 group-hover/poster:rotate-6 active:scale-95 relative">
+                {/* Ping rings */}
+                <div className="absolute inset-0 rounded-full bg-red-600 animate-ping opacity-25" />
+                <Play className="w-7 h-7 sm:w-9 sm:h-9 fill-white ml-1 text-white" />
+              </div>
+            </div>
+
+            {/* Shorts Badge Overlay */}
+            {isCurrentShort && (
+              <div className="absolute top-4 left-4 bg-red-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-lg flex items-center gap-1 z-10 animate-pulse">
+                <Youtube className="w-3.5 h-3.5" /> YouTube Short
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Mute / Unmute Overlay (Only shown when playing) */}
+        {isPlaying && (
+          <button
+            onClick={toggleMute}
+            aria-label={isMuted ? 'Unmute' : 'Mute'}
+            className="absolute top-4 right-4 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 hover:bg-black/80 text-white text-xs font-bold backdrop-blur-sm transition-all border border-white/10"
+          >
+            {isMuted
+              ? <><VolumeX className="w-4 h-4" /> Unmute</>
+              : <><Volume2 className="w-4 h-4" /> Mute</>
+            }
+          </button>
+        )}
+
+        {/* Carousel Navigation: Previous */}
         <button
-          onClick={() => goTo(activeIndex - 1)}
+          onClick={(e) => { e.stopPropagation(); goTo(activeIndex - 1); }}
           aria-label="Previous video"
-          className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 backdrop-blur-sm"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all z-20 backdrop-blur-sm border border-white/5 active:scale-90"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
 
-        {/* Next button */}
+        {/* Carousel Navigation: Next */}
         <button
-          onClick={() => goTo(activeIndex + 1)}
+          onClick={(e) => { e.stopPropagation(); goTo(activeIndex + 1); }}
           aria-label="Next video"
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 backdrop-blur-sm"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 hover:bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all z-20 backdrop-blur-sm border border-white/5 active:scale-90"
         >
           <ChevronRight className="w-6 h-6" />
         </button>
 
-        {/* Progress bar */}
+        {/* Auto-rotation Progress Indicator */}
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/30 z-10">
           <div
-            key={`bar-${activeIndex}-${isPaused}`}
-            className={`h-full bg-red-500 ${isPaused ? '' : 'animate-ytprogress'}`}
+            key={`bar-${activeIndex}-${isPaused}-${isPlaying}`}
+            className={`h-full bg-red-500 ${isPaused || isPlaying ? 'opacity-35' : 'animate-ytprogress'}`}
             style={{ animationDuration: `${AUTOPLAY_MS}ms` }}
           />
         </div>
       </div>
 
-      {/* Title */}
-      <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mt-3 px-1 line-clamp-2 leading-snug text-center">
+      {/* Active Title */}
+      <h3 className="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mt-4 px-2 line-clamp-2 leading-snug text-center max-w-2xl mx-auto">
         {active.title}
-      </p>
+      </h3>
 
-      {/* Dots */}
+      {/* Carousel Navigation Dots */}
       <div className="flex items-center justify-center gap-1.5 mt-3 flex-wrap">
         {videos.map((_, i) => (
           <button
@@ -190,34 +250,43 @@ const HeroVideoSlider = () => {
         ))}
       </div>
 
-      {/* Thumbnail strip */}
-      <div className="flex items-center gap-2 mt-4 overflow-x-auto pb-1 scrollbar-hide">
-        {videos.map((v, i) => (
-          <button
-            key={v.id}
-            onClick={() => goTo(i)}
-            className={`relative shrink-0 w-14 rounded-xl overflow-hidden border-2 transition-all duration-200 ${
-              i === activeIndex
-                ? 'border-red-500 scale-105 shadow-lg shadow-red-500/20'
-                : 'border-transparent opacity-50 hover:opacity-100 hover:border-slate-300 dark:hover:border-slate-600'
-            }`}
-            style={{ aspectRatio: '9/16' }}
-            aria-label={v.title}
-          >
-            <img src={v.thumbnail} alt={v.title} className="w-full h-full object-cover" loading="lazy" />
-          </button>
-        ))}
+      {/* Responsive Thumbnail Strip */}
+      <div className="flex items-center gap-3 mt-5 overflow-x-auto py-1 scrollbar-hide justify-start sm:justify-center">
+        {videos.map((v, i) => {
+          const thumbIsShort = isShortsVideo(v.title);
+          return (
+            <button
+              key={v.id}
+              onClick={() => goTo(i)}
+              className={`relative shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-300 ${
+                i === activeIndex
+                  ? 'border-red-500 scale-105 shadow-lg shadow-red-500/30'
+                  : 'border-transparent opacity-45 hover:opacity-100 hover:border-slate-300 dark:hover:border-slate-700'
+              } ${thumbIsShort ? 'w-10 h-16' : 'w-20 h-11'}`}
+              aria-label={v.title}
+            >
+              <img 
+                src={v.thumbnail} 
+                alt={v.title} 
+                className="w-full h-full object-cover" 
+                loading="lazy" 
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-black/10 hover:bg-transparent transition-colors" />
+            </button>
+          );
+        })}
       </div>
 
-      {/* Subscribe CTA */}
-      <div className="flex items-center justify-center mt-5">
+      {/* Red YouTube CTA Link */}
+      <div className="flex items-center justify-center mt-6">
         <a
           href="https://youtube.com/@mahendra-ai"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-red-500/25 hover:shadow-red-500/40 hover:-translate-y-0.5"
+          className="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white text-sm font-black rounded-xl transition-all shadow-lg shadow-red-500/20 hover:shadow-red-500/35 hover:-translate-y-0.5 active:translate-y-0"
         >
-          <Youtube className="w-4 h-4" />
+          <Youtube className="w-5 h-5 fill-white" />
           Subscribe on YouTube
         </a>
       </div>

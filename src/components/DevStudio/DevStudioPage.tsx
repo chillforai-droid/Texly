@@ -253,52 +253,35 @@ export default function DevStudioPage() {
     });
   }, [activeTab]);
 
-  // ─── AI Modify via Groq (Free, Fast, Llama 3.3 70B) ─────────────────────
+  // ─── AI Modify via Backend proxy (Free, Fast, Groq/Gemini) ─────────────────────
   const handleAiModify = useCallback(async (prompt: string) => {
     if (!activeTab) return;
     const currentCode = allFiles[activeTab] ?? '';
     if (!currentCode) return;
 
-    if (!GROQ_API_KEY) {
-      setAiStatus('⚠ VITE_GROQ_API_KEY set करें (.env में)');
-      setTimeout(() => setAiStatus(''), 5000);
-      return;
-    }
-
     setAiLoading(true);
-    setAiStatus('⟳ Groq AI सोच रहा है...');
+    setAiStatus('⟳ AI सोच रहा है...');
 
     try {
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const res = await fetch('/api/ai/text', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: GROQ_MODEL,
-          messages: [
-            {
-              role: 'system',
-              content: 'You are an expert code editor. Return ONLY the modified code. No explanations, no markdown fences, no preamble. Raw code only.',
-            },
-            {
-              role: 'user',
-              content: `INSTRUCTION: ${prompt}\n\nFILE: ${activeTab}\n${currentCode.slice(0, 6000)}\n\nReturn ONLY the modified code.`,
-            },
-          ],
-          max_tokens: 4096,
-          temperature: 0.1,
+          toolId: 'custom',
+          input: `INSTRUCTION: ${prompt}\n\nFILE: ${activeTab}\n${currentCode.slice(0, 6000)}\n\nReturn ONLY the modified code.`,
+          systemPrompt: 'You are an expert code editor. Return ONLY the modified code. No explanations, no markdown fences (like ```), no preamble. Raw code only.'
         }),
       });
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData?.error?.message || `HTTP ${res.status}`);
+        throw new Error(errData?.error || `HTTP ${res.status}`);
       }
 
       const data = await res.json();
-      let result: string = data?.choices?.[0]?.message?.content ?? '';
+      let result: string = data?.result ?? '';
 
       // Strip accidental markdown fences
       result = result.replace(/^```[\w]*\r?\n/, '').replace(/\r?\n```$/, '').trim();
@@ -318,7 +301,7 @@ export default function DevStudioPage() {
         setAiStatus('⚠ Empty response');
       }
     } catch (err: any) {
-      setAiStatus(`⚠ ${err?.message ?? 'Groq error'}`);
+      setAiStatus(`⚠ ${err?.message ?? 'AI error'}`);
     } finally {
       setAiLoading(false);
       setTimeout(() => setAiStatus(''), 4000);

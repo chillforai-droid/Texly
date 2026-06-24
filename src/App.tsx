@@ -77,9 +77,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const AITools = lazy(() => import('./pages/AITools'));
 const FaceSwap = lazy(() => import('./pages/tools/FaceSwap'));
 const BackgroundRemover = lazy(() => import('./pages/tools/BackgroundRemover'));
-const ImageEnhancer = lazy(() => import('./pages/tools/ImageEnhancer'));
 const ImageCompressor = lazy(() => import('./pages/tools/ImageCompressor'));
-const ImageUpscale = lazy(() => import('./pages/tools/ImageUpscale'));
 const ImageUpscaleEnhancer = lazy(() => import('./pages/tools/ImageUpscaleEnhancer'));
 const ImageGenerator = lazy(() => import('./pages/tools/ImageGenerator'));
 const ImageFormatConverter = lazy(() => import('./pages/tools/ImageFormatConverter'));
@@ -87,7 +85,6 @@ const SnapchatTagGenerator = lazy(
   () => import('./pages/tools/SnapchatTagGenerator')
 );
 const YouTubeAnalyzer = lazy(() => import('./pages/tools/YouTubeAnalyzer'));
-const AIToolPlaceholder = lazy(() => import('./pages/tools/AIToolPlaceholder'));
 const AITextSuite = lazy(() => import('./pages/tools/AITextSuite'));
 const InvisibleTextSuite = lazy(() => import('./pages/tools/InvisibleTextSuite'));
 const TextToListConverter = lazy(() => import('./pages/tools/TextToListConverter'));
@@ -302,7 +299,6 @@ const MODAL_THEMES: Record<string, any> = {
 // Load TexlyAIAssistant only after the user has interacted with the page.
 // This prevents the 634 KB ai-image chunk from blocking initial render.
 const LazyTexlyAI = lazy(() => import('./components/TexlyAI'));
-const ImageSizeReducerPage = lazy(() => import('./pages/tools/generated/image-size-reducer'));
 
 function DeferredTexlyAI() {
   const [mounted, setMounted] = useState(false);
@@ -688,7 +684,6 @@ function AppContent() {
             <Route path="/tool/base64-to-image-converter"        element={<Navigate to="/tools/text-converter-hub" replace />} />
 
             {/* ── Generated Tool Pages — must be BEFORE /tool/:slug and /:slug catch-alls ── */}
-            <Route path="/tool/image-size-reducer" element={<RouteErrorBoundary><ImageSizeReducerPage /></RouteErrorBoundary>} />
 
             <Route
               path="/tools/face-swap"

@@ -28,6 +28,10 @@ import {
 } from 'lucide-react';
 import SocialShare from '../../components/SocialShare';
 import RatingSystem from '../../components/RatingSystem';
+import CommentSection from '../../components/CommentSection';
+import YouTubeAnalyzerSEORichContent from '../../components/seo/YouTubeAnalyzerSEORichContent';
+
+const API_KEY = (import.meta.env.VITE_YOUTUBE_API_KEY as string) || '';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface VideoData {
@@ -74,6 +78,9 @@ interface AIInsight {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const extractChannelId = (url: string): string | null => {
   url = url.trim();
+  url = url.split('?')[0];
+  url = url.replace(/\/+$/, '');
+
   const patterns = [
     /youtube\.com\/channel\/(UC[a-zA-Z0-9_-]{22})/,
     /youtube\.com\/@([a-zA-Z0-9_.-]+)/,
@@ -82,11 +89,14 @@ const extractChannelId = (url: string): string | null => {
   ];
   for (const p of patterns) {
     const m = url.match(p);
-    if (m) return m[1];
+    if (m) {
+      const parts = m[1].split('/');
+      return parts[0];
+    }
   }
   if (/^UC[a-zA-Z0-9_-]{22}$/.test(url)) return url;
   if (/^@/.test(url)) return url.slice(1);
-  return null;
+  return url || null;
 };
 
 const formatNum = (n: number): string => {
@@ -109,7 +119,7 @@ const secondsToReadable = (s: number): string => {
 };
 
 // ─── API Calls ────────────────────────────────────────────────────────────────
-async function fetchChannelData(input: string, apiKey: string): Promise<ChannelData> {
+async function fetchChannelData(input: string): Promise<ChannelData> {
   const identifier = extractChannelId(input) || input.trim();
 
   let channelId = identifier;
@@ -118,7 +128,7 @@ async function fetchChannelData(input: string, apiKey: string): Promise<ChannelD
   if (!identifier.startsWith('UC')) {
     const handleParam = identifier.startsWith('@') ? identifier : `@${identifier}`;
     const searchRes = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(handleParam)}&maxResults=1&key=${apiKey}`
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(handleParam)}&maxResults=1&key=${API_KEY}`
     );
     const searchData = await searchRes.json();
     if (searchData.error) throw new Error(searchData.error.message);
@@ -129,7 +139,7 @@ async function fetchChannelData(input: string, apiKey: string): Promise<ChannelD
 
   // Fetch channel stats
   const chanRes = await fetch(
-    `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,brandingSettings&id=${channelId}&key=${apiKey}`
+    `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,brandingSettings&id=${channelId}&key=${API_KEY}`
   );
   const chanData = await chanRes.json();
   if (chanData.error) throw new Error(chanData.error.message);
@@ -141,7 +151,7 @@ async function fetchChannelData(input: string, apiKey: string): Promise<ChannelD
 
   // Fetch recent videos (up to 20)
   const videosRes = await fetch(
-    `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&order=date&maxResults=20&key=${apiKey}`
+    `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&order=date&maxResults=20&key=${API_KEY}`
   );
   const videosData = await videosRes.json();
   const videoItems = videosData.items || [];
@@ -152,7 +162,7 @@ async function fetchChannelData(input: string, apiKey: string): Promise<ChannelD
   if (videoIds) {
     // Fetch video details
     const detailsRes = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${videoIds}&key=${apiKey}`
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${videoIds}&key=${API_KEY}`
     );
     const detailsData = await detailsRes.json();
 
@@ -248,19 +258,22 @@ Respond ONLY with a valid JSON object (no markdown, no backticks, no explanation
   "improvements": ["improvement 1", "improvement 2", "improvement 3"]
 }`;
 
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const res = await fetch('/api/ai/text', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: prompt }],
+      toolId: 'custom',
+      input: prompt,
+      systemPrompt: 'You are a YouTube growth expert and SEO strategist. Return ONLY a valid JSON object matching the requested schema. Do not include any markdown styling, backticks (```), or explanations.'
     }),
   });
 
   const data = await res.json();
-  const text = data.content?.map((c: any) => c.text || '').join('') || '';
-  const clean = text.replace(/```json|```/g, '').trim();
+  if (!data.success) {
+    throw new Error(data.error || 'Failed to analyze channel insights');
+  }
+  const text = data.result || '';
+  const clean = text.replace(/```json|```/g, '').replace(/```/g, '').trim();
   return JSON.parse(clean) as AIInsight;
 }
 
@@ -379,18 +392,20 @@ const Section = ({ title, icon: Icon, color, children }: {
 // ─── Main Component ────────────────────────────────────────────────────────────
 const YouTubeAnalyzer: React.FC = () => {
   const [channelInput, setChannelInput] = useState('');
-  const [apiKey, setApiKey] = useState('');
-  const [showApiKeyInfo, setShowApiKeyInfo] = useState(false);
   const [loadingChannel, setLoadingChannel] = useState(false);
   const [loadingAI, setLoadingAI] = useState(false);
   const [channel, setChannel] = useState<ChannelData | null>(null);
   const [insights, setInsights] = useState<AIInsight | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'keywords' | 'strategy' | 'videos'>('overview');
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const handleAnalyze = useCallback(async () => {
     if (!channelInput.trim()) { setError('Please enter a YouTube channel URL or handle.'); return; }
-    if (!apiKey.trim()) { setError('Please enter your YouTube Data API v3 key.'); return; }
+    if (!API_KEY) {
+      setError('YouTube API key is missing. Please contact administrator or configure VITE_YOUTUBE_API_KEY.');
+      return;
+    }
 
     setError(null);
     setChannel(null);
@@ -398,19 +413,19 @@ const YouTubeAnalyzer: React.FC = () => {
     setLoadingChannel(true);
 
     try {
-      const data = await fetchChannelData(channelInput, apiKey);
+      const data = await fetchChannelData(channelInput);
       setChannel(data);
       setLoadingChannel(false);
       setLoadingAI(true);
       const ai = await fetchAIInsights(data);
       setInsights(ai);
     } catch (e: any) {
-      setError(e.message || 'Something went wrong. Please check your API key and channel URL.');
+      setError(e.message || 'Something went wrong. Please check your channel URL/handle or try again later.');
     } finally {
       setLoadingChannel(false);
       setLoadingAI(false);
     }
-  }, [channelInput, apiKey]);
+  }, [channelInput]);
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
@@ -474,42 +489,6 @@ const YouTubeAnalyzer: React.FC = () => {
                   />
                 </div>
               </div>
-            </div>
-
-            {/* API Key */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                  YouTube Data API v3 Key
-                </label>
-                <button
-                  onClick={() => setShowApiKeyInfo(v => !v)}
-                  className="text-xs text-red-500 hover:text-red-600 font-semibold flex items-center gap-1"
-                >
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  How to get API key?
-                </button>
-              </div>
-              <input
-                type="password"
-                value={apiKey}
-                onChange={e => setApiKey(e.target.value)}
-                placeholder="AIza..."
-                className="w-full px-4 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-red-500 outline-none transition-all text-slate-900 dark:text-white font-mono text-sm"
-              />
-
-              {showApiKeyInfo && (
-                <div className="mt-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <p className="text-xs font-bold text-blue-700 dark:text-blue-300 mb-2">Free YouTube API Key कैसे पाएं:</p>
-                  <ol className="text-xs text-blue-700 dark:text-blue-300 space-y-1 list-decimal list-inside">
-                    <li>console.cloud.google.com पर जाएं → New Project बनाएं</li>
-                    <li>"YouTube Data API v3" search करें → Enable करें</li>
-                    <li>Credentials → Create Credentials → API Key</li>
-                    <li>API Key copy करके यहाँ paste करें</li>
-                  </ol>
-                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">✓ Free tier: 10,000 units/day (पर्याप्त है)</p>
-                </div>
-              )}
             </div>
 
             {/* Error */}
@@ -806,15 +785,6 @@ const YouTubeAnalyzer: React.FC = () => {
                 </div>
               )}
             </div>
-
-            {/* Rating & Share */}
-            <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-6 px-2">
-              <RatingSystem toolId="youtube-analyzer" theme={{ border: 'slate-200' }} />
-              <SocialShare
-                url={window.location.href}
-                title="YouTube Channel Analyzer — AI-powered growth & keyword insights | Texly ⚡"
-              />
-            </div>
           </>
         )}
 
@@ -837,6 +807,70 @@ const YouTubeAnalyzer: React.FC = () => {
             ))}
           </div>
         )}
+
+        {/* Rating & Share (Always Visible) */}
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 px-2 py-6 border-t border-b border-slate-100 dark:border-slate-800">
+          <RatingSystem toolId="youtube-analyzer" theme={{ border: 'slate-200' }} />
+          <SocialShare
+            url={window.location.href}
+            title="YouTube Channel Analyzer — AI-powered growth & keyword insights | Texly ⚡"
+          />
+        </div>
+
+        {/* FAQ Section */}
+        <div className="mt-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-10">
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-6">Frequently Asked Questions (FAQ)</h2>
+          <div className="space-y-4">
+            {[
+              {
+                q: 'यह YouTube Channel Analyzer कैसे काम करता है?',
+                a: 'हमारा टूल सुरक्षित रूप से आधिकारिक YouTube Data API v3 का उपयोग करके किसी भी पब्लिक चैनल का डेटा जैसे सब्सक्राइबर, व्यूज और रीसेंट वीडियोस की जानकारी लाता है। इसके बाद, एडवांस AI मॉडल इस डेटा का विश्लेषण करके आपके चैनल के लिए वायरल कीवर्ड्स, बेस्ट पोस्टिंग टाइम और कस्टमाइज्ड ग्रोथ स्ट्रेटेजी तैयार करते हैं।'
+              },
+              {
+                q: 'क्या मुझे इस टूल का उपयोग करने के लिए अपने YouTube अकाउंट से लॉग इन करना होगा?',
+                a: 'बिल्कुल नहीं! हमारा YouTube Channel Analyzer पूरी तरह से सुरक्षित है। आपको अपना पासवर्ड या कोई पर्सनल क्रेडेंशियल साझा करने या लॉगिन करने की आवश्यकता नहीं है। बस किसी भी चैनल का लिंक या हैंडल दर्ज करें और तुरंत एनालिसिस प्राप्त करें।'
+              },
+              {
+                q: 'क्या मैं किसी भी YouTube चैनल का विश्लेषण कर सकता हूँ?',
+                a: 'हाँ, आप किसी भी सार्वजनिक (public) YouTube चैनल का विश्लेषण कर सकते हैं—चाहे वह आपका अपना हो, या आपके किसी पसंदीदा क्रिएटर या प्रतिस्पर्धी (competitor) का। यह आपके प्रतिस्पर्धियों की रणनीतियों को समझने के लिए एक बेहतरीन टूल है।'
+              },
+              {
+                q: 'यह टूल किन मुख्य मैट्रिक्स का विश्लेषण करता है?',
+                a: 'यह टूल चैनल के सब्सक्राइबर-टू-व्यू रेशियो, हालिया वीडियोस के लिए एवरेज एंगेजमेंट रेट (लाइक्स और कमेंट्स), वीडियो अपलोड फ्रीक्वेंसी, हैशटैग्स और कीवर्ड्स डेंसिटी, तथा वीडियो ड्यूरेशन का डिटेल एनालिसिस करता है।'
+              },
+              {
+                q: 'क्या यह सेवा पूरी तरह से फ्री है?',
+                a: 'हाँ, Texly का YouTube Channel Analyzer पूरी तरह से मुफ़्त है। इसके उपयोग की कोई छिपी हुई फीस या सीमा नहीं है।'
+              }
+            ].map((faq, i) => (
+              <div key={i} className="bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between px-6 py-5 text-left text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100/50 dark:hover:bg-slate-800 transition-colors"
+                  aria-expanded={openFaq === i}
+                >
+                   <span>{faq.q}</span>
+                   {openFaq === i ? (
+                     <ChevronUp className="w-5 h-5 flex-shrink-0 text-slate-500 dark:text-slate-400" />
+                   ) : (
+                     <ChevronDown className="w-5 h-5 flex-shrink-0 text-slate-500 dark:text-slate-400" />
+                   )}
+                </button>
+                {openFaq === i && (
+                  <div className="px-6 pb-5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100/50 dark:border-slate-800 pt-4">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* SEO & Comments Section */}
+        <div className="mt-12">
+          <YouTubeAnalyzerSEORichContent />
+          <CommentSection targetId="youtube-analyzer" targetType="tool" theme={{ border: 'slate-200' }} />
+        </div>
       </div>
     </div>
   );

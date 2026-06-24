@@ -142,31 +142,28 @@ const BackgroundRemover = () => {
     multiple: false,
   });
 
-  // Fast Mode: remove.bg API
+  // Fast Mode: Proxy to server endpoint /api/ai/remove-bg-fast
   const removeBackgroundFast = async (file: File): Promise<string> => {
-    setProgress(20); setProgressLabel('Connecting to remove.bg API...');
+    setProgress(20); setProgressLabel('Sending to secure proxy server...');
     
     const formData = new FormData();
-    formData.append('image_file', file);
-    formData.append('size', 'auto');
+    formData.append('image', file);
 
-    const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+    const response = await fetch('/api/ai/remove-bg-fast', {
       method: 'POST',
-      headers: {
-        'X-Api-Key': import.meta.env.VITE_REMOVEBG_API_KEY || '',
-      },
       body: formData,
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
+      const errorData = await response.json().catch(() => ({}));
+      const msg = errorData.error || 'An error occurred on the background removal server';
       if (response.status === 402 || response.status === 401) {
-        throw new Error('API key invalid or quota exceeded. Please use HD mode instead.');
+        throw new Error('Remove.bg API key invalid or quota exceeded on proxy. Please use HD mode instead.');
       }
-      throw new Error(`remove.bg API error: ${response.status}`);
+      throw new Error(msg);
     }
 
-    setProgress(80); setProgressLabel('Processing image...');
+    setProgress(80); setProgressLabel('Processing transparent PNG output...');
     const blob = await response.blob();
     return URL.createObjectURL(blob);
   };

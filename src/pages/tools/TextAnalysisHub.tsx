@@ -572,7 +572,7 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
           result = `🔐 JWT DECODER\n\n`;
           result += `📋 HEADER:\n${JSON.stringify(decoded.header, null, 2)}\n\n`;
           result += `📦 PAYLOAD:\n${JSON.stringify(decoded.payload, null, 2)}\n\n`;
-          result += `✍️ SIGNATURE: ${decoded.signature.substring(0, 20)}...\n`;
+          result += `✍️ SIGNATURE: ${(decoded.signature ?? '').substring(0, 20)}...\n`;
         }
         break;
       }
