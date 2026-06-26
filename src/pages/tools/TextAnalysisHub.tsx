@@ -23,11 +23,6 @@ import {
   Eye
 } from 'lucide-react';
 
-const SEO_TITLE = "Character Counter Online — Word Counter, Sentence Count, Keyword Density & Text Analysis | Free";
-const SEO_DESC = "Free online character counter and word counter tool. Count characters, words, sentences, and paragraphs. Analyze keyword density, letter frequency, and extract emails or URLs from any text. Instant, no login.";
-const SEO_KEYWORDS = "character count tool online, character counter online, word counter online, character counter tool, online character counter tool, sentence counter, word character count, text character counter, character count check, keyword density calculator, text analysis online free, letter frequency counter, extract emails from text";
-const CANONICAL_URL = "https://www.texlyonline.in/tools/text-analysis-hub";
-
 type AnalysisTab = 'basic' | 'extract' | 'advanced' | 'special';
 
 interface ToolItem {
@@ -632,51 +627,6 @@ export default function TextAnalysisHub({ activeToolId }: { activeToolId?: strin
 
   return (
     <main className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-      <Helmet>
-        <title>{SEO_TITLE}</title>
-        <meta name="description" content={SEO_DESC} />
-        <meta name="keywords" content={SEO_KEYWORDS} />
-        <link rel="canonical" href={CANONICAL_URL} />
-        <meta property="og:title" content={SEO_TITLE} />
-        <meta property="og:description" content={SEO_DESC} />
-        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
-        <meta property="og:url" content={CANONICAL_URL} />
-        <meta property="og:type" content="website" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          "name": "Text Analysis Hub",
-          "url": CANONICAL_URL,
-          "description": SEO_DESC,
-          "applicationCategory": "UtilitiesApplication",
-          "operatingSystem": "Any",
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-          "featureList": [
-            "Word Counter", "Character Counter", "Sentence Counter", "Paragraph Counter",
-            "Email Extractor", "URL Extractor", "Keyword Density", "Letter Frequency",
-            "Word Length Stats", "Readability Score", "JWT Decoder", "Age Calculator",
-            "Text Diff", "Hash Generator", "Base64 Decoder"
-          ]
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.texlyonline.in" },
-            { "@type": "ListItem", "position": 2, "name": "Text Analysis Hub", "item": CANONICAL_URL }
-          ]
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": faqs.map(f => ({
-            "@type": "Question",
-            "name": f.q,
-            "acceptedAnswer": { "@type": "Answer", "text": f.a }
-          }))
-        })}</script>
-      </Helmet>
-
       <div className="max-w-5xl mx-auto">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400 mb-6">

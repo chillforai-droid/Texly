@@ -17,11 +17,6 @@ import {
   ChevronDown
 } from 'lucide-react';
 
-const SEO_TITLE = "Remove Special Characters Online — Text Cleaner, Remove Duplicate Lines, HTML Tags & More | Free";
-const SEO_DESC = "Remove special characters from text online — free text cleaner tool. Also remove duplicate lines, extra spaces, HTML tags, emojis, accents & punctuation instantly. No login. Works in browser.";
-const SEO_KEYWORDS = "remove special characters online, remove special characters from text, special character remover, special characters removal, text cleaner online free, remove duplicate lines, remove extra spaces online, remove html tags online, clean special characters, remove emojis from text";
-const CANONICAL_URL = "https://www.texlyonline.in/tools/text-cleaning-hub";
-
 interface CleaningOptions {
   removeExtraSpaces: boolean;
   removeLineBreaks: boolean;
@@ -310,50 +305,6 @@ Normalizing diacritics like é, à, and ö.`);
 
   return (
     <main className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-      <Helmet>
-        <title>{SEO_TITLE}</title>
-        <meta name="description" content={SEO_DESC} />
-        <meta name="keywords" content={SEO_KEYWORDS} />
-        <link rel="canonical" href={CANONICAL_URL} />
-        <meta property="og:title" content={SEO_TITLE} />
-        <meta property="og:description" content={SEO_DESC} />
-        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
-        <meta property="og:url" content={CANONICAL_URL} />
-        <meta property="og:type" content="website" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          "name": "Text Cleaning Suite",
-          "url": CANONICAL_URL,
-          "description": SEO_DESC,
-          "applicationCategory": "UtilitiesApplication",
-          "operatingSystem": "Any",
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-          "featureList": [
-            "Remove Extra Spaces", "Remove Line Breaks", "Remove Duplicate Lines", 
-            "Remove Empty Lines", "Remove HTML Tags", "Remove Emojis", "Remove Accents", 
-            "Remove Numbers", "Remove Special Characters", "Remove Punctuation", "Markdown to Plain"
-          ]
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.texlyonline.in" },
-            { "@type": "ListItem", "position": 2, "name": "Text Cleaning Suite", "item": CANONICAL_URL }
-          ]
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": faqs.map(f => ({
-            "@type": "Question",
-            "name": f.q,
-            "acceptedAnswer": { "@type": "Answer", "text": f.a }
-          }))
-        })}</script>
-      </Helmet>
-
       <div className="max-w-5xl mx-auto">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400 mb-6">

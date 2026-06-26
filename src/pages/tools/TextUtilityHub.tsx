@@ -13,11 +13,6 @@ import {
   Wrench
 } from 'lucide-react';
 
-const SEO_TITLE = "Sort Lines Alphabetically Online — Find & Replace, Reverse Text, Lorem Ipsum & 25+ Text Utility Tools | Free";
-const SEO_DESC = "Free online text utility tools. Sort lines alphabetically, find and replace text, reverse text online, repeat text, generate Lorem Ipsum, format JSON, add prefix/suffix and more. 25+ tools. No login needed.";
-const SEO_KEYWORDS = "sort lines alphabetically online, sort lines online, find replace online, reverse text online, text repeater online, lorem ipsum generator, json formatter online, add prefix suffix online, text utility tools online free, reverse text characters online";
-const CANONICAL_URL = "https://www.texlyonline.in/tools/text-utility-hub";
-
 type SectionKey = 'manipulation' | 'generators' | 'formatters' | 'special';
 
 interface ToolItem {
@@ -408,50 +403,6 @@ export default function TextUtilityHub({ activeToolId }: { activeToolId?: string
 
   return (
     <main className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-      <Helmet>
-        <title>{SEO_TITLE}</title>
-        <meta name="description" content={SEO_DESC} />
-        <meta name="keywords" content={SEO_KEYWORDS} />
-        <link rel="canonical" href={CANONICAL_URL} />
-        <meta property="og:title" content={SEO_TITLE} />
-        <meta property="og:description" content={SEO_DESC} />
-        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
-        <meta property="og:url" content={CANONICAL_URL} />
-        <meta property="og:type" content="website" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          "name": "Texly Text Utility Hub",
-          "url": CANONICAL_URL,
-          "description": SEO_DESC,
-          "applicationCategory": "UtilitiesApplication",
-          "operatingSystem": "Any",
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-          "featureList": [
-            "Text Reverser", "Sort Lines Alphabetically", "Find & Replace Tool", 
-            "ASCII Banner Generator", "JSON to CSV", "CSV to JSON Formatter", 
-            "SQL Prettifier", "Zero Width Steganography", "Lorem Ipsum Builder"
-          ]
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.texlyonline.in" },
-            { "@type": "ListItem", "position": 2, "name": "Text Utility Hub", "item": CANONICAL_URL }
-          ]
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": faqs.map(f => ({
-            "@type": "Question",
-            "name": f.q,
-            "acceptedAnswer": { "@type": "Answer", "text": f.a }
-          }))
-        })}</script>
-      </Helmet>
-
       <div className="max-w-5xl mx-auto">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400 mb-6">

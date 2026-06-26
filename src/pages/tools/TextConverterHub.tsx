@@ -13,11 +13,6 @@ import {
   ChevronDown
 } from 'lucide-react';
 
-const SEO_TITLE = "Title Case Converter — Snake Case, Camel Case, Uppercase, Lowercase, Morse Code & More | Free Online";
-const SEO_DESC = "Free online text case converter. Convert to title case, snake case, camel case, uppercase, lowercase, alternating case. Also encode/decode Base64, URL, Binary, Morse code. 30+ converters. No login needed.";
-const SEO_KEYWORDS = "title case converter, snake case converter, camel case converter, case converter online, uppercase converter, lowercase converter, alternating case converter, morse code translator, binary to text converter, base64 encoder decoder, url encoder decoder, text converter online free";
-const CANONICAL_URL = "https://www.texlyonline.in/tools/text-converter-hub";
-
 type ActiveTab = 'case' | 'encode' | 'cipher' | 'special';
 
 export default function TextConverterHub({ activeToolId }: { activeToolId?: string } = {}) {
@@ -473,50 +468,6 @@ export default function TextConverterHub({ activeToolId }: { activeToolId?: stri
 
   return (
     <main className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-      <Helmet>
-        <title>{SEO_TITLE}</title>
-        <meta name="description" content={SEO_DESC} />
-        <meta name="keywords" content={SEO_KEYWORDS} />
-        <link rel="canonical" href={CANONICAL_URL} />
-        <meta property="og:title" content={SEO_TITLE} />
-        <meta property="og:description" content={SEO_DESC} />
-        <meta property="og:image" content="https://www.texlyonline.in/og-image.png" />
-        <meta property="og:url" content={CANONICAL_URL} />
-        <meta property="og:type" content="website" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          "name": "Texly Text Converter Suite",
-          "url": CANONICAL_URL,
-          "description": SEO_DESC,
-          "applicationCategory": "UtilitiesApplication",
-          "operatingSystem": "Any",
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-          "featureList": [
-            "UPPERCASE", "lowercase", "Title Case", "camelCase", "snake_case", 
-            "Base64 Encode/Decode", "URL Encode/Decode", "Text to Hex", "Morse Translator", 
-            "Binary to Text", "Number to Words", "Braille Translator", "NATO Phonetic"
-          ]
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.texlyonline.in" },
-            { "@type": "ListItem", "position": 2, "name": "Text Converter Hub", "item": CANONICAL_URL }
-          ]
-        })}</script>
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": faqs.map(f => ({
-            "@type": "Question",
-            "name": f.q,
-            "acceptedAnswer": { "@type": "Answer", "text": f.a }
-          }))
-        })}</script>
-      </Helmet>
-
       <div className="max-w-5xl mx-auto">
         {/* Breadcrumbs */}
         <nav className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400 mb-6">

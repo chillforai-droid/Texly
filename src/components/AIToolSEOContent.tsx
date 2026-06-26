@@ -12,6 +12,7 @@ import {
 import { getSEOData, getSEOContent } from '../data/seo';
 import { ALL_TOOLS } from '../data/tools';
 import { useLanguage } from '../context/LanguageContext';
+import { injectInternalLinks } from '../utils/seoLinking';
 
 interface AIToolSEOContentProps {
   toolId: string;
@@ -134,7 +135,7 @@ const AIToolSEOContent: React.FC<AIToolSEOContentProps> = ({ toolId }) => {
       {/* Extra Info / Blog Content */}
       {seoData.extraInfo && (
         <section className="prose prose-slate dark:prose-invert max-w-none p-12 rounded-[3rem] bg-white dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div dangerouslySetInnerHTML={{ __html: seoData.extraInfo }} />
+          <div dangerouslySetInnerHTML={{ __html: injectInternalLinks(seoData.extraInfo, ALL_TOOLS.filter(t => t.id !== toolId)) }} />
         </section>
       )}
 

@@ -1,12 +1,15 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { ALL_TOOLS, Tool } from '../data/tools';
-import { ArrowLeft, Sparkles, AlertCircle, Wrench } from 'lucide-react';
+import { ArrowLeft, Sparkles, AlertCircle, Wrench, BookOpen } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import SEO from '../components/SEO';
 import AIToolSEOContent from '../components/AIToolSEOContent';
 import RatingSystem from '../components/RatingSystem';
 import CommentSection from '../components/CommentSection';
+import { getBlogs } from '../utils/blogStorage';
+import { getRelatedBlogs } from '../utils/seoLinking';
+import { BlogPost } from '../data/blog';
 
 // Lazy load key category hubs
 const TextCleaningHub = lazy(() => import('./tools/TextCleaningHub'));
@@ -42,6 +45,7 @@ export default function ToolDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [tool, setTool] = useState<Tool | null>(null);
   const { t } = useLanguage();
+  const [relatedBlogs, setRelatedBlogs] = useState<BlogPost[]>([]);
 
   // Lazy load SEO metadata
   const [seoModule, setSeoModule] = useState<any>(null);
@@ -56,6 +60,29 @@ export default function ToolDetail() {
       setTool(foundTool || null);
     }
   }, [slug]);
+
+  useEffect(() => {
+    const fetchRelatedBlogs = async () => {
+      if (!tool) return;
+      try {
+        const blogs = await getBlogs();
+        // Get up to 3 related blogs
+        const related = getRelatedBlogs(tool.slug, blogs, 3);
+        // If we don't have enough related blogs, pad with the latest blog posts so that we always have active links
+        if (related.length < 3) {
+          const remaining = blogs
+            .filter(b => !related.some(r => r.id === b.id))
+            .slice(0, 3 - related.length);
+          setRelatedBlogs([...related, ...remaining]);
+        } else {
+          setRelatedBlogs(related);
+        }
+      } catch (err) {
+        console.error('Failed to load related blogs:', err);
+      }
+    };
+    fetchRelatedBlogs();
+  }, [tool]);
 
   if (!tool) {
     return (
@@ -118,8 +145,10 @@ export default function ToolDetail() {
     }
   };
 
-  // Find related tools
-  const relatedTools = ALL_TOOLS.filter((t) => t.category === tool.category && t.id !== tool.id).slice(0, 4);
+  // Find related tools (First same category, then pad with other popular tools to ensure perfect interlinking)
+  const categoryRelated = ALL_TOOLS.filter((t) => t.category === tool.category && t.id !== tool.id);
+  const otherRelated = ALL_TOOLS.filter((t) => t.category !== tool.category && t.id !== tool.id);
+  const relatedTools = [...categoryRelated, ...otherRelated].slice(0, 4);
 
   // Dynamic SEO meta attributes
   const seoData = seoModule ? seoModule.getSEOData(tool.id) : null;
@@ -204,6 +233,45 @@ export default function ToolDetail() {
           <RatingSystem toolId={tool.id} theme={{ border: 'slate-200' }} />
           <CommentSection targetId={tool.id} targetType="tool" theme={{ border: 'slate-200' }} />
         </div>
+
+        {/* Related Articles & Guides section */}
+        {relatedBlogs.length > 0 && (
+          <section className="border-t border-slate-200 dark:border-zinc-900 pt-12 mb-12">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-cyan-600 dark:text-cyan-400" /> Related Articles & Guides
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedBlogs.map((blog) => (
+                <Link
+                  key={blog.id}
+                  to={`/blog/${blog.slug}`}
+                  className="group relative flex flex-col h-full bg-white dark:bg-[#0e0e16] hover:bg-slate-100 dark:hover:bg-zinc-900/60 border border-slate-200 dark:border-zinc-900/25 rounded-2xl overflow-hidden transition-all hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <div className="aspect-video w-full overflow-hidden bg-slate-100 dark:bg-zinc-950">
+                    <img
+                      src={blog.image}
+                      alt={blog.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="p-5 flex flex-col flex-grow">
+                    <span className="text-[10px] font-black text-cyan-600 dark:text-cyan-400 uppercase tracking-widest mb-2 block">
+                      {blog.category}
+                    </span>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-2">
+                      {blog.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-zinc-400 line-clamp-2 leading-relaxed flex-grow">
+                      {blog.excerpt}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Sister tools / Related items section */}
         {relatedTools.length > 0 && (

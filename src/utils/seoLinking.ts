@@ -197,3 +197,44 @@ export const injectInternalLinks = (htmlContent: string, tools: Tool[]): string 
 
   return processedContent;
 };
+
+/**
+ * Gets related blog posts for a given blog post
+ */
+export const getRelatedBlogsToBlog = (currentPost: BlogPost, allBlogs: BlogPost[], limit = 3): BlogPost[] => {
+  const otherBlogs = allBlogs.filter(b => b.id !== currentPost.id);
+  
+  const scoredBlogs = otherBlogs.map(blog => {
+    let score = 0;
+    
+    // 1. Same category (Medium weight)
+    if (blog.category.toLowerCase() === currentPost.category.toLowerCase()) {
+      score += 30;
+    }
+    
+    // 2. Common tags (Low-medium weight)
+    if (blog.tags && currentPost.tags) {
+      const commonTags = blog.tags.filter(tag => currentPost.tags.includes(tag));
+      score += commonTags.length * 10;
+    }
+    
+    // 3. Word matches in title (Low weight)
+    const currentTitleWords = extractKeywords(currentPost.title);
+    const blogTitleWords = extractKeywords(blog.title);
+    const commonTitleWords = currentTitleWords.filter(w => blogTitleWords.includes(w));
+    score += commonTitleWords.length * 5;
+    
+    return { blog, score };
+  });
+  
+  // Sort descending by relevance score, fallback to newest articles if scores are 0
+  const sorted = scoredBlogs.sort((a, b) => {
+    if (b.score !== a.score) {
+      return b.score - a.score;
+    }
+    // If scores are equal, sort by newest (using a simple ID check or string comparison)
+    return String(b.blog.id).localeCompare(String(a.blog.id));
+  });
+  
+  return sorted.slice(0, limit).map(item => item.blog);
+};

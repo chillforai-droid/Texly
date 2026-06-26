@@ -7,7 +7,7 @@ import rehypeSlug from 'rehype-slug';
 import { BlogPost } from '../data/blog';
 import { getBlogs, getBlogBySlug } from '../utils/blogStorage';
 import { translateBlog, translateBlogs } from '../services/translationService';
-import { getRelatedTools, injectInternalLinks } from '../utils/seoLinking';
+import { getRelatedTools, injectInternalLinks, getRelatedBlogsToBlog } from '../utils/seoLinking';
 import { ALL_TOOLS, Tool } from '../data/tools';
 import DynamicIcon from '../components/LucideIcon';
 import { 
@@ -394,27 +394,27 @@ const BlogDetail: React.FC = () => {
           </section>
         )}
 
-        {/* Recent Posts Section */}
+        {/* Related Posts Section */}
         <section className="mt-24 pt-16 border-t border-slate-100 dark:border-slate-800">
-          <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-10 tracking-tight">{t.blog.recentArticles}</h2>
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-10 tracking-tight">Related Articles & Guides</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {blogs.filter(p => p.id !== post.id).slice(0, 2).map(recentPost => (
-              <Link key={recentPost.id} to={`/blog/${recentPost.slug}`} className="group">
+            {post && getRelatedBlogsToBlog(post, blogs, 2).map(relatedPost => (
+              <Link key={relatedPost.id} to={`/blog/${relatedPost.slug}`} className="group">
                 <div className="aspect-video rounded-2xl overflow-hidden mb-4">
                   <img 
-                    src={recentPost.image} 
-                    alt={recentPost.title} 
+                    src={relatedPost.image} 
+                    alt={relatedPost.title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     referrerPolicy="no-referrer"
                     loading="lazy"
                   />
                 </div>
                 <h3 className="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2">
-                  {recentPost.title}
+                  {relatedPost.title}
                 </h3>
               </Link>
             ))}
-            {blogs.length <= 1 && (
+            {(!post || getRelatedBlogsToBlog(post, blogs, 2).length === 0) && (
               <div className="col-span-2 text-center py-12 bg-slate-50 dark:bg-slate-900/30 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
                 <p className="text-slate-400 dark:text-slate-500 font-medium">More articles coming soon!</p>
               </div>

@@ -25,11 +25,6 @@ import {
   Layers
 } from 'lucide-react';
 
-const SEO_TITLE = "Invisible Text Generator — Mirror Text, Banner Text Generator, QR Code, Age Calculator & More | Free Online";
-const SEO_DESC = "Free online generators. Generate invisible text, mirror text online, banner text generator, QR code generator, age calculator, random string generator, digital signature, Morse code audio and more. No login.";
-const SEO_KEYWORDS = "invisible text generator, mirror text generator, banner text generator, hidden text generator, alternating text generator, qr code generator free, age calculator online free, online signature generator, random string generator, zalgo text generator, morse code audio play, text generator online";
-const CANONICAL_URL = "https://www.texlyonline.in/tools/generators-hub";
-
 type GenToolId = 
   | 'signature' | 'age' | 'qr' | 'morseaudio' | 'hash' 
   | 'asciitree' | 'countdown' | 'choice' | 'fakeuser' | 'uuid'
@@ -805,13 +800,6 @@ export default function GeneratorsHub({ activeToolId }: { activeToolId?: string 
 
   return (
     <main className="min-h-screen bg-slate-50/50 dark:bg-slate-950 py-10 px-4 sm:px-6 lg:px-8">
-      <Helmet>
-        <title>{SEO_TITLE}</title>
-        <meta name="description" content={SEO_DESC} />
-        <meta name="keywords" content={SEO_KEYWORDS} />
-        <link rel="canonical" href={CANONICAL_URL} />
-      </Helmet>
-
       <div className="max-w-5xl mx-auto">
         <nav className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
           <Link to="/" className="hover:text-amber-500 transition-colors">Home</Link>
