@@ -25,7 +25,8 @@ const STANDALONE_TOOL_IDS = new Set([
   'cron-expression-generator',
   'redirect-chain-checker',
   'image-size-reducer',
-  'youtube-analyzer'
+  'youtube-analyzer',
+  'ai-prompts-library'
 ]);
 
 // Categories map to their premium parent hub

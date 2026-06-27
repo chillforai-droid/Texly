@@ -4,6 +4,8 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import compression from "compression";
+import fs from "fs";
+import path from "path";
 import autoIndexHandler from "./auto-index.js";
 import aiRouter from "./ai.js";
 import sitemapHandler from "./sitemap.js";

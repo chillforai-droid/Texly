@@ -371,6 +371,21 @@ const HomePage = () => {
                 <div className="mt-4 flex items-center gap-1 text-[11px] font-black text-emerald-600 opacity-0 group-hover:opacity-100 transition-all">Open Studio <ArrowRight className="w-3 h-3" /></div>
               </div>
             </Link>
+            <Link to="/tools/ai-prompts-library" className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-violet-300 dark:hover:border-violet-800/60 hover:shadow-2xl hover:shadow-violet-500/10 transition-all duration-300 hover:-translate-y-1">
+              <div className="h-1 w-full bg-gradient-to-r from-violet-500 to-purple-600" />
+              <div className="p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="px-2.5 py-1 rounded-lg bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400 text-[10px] font-black uppercase tracking-widest">New</span>
+                  <span className="px-2.5 py-1 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 text-[10px] font-black uppercase tracking-widest">Featured</span>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mb-4 shadow-lg shadow-violet-500/25 group-hover:scale-105 transition-transform">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-sm font-black text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">AI Prompts Library</h3>
+                <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-2 leading-relaxed">System Prompts और custom instructions डिज़ाइन करें, टेस्ट करें और सेव करें।</p>
+                <div className="mt-4 flex items-center gap-1 text-[11px] font-black text-violet-600 opacity-0 group-hover:opacity-100 transition-all">Open Library <ArrowRight className="w-3 h-3" /></div>
+              </div>
+            </Link>
             <Link to="/ai-automation" className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-2xl hover:shadow-slate-500/10 transition-all duration-300 hover:-translate-y-1">
               <div className="h-1 w-full bg-gradient-to-r from-slate-600 to-slate-900 dark:from-slate-400 dark:to-slate-600" />
               <div className="p-5">
@@ -521,6 +536,7 @@ const HomePage = () => {
                 { to: '/tools/ai-tools-hub', title: 'AI Automation Hub', desc: 'AI article writers, humanizers, style modifiers, and code helpers.', icon: '🌌', tag: 'Smart AI' },
                 { to: '/tools/generators-hub', title: 'Generators Hub', desc: 'Generate lorem ipsum, strong passwords, dummy emails, regex, hashes.', icon: '⚡', tag: 'Instant' },
                 { to: '/tools/youtube-tools-hub', title: 'YouTube SEO Suite', desc: 'Downloader, stats tracker, summarizer, title generator, tags extractor.', icon: '🎥', tag: '9-in-1 AI' },
+                { to: '/tools/ai-prompts-library', title: 'AI Prompts Library', desc: 'Design, organize, test, and save advanced custom prompts and system instructions.', icon: '✨', tag: 'Prompt Design' },
               ].map((hub, i) => (
                 <Link
                   key={i}

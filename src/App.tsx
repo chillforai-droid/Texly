@@ -97,6 +97,7 @@ const WordCounterPage = lazy(() => import('./pages/tools/WordCounterPage'));
 const DownloadApp = lazy(() => import('./pages/DownloadApp'));
 const DevStudioPage = lazy(() => import('./components/DevStudio'));
 const AIAutomation = lazy(() => import('./pages/AIAutomation'));
+const PromptsLibrary = lazy(() => import('./pages/PromptsLibrary'));
 // AI SEO Automation Panel द्वारा push किए गए programmatic landing pages
 const SEOPage = lazy(() => import('./pages/SEOPage'));
 
@@ -842,6 +843,22 @@ function AppContent() {
               element={
                 <RouteErrorBoundary>
                   <AIAutomation />
+                </RouteErrorBoundary>
+              }
+            />
+            <Route
+              path="/prompts"
+              element={
+                <RouteErrorBoundary>
+                  <PromptsLibrary />
+                </RouteErrorBoundary>
+              }
+            />
+            <Route
+              path="/tools/ai-prompts-library"
+              element={
+                <RouteErrorBoundary>
+                  <PromptsLibrary />
                 </RouteErrorBoundary>
               }
             />

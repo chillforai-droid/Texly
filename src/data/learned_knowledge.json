@@ -1,0 +1,124 @@
+{
+  "website_info": {
+    "name": "Texly",
+    "domain": "texlyonline.in",
+    "tagline": "100+ Free Online PDF, Image, Text, and Developer Tools",
+    "description": "Texly is an all-in-one platform offering professional-grade tools for AI image generation, background removal, face swapping, PDF management, text analysis, cleaning, converting, and developer utilities. Completely free, with no sign-up or installation required.",
+    "creator": {
+      "name": "Mahendra Mirdha",
+      "email": "texlyonline@gmail.com"
+    },
+    "app_info": {
+      "name": "Texly Android App",
+      "size": "14.9 MB",
+      "version": "1.0.0",
+      "download_url": "/download",
+      "features": [
+        "Offline capability for text tools",
+        "100+ tools in one compact app",
+        "Fast response and clean user interface",
+        "100% Free with zero ads inside the app"
+      ]
+    }
+  },
+  "major_tools": [
+    {
+      "name": "Free AI Face Swap Online",
+      "url": "/tools/face-swap",
+      "slug": "face-swap",
+      "category": "AI Tools",
+      "description": "Swap faces between two images instantly with professional realism. Powered by advanced neural networks."
+    },
+    {
+      "name": "Free AI Background Remover",
+      "url": "/tools/bg-remover",
+      "slug": "bg-remover",
+      "category": "AI Tools",
+      "description": "Remove backgrounds automatically in 1 click with hair-level precision. Perfect for products and avatars."
+    },
+    {
+      "name": "AI Image Generator (Text to Image)",
+      "url": "/tools/image-generator",
+      "slug": "image-generator",
+      "category": "AI Tools",
+      "description": "Create stunning artwork, graphics, and realistic photos from simple text descriptions in seconds."
+    },
+    {
+      "name": "AI Image Upscaler & Enhancer",
+      "url": "/tools/image-upscaler-enhancer",
+      "slug": "image-upscaler-enhancer",
+      "category": "AI Tools",
+      "description": "Fix blurry photos and upscale images up to 4x resolution with advanced AI sharpness."
+    },
+    {
+      "name": "AI Text Suite",
+      "url": "/tools/ai-text-suite",
+      "slug": "ai-text-suite",
+      "category": "AI Tools",
+      "description": "An all-in-one text suite including a grammar checker, paraphraser, humanizer, summarizer, and tone changer."
+    },
+    {
+      "name": "Snapchat Tag Generator",
+      "url": "/tools/snapchat-tag-generator",
+      "slug": "snapchat-tag-generator",
+      "category": "Text Converter",
+      "description": "Add 'Restored from Snapchat' or 'Restored from Camera Roll' tags in the authentic black bar overlay style."
+    },
+    {
+      "name": "YouTube Channel Analyzer",
+      "url": "/tools/youtube-analyzer",
+      "slug": "youtube-analyzer",
+      "category": "Text Analysis",
+      "description": "Analyze any YouTube channel to check SEO scores, subscriber metrics, video counts, and FAQs."
+    },
+    {
+      "name": "Robots.txt Tester",
+      "url": "/tools/robots-txt-tester",
+      "slug": "robots-txt-tester",
+      "category": "Developer Utilities",
+      "description": "Test and validate robots.txt rules for web crawlers like Googlebot to ensure correct site SEO indexation."
+    },
+    {
+      "name": "JSON Path Finder",
+      "url": "/tools/json-path-finder",
+      "slug": "json-path-finder",
+      "category": "Developer Utilities",
+      "description": "Extract specific keys, values, and paths from complex JSON payloads using JSONPath expressions."
+    },
+    {
+      "name": "Regex Explainer",
+      "url": "/tools/regex-explainer",
+      "slug": "regex-explainer",
+      "category": "Developer Utilities",
+      "description": "Input any complex Regular Expression and get an instant, human-friendly line-by-line breakdown of how it works."
+    }
+  ],
+  "hubs": [
+    { "name": "PDF Tools Hub", "url": "/tools/pdf-tools-hub" },
+    { "name": "AI Tools Hub", "url": "/tools/ai-tools-hub" },
+    { "name": "Text Cleaning Hub", "url": "/tools/text-cleaning-hub" },
+    { "name": "Text Converter Hub", "url": "/tools/text-converter-hub" },
+    { "name": "Text Analysis Hub", "url": "/tools/text-analysis-hub" },
+    { "name": "Text Utility Hub", "url": "/tools/text-utility-hub" },
+    { "name": "Generators Hub", "url": "/tools/generators-hub" }
+  ],
+  "faqs": [
+    {
+      "question": "Who created Texly?",
+      "answer": "Texly was created by Mahendra Mirdha (email: texlyonline@gmail.com). He designed the platform to help users perform text and image operations for free."
+    },
+    {
+      "question": "Is Texly free to use?",
+      "answer": "Yes! Every tool on Texly is 100% free with no hidden charges, no premium subscriptions, and no registration or signup required."
+    },
+    {
+      "question": "How do I download the Texly Android App?",
+      "answer": "You can download the Texly App from our official download page: /download. The app is about 14.9 MB and allows offline access to all our text utilities!"
+    }
+  ],
+  "learned_facts": {
+    "creator_name": "Mahendra Mirdha",
+    "creator_email": "texlyonline@gmail.com"
+  },
+  "dynamic_conversations": []
+}

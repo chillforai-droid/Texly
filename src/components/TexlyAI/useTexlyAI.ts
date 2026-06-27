@@ -79,14 +79,45 @@ export async function getKB(): Promise<KnowledgeBase | null> {
     }
   } catch {}
 
-  _kbFetchPromise = fetch(KB_URL)
-    .then(r => r.json())
-    .then((data: KnowledgeBase) => {
+  _kbFetchPromise = fetch('/api/ai/knowledge')
+    .then(r => {
+      if (!r.ok) throw new Error("Knowledge base fetch error");
+      return r.json();
+    })
+    .then((data: any) => {
+      // Format data to match expected KnowledgeBase layout
+      if (data && data.major_tools && !data.tools) {
+        data.tools = data.major_tools.map((t: any) => ({
+          tool_name: t.name,
+          slug: t.slug,
+          url: t.url,
+          category: t.category,
+          description_en: t.description,
+          description_hi: t.description,
+          tool_intro_messages_en: [t.description],
+          tool_intro_messages_hi: [t.description],
+          user_guidance_en: [],
+          user_guidance_hi: [],
+          related_tools: [],
+          alternative_tools: [],
+          recommended_tools: []
+        }));
+      }
       _kbCache = data;
       try { sessionStorage.setItem(KB_SESSION_KEY, JSON.stringify(data)); } catch {}
       return data;
     })
-    .catch(() => null)
+    .catch(() => {
+      // Fallback to github KB_URL
+      return fetch(KB_URL)
+        .then(r => r.json())
+        .then((data: KnowledgeBase) => {
+          _kbCache = data;
+          try { sessionStorage.setItem(KB_SESSION_KEY, JSON.stringify(data)); } catch {}
+          return data;
+        })
+        .catch(() => null);
+    })
     .finally(() => { _kbFetchPromise = null; });
 
   return _kbFetchPromise;

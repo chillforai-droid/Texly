@@ -485,8 +485,62 @@ export default function TexlyAIAssistant() {
         return;
       }
 
+      // 1️⃣.5️⃣ Check if this is an explicit teaching/learning command
+      const lowerText = text.toLowerCase().trim();
+      const isTeachCommand = lowerText.startsWith('learn:') || lowerText.startsWith('teach:') || lowerText.startsWith('seekho:') || lowerText.startsWith('sikho:');
+      
+      if (isTeachCommand) {
+        const cmdBody = text.substring(text.indexOf(':') + 1).trim();
+        let question = '';
+        let answer = '';
+        
+        // Match Q: ... A: ... or q: ... a: ... or Q= ... A= ... or question= ... answer= ...
+        const qMatch = cmdBody.match(/(?:q|question)[:=](.*?)(?:a|answer)[:=](.*)/i);
+        if (qMatch) {
+          question = qMatch[1].trim();
+          answer = qMatch[2].trim();
+        } else {
+          // Fallback to split by '='
+          const parts = cmdBody.split('=');
+          if (parts.length >= 2) {
+            question = parts[0].trim();
+            answer = parts.slice(1).join('=').trim();
+          }
+        }
+        
+        if (question && answer) {
+          try {
+            const learnRes = await fetch('/api/ai/learn', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                qa: { question, answer }
+              })
+            });
+            if (learnRes.ok) {
+              const replyMsg = userLang === 'hi' 
+                ? `📝 **मैंने सीख लिया है और याद रखूँगा!**\n\n**सवाल:** ${question}\n**जवाब:** ${answer}\n\nयह जानकारी मैंने अपने ज्ञानकोष (learned_knowledge.json) में सहेज ली है! 🧠`
+                : `📝 **I have learned this successfully!**\n\n**Question:** ${question}\n**Answer:** ${answer}\n\nI have saved this in my knowledge base (learned_knowledge.json)! 🧠`;
+              addBot(replyMsg);
+              setChatHistory([...newHistory, { role: 'model', content: replyMsg }]);
+              setIsTyping(false);
+              return;
+            }
+          } catch (err) {
+            console.error("Failed to send learning fact to server:", err);
+          }
+        } else {
+          const helpMsg = userLang === 'hi'
+            ? `⚠️ **सिखाने का तरीका सही नहीं है।**\n\nकृपया इस तरह सिखाएं:\n- \`learn: Q: आपका सवाल A: आपका जवाब\`\n- \`learn: सवाल = जवाब\``
+            : `⚠️ **Invalid teaching format.**\n\nPlease use one of these formats:\n- \`learn: Q: your question A: your answer\`\n- \`learn: question = answer\``;
+          addBot(helpMsg);
+          setChatHistory([...newHistory, { role: 'model', content: helpMsg }]);
+          setIsTyping(false);
+          return;
+        }
+      }
+
       // 2️⃣ Check if user wants AI to do text work
-      const lowerText = text.toLowerCase();
       const textWorkTriggers = [
         'likh do', 'likh de', 'likhdo', 'write', 'create', 'banao', 'bana do',
         'summarize', 'summary', 'translate', 'translate karo', 'anuvad',
@@ -549,6 +603,13 @@ export default function TexlyAIAssistant() {
           
           // Sync dynamically to Supabase for persistent cloud usage
           saveProfileToSupabase(updated);
+
+          // Sync to the server's learned_knowledge.json file
+          fetch('/api/ai/learn', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ facts: newFacts })
+          }).catch(err => console.error("Error syncing learned facts to server:", err));
         } catch (err) {
           console.error("Failed to write user profile:", err);
         }

@@ -1546,4 +1546,22 @@ export const ALL_TOOLS = [...TOOLS, ...additionalTools, ...AI_TEXT_TOOLS, ...PDF
   isDynamic: false,
   process: (s: string) => s,
 },
+{
+  id: 'ai-prompts-library',
+  name: 'Free AI Prompts Library — Elite System Prompts & Instruction Designer ✨',
+  slug: 'ai-prompts-library',
+  category: 'ai' as const,
+  description: 'Design, optimize, test, structure, and save advanced custom prompts and system instructions in your local library. Perfect for Gemini, ChatGPT, Claude, and LLMs.',
+  shortDescription: 'Organize, test, and save advanced custom prompts, system instructions, and LLM templates securely.',
+  icon: 'BookOpen',
+  keywords: [
+    'ai prompts library', 'free prompt templates', 'system prompt designer', 
+    'llm custom instructions', 'prompt helper', 'chatgpt prompt generator',
+    'system instructions builder'
+  ],
+  primaryKeyword: 'ai prompts library',
+  secondaryKeywords: ['free prompt templates', 'system prompt designer'],
+  isDynamic: false,
+  process: (s: string) => s,
+},
 ];

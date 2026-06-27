@@ -28,6 +28,7 @@ const hubTranslations: Record<Language, {
   ai: string;
   generator: string;
   youtube: string;
+  prompts: string;
 }> = {
   en: {
     trigger: "Premium Hubs",
@@ -38,7 +39,8 @@ const hubTranslations: Record<Language, {
     pdf: "📄 PDF Tools Suite",
     ai: "🌌 AI Text & Tools Hub",
     generator: "⚡ Generators Suite",
-    youtube: "🎥 YouTube Tools Hub"
+    youtube: "🎥 YouTube Tools Hub",
+    prompts: "✨ AI Prompts Library"
   },
   hi: {
     trigger: "प्रीमियम हब",
@@ -49,7 +51,8 @@ const hubTranslations: Record<Language, {
     pdf: "📄 पीडीएफ टूल्स सूट",
     ai: "🌌 एआई टेक्स्ट और टूल्स",
     generator: "⚡ जनरेटर सूट",
-    youtube: "🎥 यूट्यूब टूल्स हब"
+    youtube: "🎥 यूट्यूब टूल्स हब",
+    prompts: "✨ एआई प्रॉम्ट्स लाइब्रेरी"
   },
   hn: {
     trigger: "Premium Hubs",
@@ -60,7 +63,8 @@ const hubTranslations: Record<Language, {
     pdf: "📄 PDF Tools Suite",
     ai: "🌌 AI Text & Tools Hub",
     generator: "⚡ Generators Suite",
-    youtube: "🎥 YouTube Tools Hub"
+    youtube: "🎥 YouTube Tools Hub",
+    prompts: "✨ AI Prompts Library"
   }
 };
 
@@ -107,6 +111,14 @@ const Navbar: React.FC = () => {
             >
               <Sparkles className="w-4 h-4" />
               {t.navbar.aiTools}
+            </Link>
+
+            <Link
+              to="/tools/ai-prompts-library"
+              className="flex items-center gap-1.5 px-2.5 xl:px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl transition-all whitespace-nowrap"
+            >
+              <BookOpen className="w-4 h-4 text-violet-500" />
+              {hubTrans.prompts}
             </Link>
 
             {/* Premium Hubs Dropdown */}
@@ -168,6 +180,13 @@ const Navbar: React.FC = () => {
                       className="flex items-center px-4 py-2.5 text-xs font-black text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       {hubTrans.ai}
+                    </Link>
+                    <Link
+                      to="/tools/ai-prompts-library"
+                      onClick={() => setIsHubsOpen(false)}
+                      className="flex items-center px-4 py-2.5 text-xs font-black text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    >
+                      {hubTrans.prompts}
                     </Link>
                     <Link
                       to="/tools/generators-hub"
@@ -299,6 +318,15 @@ const Navbar: React.FC = () => {
             {t.navbar.aiTools}
           </Link>
 
+          <Link
+            to="/tools/ai-prompts-library"
+            className="flex items-center gap-3 p-3 min-h-[48px] rounded-xl bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 font-bold"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <BookOpen className="w-5 h-5 text-violet-500" />
+            {hubTrans.prompts}
+          </Link>
+
           {/* Collapsible Mobile Hubs */}
           <div className="rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-800/50">
             <button
@@ -355,6 +383,13 @@ const Navbar: React.FC = () => {
                   className="block p-2 text-xs font-black text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   {hubTrans.ai}
+                </Link>
+                <Link
+                  to="/tools/ai-prompts-library"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block p-2 text-xs font-black text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  {hubTrans.prompts}
                 </Link>
                 <Link
                   to="/tools/generators-hub"

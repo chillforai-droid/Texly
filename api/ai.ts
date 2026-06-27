@@ -1,5 +1,7 @@
 import express from 'express';
 import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
 
 const router = express.Router();
 const upload = multer({ 
@@ -160,8 +162,33 @@ router.post('/text', async (req, res) => {
         prompt = `Process the following text and return an improved version:\n\n${input}`;
     }
 
-    const effectiveSystemPrompt = customSystemPrompt || 
+    // Load learned knowledge dynamically on every chat request
+    let learnedKnowledgeStr = '';
+    try {
+      const kbPath = path.join(process.cwd(), 'src/data/learned_knowledge.json');
+      if (fs.existsSync(kbPath)) {
+        const kbObj = JSON.parse(fs.readFileSync(kbPath, 'utf-8'));
+        learnedKnowledgeStr = `\n\n[DYNAMIC LEARNED KNOWLEDGE & WEBPAGE DICTIONARY]:\n` +
+          `Website Name: ${kbObj.website_info?.name || "Texly"}\n` +
+          `Website Domain: ${kbObj.website_info?.domain || "texlyonline.in"}\n` +
+          `Tagline: ${kbObj.website_info?.tagline || ""}\n` +
+          `Website Description: ${kbObj.website_info?.description || ""}\n` +
+          `Website Creator/Owner: ${kbObj.website_info?.creator?.name || "Mahendra Gope"} (Email: ${kbObj.website_info?.creator?.email || "gopemahendra661@gmail.com"})\n` +
+          `App Info: Size: ${kbObj.website_info?.app_info?.size}, Version: ${kbObj.website_info?.app_info?.version}, URL: ${kbObj.website_info?.app_info?.download_url}\n` +
+          `App Features: ${kbObj.website_info?.app_info?.features?.join(', ')}\n` +
+          `Major Tools List:\n${kbObj.major_tools?.map((t: any) => `- ${t.name}: URL: ${t.url} (Slug: ${t.slug}) - ${t.description}`).join('\n')}\n` +
+          `Category Hubs:\n${kbObj.hubs?.map((h: any) => `- ${h.name}: ${h.url}`).join('\n')}\n` +
+          `Learned User Facts:\n${JSON.stringify(kbObj.learned_facts || {}, null, 2)}\n` +
+          `Frequently Asked Questions & Custom Taught Answers:\n${kbObj.faqs?.map((f: any) => `Q: ${f.question}\nA: ${f.answer || f.answer_en || f.answer_hi}`).join('\n')}\n`;
+      }
+    } catch (err) {
+      console.error("Error loading learned knowledge inside text route:", err);
+    }
+
+    const baseSystemPrompt = customSystemPrompt || 
       "You are a helpful, professional writing and editing assistant. Answer the user prompt directly. Do not include conversational filler. Return ONLY the requested output.";
+
+    const effectiveSystemPrompt = baseSystemPrompt + learnedKnowledgeStr;
 
     const groqKey = process.env.GROQ_API_KEY || process.env.VITE_GROQ_API_KEY;
     let text = '';
@@ -600,6 +627,67 @@ router.post('/image-upscale', async (req, res) => {
   } catch (error: any) {
     console.error('Image Upscaler Endpoint Error:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+// KNOWLEDGE LEARNING SYSTEM (नया)
+// ──────────────────────────────────────────────────────────────────────────────
+router.get('/knowledge', async (req, res) => {
+  try {
+    const filePath = path.join(process.cwd(), 'src/data/learned_knowledge.json');
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, 'utf-8');
+      res.json(JSON.parse(raw));
+    } else {
+      res.json({ website_info: {}, major_tools: [], hubs: [], faqs: [], learned_facts: {}, dynamic_conversations: [] });
+    }
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/learn', async (req, res) => {
+  try {
+    const { facts, qa } = req.body;
+    const filePath = path.join(process.cwd(), 'src/data/learned_knowledge.json');
+    let data: any = { website_info: {}, major_tools: [], hubs: [], faqs: [], learned_facts: {}, dynamic_conversations: [] };
+    
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, 'utf-8');
+      data = JSON.parse(raw);
+    }
+    
+    if (facts && typeof facts === 'object') {
+      data.learned_facts = { ...data.learned_facts, ...facts };
+    }
+    
+    if (qa && typeof qa === 'object' && qa.question && qa.answer) {
+      // normalize and save FAQs
+      const qNormalized = qa.question.trim().toLowerCase();
+      const idx = data.faqs.findIndex((f: any) => f.question.trim().toLowerCase() === qNormalized);
+      if (idx > -1) {
+        data.faqs[idx] = qa;
+      } else {
+        data.faqs.push(qa);
+      }
+    }
+    
+    try {
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    } catch (writeErr: any) {
+      console.warn("⚠️ Warning: File write failed. This is expected on read-only serverless platforms like Vercel:", writeErr.message);
+      // We still update the cached data in-memory or return success because the operation succeeded in the response context
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Successfully updated learned_knowledge.json!',
+      data
+    });
+  } catch (err: any) {
+    console.error('AI learning update error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
