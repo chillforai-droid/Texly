@@ -40,6 +40,7 @@ import { Language } from './data/translations';
 
 import DynamicIcon from './components/LucideIcon';
 import Navbar from './components/Navbar';
+import GlobalNotificationBanner from './components/GlobalNotificationBanner';
 import Footer from './components/Footer';
 import CategoryModal from './components/CategoryModal';
 import CookieBanner from './components/CookieBanner';
@@ -499,6 +500,8 @@ function AppContent() {
           {JSON.stringify(directorySchema)}
         </script>
       </Helmet>
+      
+      <GlobalNotificationBanner />
 
       <Navbar />
 

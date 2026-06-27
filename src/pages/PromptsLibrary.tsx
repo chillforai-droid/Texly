@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { 
   Sparkles, Search, Copy, Check, Info, Database, Code, 
   BookOpen, Megaphone, Terminal, FileText, Briefcase, Award,
-  ExternalLink, ListFilter, AlertCircle, RefreshCw
+  ExternalLink, ListFilter, AlertCircle, RefreshCw, ChevronDown, ChevronUp
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { supabase } from "../lib/supabase";
 
 // Category structure for the prompts library
@@ -118,6 +119,29 @@ const DEFAULT_PROMPTS: AIPrompt[] = [
   }
 ];
 
+const FAQ_ITEMS = [
+  {
+    question: "AI Prompts Library क्या है और इसका उपयोग कैसे करें?",
+    answer: "AI Prompts Library चुनिंदा, उच्च-गुणवत्ता वाले रेडी-टू-यूज़ प्रॉम्ट्स और सिस्टम निर्देशों का एक मुफ़्त संग्रह है। यहाँ से आप ChatGPT, Google Gemini, और Claude के लिए अनुकूलित प्रॉम्ट्स खोज सकते हैं, अपनी ज़रूरत के अनुसार कॉपी कर सकते हैं और सीधे किसी भी एआई चैटबॉट में पेस्ट करके सर्वश्रेष्ठ और सटीक परिणाम प्राप्त कर सकते हैं।"
+  },
+  {
+    question: "क्या ये प्रॉम्ट्स पूरी तरह से मुफ़्त हैं?",
+    answer: "हाँ, Texly AI Prompts Library पूरी तरह से मुफ़्त है और इसके उपयोग के लिए किसी लॉगिन की आवश्यकता नहीं है। आप जितने चाहें उतने प्रॉम्ट्स स्वतंत्र रूप से कॉपी और कस्टमाइज़ कर सकते हैं।"
+  },
+  {
+    question: "क्या मैं इस प्रॉम्ट लाइब्रेरी को अपने स्थानीय डेटाबेस (Supabase) से जोड़ सकता हूँ?",
+    answer: "हाँ, यह प्लेटफॉर्म लाइव Supabase इंटीग्रेशन का समर्थन करता है। यदि आप अपने कस्टम एडमिन पैनल से लाइव प्रॉम्ट्स जोड़ना चाहते हैं, तो आप हमारे सरल SQL स्कीमा का उपयोग करके डेटाबेस कनेक्ट कर सकते हैं।"
+  },
+  {
+    question: "एक बेहतरीन AI Prompt कैसे लिखें?",
+    answer: "एक कुशल प्रॉम्ट लिखने के लिए हमेशा एआई को एक विशेष भूमिका (Role) दें, आवश्यक संदर्भ (Context) प्रदान करें, सटीक कार्य (Task) बताएं, और आवश्यक सीमाएं (Constraints) तय करें। उदाहरण के लिए, 'PAS कॉपीराइटर के रूप में ब्लॉग इंट्रोडक्शन लिखें...'"
+  },
+  {
+    question: "सिस्टम प्रॉम्प्ट्स (System Prompts) और सामान्य प्रॉम्प्ट्स में क्या अंतर है?",
+    answer: "सिस्टम प्रॉम्प्ट्स एआई के लिए मौलिक नियम, व्यवहार और व्यक्तित्व निर्धारित करते हैं जो पूरी बातचीत के दौरान स्थिर रहते हैं। जबकि सामान्य प्रॉम्प्ट्स किसी विशेष कार्य या प्रश्न के उत्तर के लिए होते हैं।"
+  }
+];
+
 export default function PromptsLibrary() {
   const [prompts, setPrompts] = useState<AIPrompt[]>(DEFAULT_PROMPTS);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -127,6 +151,7 @@ export default function PromptsLibrary() {
   const [loading, setLoading] = useState<boolean>(false);
   const [showSqlGuide, setShowSqlGuide] = useState<boolean>(false);
   const [dbError, setDbError] = useState<string>("");
+  const [activeFaqIndex, setActiveFaqIndex] = useState<number | null>(null);
 
   useEffect(() => {
     // Clear initial space
@@ -220,8 +245,44 @@ INSERT INTO public.texly_prompts (title, description, prompt_text, category, tag
 ('React Component Optimizer', 'Analyzes React code to identify rendering bottlenecks.', 'Analyze the following React functional component...', 'coding', ARRAY['react', 'coding']);
 `;
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": FAQ_ITEMS.map(item => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      <Helmet>
+        <title>Free AI Prompts Library — Elite System Prompts & LLM Templates | Texly</title>
+        <meta name="description" content="Access our ultimate collection of free system prompts and AI templates. Design, optimize, test, structure, and copy premium prompts for ChatGPT, Gemini, and Claude instantly." />
+        <meta name="keywords" content="ai prompts library, free prompt templates, system prompt designer, llm custom instructions, prompt helper, chatgpt prompt generator, system instructions builder, copy paste prompts" />
+        <link rel="canonical" href="https://www.texlyonline.in/tools/ai-prompts-library" />
+        
+        {/* OpenGraph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Free AI Prompts Library — Elite System Prompts & LLM Templates | Texly" />
+        <meta property="og:description" content="Access our ultimate collection of free system prompts and AI templates. Design, optimize, test, structure, and copy premium prompts for ChatGPT, Gemini, and Claude instantly." />
+        <meta property="og:url" content="https://www.texlyonline.in/tools/ai-prompts-library" />
+        <meta property="og:site_name" content="Texly" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Free AI Prompts Library — Elite System Prompts & LLM Templates | Texly" />
+        <meta name="twitter:description" content="Access our ultimate collection of free system prompts and AI templates. Design, optimize, test, structure, and copy premium prompts for ChatGPT, Gemini, and Claude instantly." />
+
+        {/* FAQ Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
+      </Helmet>
       
       {/* Premium Hero Banner */}
       <div className="relative overflow-hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 py-12 px-4 sm:px-6 lg:px-8">
@@ -380,6 +441,57 @@ INSERT INTO public.texly_prompts (title, description, prompt_text, category, tag
             })}
           </div>
         )}
+
+        {/* ── Visual FAQ Section for SEO and Users ──────────────────────── */}
+        <div className="mt-16 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-10 shadow-sm space-y-8">
+          <div className="space-y-2 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 text-xs font-black uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>FAQ — Expert Guide</span>
+            </div>
+            <h2 className="text-2xl md:text-3.5xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
+              Frequently Asked Questions <span className="text-violet-600">(अक्सर पूछे जाने वाले सवाल)</span>
+            </h2>
+            <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 max-w-3xl leading-relaxed font-semibold">
+              AI Prompts और System Instructions के उपयोग के बारे में सबसे आम सवालों के त्वरित उत्तर प्राप्त करें ताकि आप बेहतरीन परिणाम प्राप्त कर सकें।
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 divide-y divide-slate-100 dark:divide-slate-800/60 pt-2">
+            {FAQ_ITEMS.map((faq, index) => {
+              const isOpen = activeFaqIndex === index;
+              return (
+                <div key={index} className="pt-4 first:pt-0">
+                  <button
+                    onClick={() => setActiveFaqIndex(isOpen ? null : index)}
+                    className="w-full flex items-center justify-between text-left py-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 rounded-xl"
+                  >
+                    <span className="text-sm md:text-base font-black text-slate-800 dark:text-slate-200 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors pr-4">
+                      {faq.question}
+                    </span>
+                    <span className="shrink-0 p-1 bg-slate-50 dark:bg-slate-950 border border-slate-200/50 dark:border-slate-800 rounded-lg group-hover:border-violet-300 transition-colors">
+                      {isOpen ? (
+                        <ChevronUp className="w-4 h-4 text-violet-500" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-violet-500" />
+                      )}
+                    </span>
+                  </button>
+
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      isOpen ? "max-h-60 opacity-100 mt-2" : "max-h-0 opacity-0 pointer-events-none"
+                    }`}
+                  >
+                    <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 font-semibold leading-relaxed pl-1 pb-3">
+                      {faq.answer}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
       </div>
     </div>

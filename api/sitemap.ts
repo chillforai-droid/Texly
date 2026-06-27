@@ -9,6 +9,8 @@ export default async function handler(req: any, res: any) {
     const staticPages = [
       { path: "/",                               priority: "1.0", changefreq: "daily"   },
       { path: "/blog",                           priority: "0.8", changefreq: "daily"   },
+      { path: "/prompts",                        priority: "0.9", changefreq: "daily"   },
+      { path: "/tools/ai-prompts-library",       priority: "0.9", changefreq: "daily"   },
       { path: "/ai-tools",                       priority: "0.8", changefreq: "weekly"  },
       { path: "/best-free-text-tools-online",    priority: "0.7", changefreq: "monthly" },
       { path: "/remove-special-characters-online", priority: "0.7", changefreq: "monthly" },
