@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { 
   Sparkles, Search, Copy, Check, Info, Database, Code, 
   BookOpen, Megaphone, Terminal, FileText, Briefcase, Award,
-  ExternalLink, ListFilter, AlertCircle, RefreshCw, ChevronDown, ChevronUp
+  ExternalLink, ListFilter, AlertCircle, RefreshCw, ChevronDown, ChevronUp,
+  Youtube, Play
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -33,6 +34,29 @@ interface AIPrompt {
   category: string;
   tags?: string[];
   created_at?: string;
+  youtube_url?: string;
+}
+
+// Helper to extract embeddable YouTube URL
+function getYouTubeEmbedUrl(url?: string): string | null {
+  if (!url) return null;
+  
+  // Regular expressions to match standard YouTube video IDs
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+
+  if (match && match[2].length === 11) {
+    return `https://www.youtube.com/embed/${match[2]}`;
+  }
+
+  // Handle YouTube Shorts
+  const shortsRegExp = /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/;
+  const shortsMatch = url.match(shortsRegExp);
+  if (shortsMatch && shortsMatch[1]) {
+    return `https://www.youtube.com/embed/${shortsMatch[1]}`;
+  }
+
+  return null;
 }
 
 // Excellent, curated default local prompts to showcase immediate premium value
@@ -399,6 +423,62 @@ INSERT INTO public.texly_prompts (title, description, prompt_text, category, tag
                         {item.prompt_text}
                       </p>
                     </div>
+
+                    {/* Related Video Tutorial if present */}
+                    {item.youtube_url && (
+                      <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/50">
+                        <div className="flex items-center gap-1.5 mb-2.5 text-rose-600 dark:text-rose-400">
+                          <Youtube className="w-4 h-4 text-rose-500 shrink-0" />
+                          <span className="text-[10px] font-black uppercase tracking-widest">
+                            {item.youtube_url.includes("shorts/") || item.youtube_url.includes("/shorts") 
+                              ? "Related YouTube Short (शॉर्ट वीडियो)" 
+                              : "Related Video Tutorial (ट्यूटोरियल वीडियो)"}
+                          </span>
+                        </div>
+                        {(() => {
+                          const embedUrl = getYouTubeEmbedUrl(item.youtube_url);
+                          const isShort = item.youtube_url.includes("shorts/") || item.youtube_url.includes("/shorts");
+                          if (embedUrl) {
+                            return (
+                              <div className={`relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 shadow-md ${
+                                isShort 
+                                  ? "aspect-[9/16] max-w-[260px] mx-auto w-full" 
+                                  : "aspect-video w-full"
+                              }`}>
+                                <iframe
+                                  src={embedUrl}
+                                  title={`${item.title} Tutorial`}
+                                  className="absolute inset-0 w-full h-full"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                />
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <a
+                                href={item.youtube_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                referrerPolicy="no-referrer"
+                                className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200/60 dark:border-slate-800/80 hover:border-violet-300 dark:hover:border-violet-800 transition-all group/video"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div className="w-7 h-7 rounded-lg bg-rose-500/10 flex items-center justify-center">
+                                    <Play className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
+                                  </div>
+                                  <div className="text-left">
+                                    <p className="text-[10px] font-black text-slate-800 dark:text-slate-200">Watch Tutorial Video</p>
+                                    <p className="text-[8px] text-slate-400 font-bold">वीडियो ट्यूटोरियल देखें</p>
+                                  </div>
+                                </div>
+                                <ExternalLink className="w-3 h-3 text-slate-400 group-hover/video:text-violet-500 transition-colors" />
+                              </a>
+                            );
+                          }
+                        })()}
+                      </div>
+                    )}
                   </div>
 
                   {/* Footer - Tags & Prominent Copy Button */}
