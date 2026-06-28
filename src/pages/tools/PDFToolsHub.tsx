@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { ChevronRight, ChevronDown, ShieldCheck, FileText } from 'lucide-react';
 import { PDFToolWorkspace } from '../../components/PDFToolWorkspace';
 import HubToolsContent from '../../components/HubToolsContent';
+import AllHubsLinking from '../../components/AllHubsLinking';
 import { pdfToolsHubTools } from '../../data/hubContent/pdfToolsHub';
 
 const SEO_TITLE = "Word to PDF Converter Online — Reduce PDF Size, PDF to Word, Merge, Split PDF | Free Tools";
@@ -347,24 +348,8 @@ export default function PDFToolsHub({ activeToolId }: { activeToolId?: string } 
 
         <HubToolsContent hubPath="/tools/pdf-tools-hub" tools={pdfToolsHubTools} />
 
-        {/* Directory Footer related hubs */}
-        <section className="bg-slate-100 dark:bg-slate-900/40 rounded-3xl border border-slate-200/50 dark:border-slate-800/40 p-6 sm:p-8">
-          <h2 className="text-base font-black uppercase tracking-widest text-slate-400 mb-4">Related Hub Suites</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <Link to="/tools/text-cleaning-hub" className="p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl text-xs font-bold hover:border-amber-500/50 transition-all text-center">
-              Text Cleaning Hub
-            </Link>
-            <Link to="/tools/text-converter-hub" className="p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl text-xs font-bold hover:border-amber-500/50 transition-all text-center">
-              Converter Hub
-            </Link>
-            <Link to="/tools/text-analysis-hub" className="p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl text-xs font-bold hover:border-amber-500/50 transition-all text-center">
-              Analysis Hub
-            </Link>
-            <Link to="/tools/text-utility-hub" className="p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl text-xs font-bold hover:border-amber-500/50 transition-all text-center">
-              Utility Toolkit
-            </Link>
-          </div>
-        </section>
+        {/* Replaced with AllHubsLinking component */}
+        <AllHubsLinking />
       </div>
     </main>
   );

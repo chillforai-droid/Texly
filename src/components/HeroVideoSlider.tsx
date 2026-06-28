@@ -25,8 +25,15 @@ const parseISO8601Duration = (duration: string): number => {
 };
 
 const HeroVideoSlider = () => {
-  const [videos, setVideos]             = useState<VideoItem[]>([]);
-  const [loading, setLoading]           = useState(true);
+  const [videos, setVideos]             = useState<VideoItem[]>(() =>
+    FALLBACK_VIDEOS.map(v => ({
+      id: v.id,
+      title: v.title,
+      thumbnail: `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`,
+      isShort: v.isShort
+    }))
+  );
+  const [loading, setLoading]           = useState(false);
   const [apiError, setApiError]         = useState(false);
   const [activeIndex, setActiveIndex]   = useState(0);
   const [isPaused, setIsPaused]         = useState(false);
@@ -45,7 +52,8 @@ const HeroVideoSlider = () => {
 
   // ── Fetch Videos ──────────────────────────────────────────────────────
   const fetchVideos = async () => {
-    setLoading(true); setApiError(false);
+    if (videos.length === 0) setLoading(true);
+    setApiError(false);
     try {
       // 1. Search for channel videos
       const res  = await fetch(
@@ -110,7 +118,12 @@ const HeroVideoSlider = () => {
     } finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchVideos(); }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchVideos();
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // ── Auto-advance Slider ───────────────────────────────────────────────
   useEffect(() => {

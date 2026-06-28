@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
 import HubToolsContent from '../../components/HubToolsContent';
+import AllHubsLinking from '../../components/AllHubsLinking';
 import { textConverterHubTools } from '../../data/hubContent/textConverterHub';
 import { 
   RefreshCw, 
@@ -878,24 +879,8 @@ export default function TextConverterHub({ activeToolId }: { activeToolId?: stri
 
         <HubToolsContent hubPath="/tools/text-converter-hub" tools={textConverterHubTools} />
 
-        {/* Footer directories */}
-        <section className="bg-slate-100 dark:bg-slate-900/40 rounded-3xl border border-slate-200/50 dark:border-slate-800/40 p-6 sm:p-8">
-          <h2 className="text-base font-black uppercase tracking-widest text-slate-400 mb-4">Related Hub Suites</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <Link to="/tools/text-cleaning-hub" className="p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl text-xs font-bold hover:border-amber-500/50 transition-all text-center">
-              Text Cleaning Hub
-            </Link>
-            <Link to="/tools/text-analysis-hub" className="p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl text-xs font-bold hover:border-amber-500/50 transition-all text-center">
-              Analysis Hub
-            </Link>
-            <Link to="/tools/text-utility-hub" className="p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl text-xs font-bold hover:border-amber-500/50 transition-all text-center">
-              Utility Toolkit
-            </Link>
-            <Link to="/tools/generators-hub" className="p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl text-xs font-bold hover:border-amber-500/50 transition-all text-center">
-              Generators Hub
-            </Link>
-          </div>
-        </section>
+        {/* Replaced with AllHubsLinking component */}
+        <AllHubsLinking />
       </div>
     </main>
   );

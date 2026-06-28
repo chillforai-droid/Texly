@@ -46,6 +46,29 @@ const mapFromSupabase = (data: any): BlogPost => ({
   metaDescription: data.meta_description || ''
 });
 
+let cachedTableName: string | null = null;
+
+export async function getTableName(): Promise<string> {
+  if (cachedTableName) return cachedTableName;
+  if (!supabase) return 'articles';
+
+  const candidates = ['blog_articles', 'blog_articles', 'blog_articles', 'articles'];
+  for (const table of candidates) {
+    try {
+      const { error } = await supabase.from(table).select('id').limit(1);
+      if (!error || (error && !error.message?.includes('relation') && !error.message?.includes('does not exist'))) {
+        cachedTableName = table;
+        console.log(`Successfully detected blog table: ${table}`);
+        return table;
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+  cachedTableName = 'articles';
+  return cachedTableName;
+}
+
 export const getBlogs = async (userId?: string): Promise<BlogPost[]> => {
   if (!supabase) {
     console.warn('Supabase not initialized, falling back to localStorage');
@@ -54,8 +77,9 @@ export const getBlogs = async (userId?: string): Promise<BlogPost[]> => {
   }
 
   try {
+    const table = await getTableName();
     let query = supabase
-      .from('articles')
+      .from(table)
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -95,8 +119,9 @@ export const getBlogBySlug = async (slug: string): Promise<BlogPost | null> => {
   }
 
   try {
+    const table = await getTableName();
     const { data, error } = await supabase
-      .from('articles')
+      .from(table)
       .select('*')
       .eq('slug', slug)
       .maybeSingle();

@@ -22,6 +22,7 @@ import { getBlogs } from '../utils/blogStorage';
 import { Calendar, Clock as ClockIcon } from 'lucide-react';
 import SocialShare from '../components/SocialShare';
 import HeroVideoSlider from '../components/HeroVideoSlider';
+import LazySection from '../components/LazySection';
 import {
   RecentlyAddedTools,
   MostUsedAITools,
@@ -673,62 +674,64 @@ const HomePage = () => {
         </section>
 
         {/* ═══ NEW SECTIONS ═══ */}
-        <RecentlyAddedTools />
-        <MostUsedAITools />
-        <MostUsedSEOTools />
-        <MostUsedTextTools />
-        <WhyChooseTexlyExpanded />
-        <WhoCanUseTexly />
-        <HowTexlyProtectsPrivacy />
-        <OurMission />
+        <LazySection><RecentlyAddedTools /></LazySection>
+        <LazySection><MostUsedAITools /></LazySection>
+        <LazySection><MostUsedSEOTools /></LazySection>
+        <LazySection><MostUsedTextTools /></LazySection>
+        <LazySection><WhyChooseTexlyExpanded /></LazySection>
+        <LazySection><WhoCanUseTexly /></LazySection>
+        <LazySection><HowTexlyProtectsPrivacy /></LazySection>
+        <LazySection><OurMission /></LazySection>
 
         {/* ═══ FOUNDER ═══ */}
-        <section className="mb-10 sm:mb-16">
-          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-violet-950 p-5 sm:p-8">
-            <div className="hidden sm:block absolute inset-0 pointer-events-none overflow-hidden rounded-3xl" style={{ isolation: 'isolate' }}>
-              <div className="absolute -top-10 -right-10 w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)' }} />
-              <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)' }} />
-            </div>
-            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-8">
-              <div className="flex-shrink-0">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white text-3xl font-black shadow-2xl shadow-blue-500/30">MM</div>
-                <div className="flex items-center gap-1.5 mt-3">
-                  <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
-                  <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Active</span>
-                </div>
+        <LazySection>
+          <section className="mb-10 sm:mb-16">
+            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-violet-950 p-5 sm:p-8">
+              <div className="hidden sm:block absolute inset-0 pointer-events-none overflow-hidden rounded-3xl" style={{ isolation: 'isolate' }}>
+                <div className="absolute -top-10 -right-10 w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)' }} />
+                <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)' }} />
               </div>
-              <div className="flex-1">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-[10px] font-black uppercase tracking-widest mb-3">
-                  <User className="w-3 h-3" /> Meet the Creator
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">Mahendra Mirdha</h2>
-                <p className="text-slate-400 text-sm leading-relaxed mb-4 max-w-xl">
-                  Hi! I'm Mahendra, the founder and developer behind Texly. I built this platform because I was tired of jumping between dozens of websites for basic text, image, and developer tasks. My goal is simple — give everyone access to powerful, free tools that just work, without any signup, paywall, or nonsense.
-                </p>
-                <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xl">
-                  I'm passionate about web development, SEO, and building tools that make people's lives easier. Texly is a solo passion project, and every feature is handcrafted with care. If you have feedback, suggestions, or just want to say hi — I personally read every email!
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <a href="mailto:texlyonline@gmail.com" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl font-bold text-sm transition-all backdrop-blur-sm">
-                    <Mail className="w-4 h-4" /> texlyonline@gmail.com
-                  </a>
-                  <Link to="/about-us" className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 text-blue-300 rounded-xl font-bold text-sm transition-all">
-                    <Globe className="w-4 h-4" /> About Texly
-                  </Link>
-                </div>
-              </div>
-              <div className="hidden lg:flex flex-col gap-3 flex-shrink-0">
-                {[{ text: 'Indie Developer' }, { text: 'SEO Enthusiast' }, { text: '100+ Tools Built' }, { text: 'Privacy Advocate' }].map(item => (
-                  <div key={item.text} className="flex items-center gap-2 text-emerald-400 text-xs font-bold">
-                    <CheckCircle2 className="w-3.5 h-3.5" /><span>{item.text}</span>
+              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-8">
+                <div className="flex-shrink-0">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white text-3xl font-black shadow-2xl shadow-blue-500/30">MM</div>
+                  <div className="flex items-center gap-1.5 mt-3">
+                    <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Active</span>
                   </div>
-                ))}
+                </div>
+                <div className="flex-1">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-[10px] font-black uppercase tracking-widest mb-3">
+                    <User className="w-3 h-3" /> Meet the Creator
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">Mahendra Mirdha</h2>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-4 max-w-xl">
+                    Hi! I'm Mahendra, the founder and developer behind Texly. I built this platform because I was tired of jumping between dozens of websites for basic text, image, and developer tasks. My goal is simple — give everyone access to powerful, free tools that just work, without any signup, paywall, or nonsense.
+                  </p>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xl">
+                    I'm passionate about web development, SEO, and building tools that make people's lives easier. Texly is a solo passion project, and every feature is handcrafted with care. If you have feedback, suggestions, or just want to say hi — I personally read every email!
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <a href="mailto:texlyonline@gmail.com" className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl font-bold text-sm transition-all backdrop-blur-sm">
+                      <Mail className="w-4 h-4" /> texlyonline@gmail.com
+                    </a>
+                    <Link to="/about-us" className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 text-blue-300 rounded-xl font-bold text-sm transition-all">
+                      <Globe className="w-4 h-4" /> About Texly
+                    </Link>
+                  </div>
+                </div>
+                <div className="hidden lg:flex flex-col gap-3 flex-shrink-0">
+                  {[{ text: 'Indie Developer' }, { text: 'SEO Enthusiast' }, { text: '100+ Tools Built' }, { text: 'Privacy Advocate' }].map(item => (
+                    <div key={item.text} className="flex items-center gap-2 text-emerald-400 text-xs font-bold">
+                      <CheckCircle2 className="w-3.5 h-3.5" /><span>{item.text}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </LazySection>
 
-        <ExpandedFAQ />
+        <LazySection><ExpandedFAQ /></LazySection>
 
         {/* ═══ BLOG ═══ */}
         <section className="mb-10 sm:mb-16 pt-6 sm:pt-10 border-t border-slate-100 dark:border-slate-800/60">
@@ -809,8 +812,8 @@ const HomePage = () => {
         </section>
 
         {/* ═══ ABOUT + E-E-A-T (before footer) ═══ */}
-        <AboutTexlyOnline />
-        <EEATSignals />
+        <LazySection><AboutTexlyOnline /></LazySection>
+        <LazySection><EEATSignals /></LazySection>
 
         {/* ═══ SOCIAL SHARE ═══ */}
         <section className="mb-8 sm:mb-12 text-center">

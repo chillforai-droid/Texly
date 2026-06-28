@@ -4,6 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import RatingSystem from '../../components/RatingSystem';
 import CommentSection from '../../components/CommentSection';
 import HubToolsContent from '../../components/HubToolsContent';
+import AllHubsLinking from '../../components/AllHubsLinking';
 import { youtubeToolsHubTools } from '../../data/hubContent/youtubeToolsHub';
 import {
   Youtube,
@@ -1269,6 +1270,8 @@ export default function YouTubeToolsHub() {
           <CommentSection targetId="youtube-growth-tools-hub" targetType="tool" theme={{ border: 'slate-200' }} />
         </div>
 
+        {/* Added AllHubsLinking component */}
+        <AllHubsLinking />
       </div>
     </main>
   );

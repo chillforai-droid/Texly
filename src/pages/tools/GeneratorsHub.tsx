@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useSearchParams } from 'react-router-dom';
 import HubToolsContent from '../../components/HubToolsContent';
+import AllHubsLinking from '../../components/AllHubsLinking';
 import { generatorsHubTools } from '../../data/hubContent/generatorsHub';
 import { 
   ChevronRight,
@@ -1272,6 +1273,9 @@ export default function GeneratorsHub({ activeToolId }: { activeToolId?: string 
         </section>
 
         <HubToolsContent hubPath="/tools/generators-hub" tools={generatorsHubTools} />
+
+        {/* Added AllHubsLinking component */}
+        <AllHubsLinking />
       </div>
     </main>
   );
