@@ -177,18 +177,84 @@ export default function YouTubeToolsHub() {
     showCopyIndicator(key);
   };
 
-  // Helper to extract YouTube video ID
+  // Helper to parse JSON safely, supporting markdown backticks
+  const parseCleanJson = <T,>(rawStr: string, fallback: T): T => {
+    if (!rawStr) return fallback;
+    let clean = rawStr.trim();
+    
+    // Remove markdown backticks if present
+    if (clean.startsWith('```')) {
+      const firstNewline = clean.indexOf('\n');
+      if (firstNewline !== -1) {
+        clean = clean.substring(firstNewline).trim();
+      }
+      if (clean.endsWith('```')) {
+        clean = clean.substring(0, clean.length - 3).trim();
+      }
+    }
+    
+    try {
+      return JSON.parse(clean) as T;
+    } catch (err) {
+      console.error("Failed to parse JSON string:", clean, err);
+      return fallback;
+    }
+  };
+
+  // Helper to extract YouTube video ID (supporting shorts, long, embed, shared and raw ID)
   const extractVideoId = (url: string): string | null => {
     const trimmed = url.trim();
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = trimmed.match(regExp);
-    if (match && match[2].length === 11) {
-      return match[2];
-    }
-    // Check for short paths
-    if (trimmed.length === 11) {
+    if (!trimmed) return null;
+    
+    // If it's already an 11-character YouTube video ID
+    if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
       return trimmed;
     }
+
+    try {
+      const parsedUrl = new URL(trimmed);
+      
+      // Handle youtu.be/VIDEO_ID
+      if (parsedUrl.hostname === 'youtu.be') {
+        const path = parsedUrl.pathname.substring(1);
+        return path.split('/')[0].split('?')[0];
+      }
+      
+      // Handle youtube.com/shorts/VIDEO_ID
+      if (parsedUrl.pathname.includes('/shorts/')) {
+        const parts = parsedUrl.pathname.split('/shorts/');
+        if (parts[1]) {
+          return parts[1].split('/')[0].split('?')[0];
+        }
+      }
+      
+      // Handle youtube.com/watch?v=VIDEO_ID or youtube.com/watch?vi=VIDEO_ID
+      const videoIdParam = parsedUrl.searchParams.get('v') || parsedUrl.searchParams.get('vi');
+      if (videoIdParam) {
+        return videoIdParam;
+      }
+
+      // Handle youtube.com/embed/VIDEO_ID or youtube.com/v/VIDEO_ID
+      const pathParts = parsedUrl.pathname.split('/');
+      const embedIdx = pathParts.indexOf('embed');
+      if (embedIdx !== -1 && pathParts[embedIdx + 1]) {
+        return pathParts[embedIdx + 1].split('?')[0];
+      }
+      const vIdx = pathParts.indexOf('v');
+      if (vIdx !== -1 && pathParts[vIdx + 1]) {
+        return pathParts[vIdx + 1].split('?')[0];
+      }
+    } catch (e) {
+      // If URL parsing fails, fallback to regex search
+    }
+
+    // Comprehensive regex fallback (matches watch?v=, embed/, v/, shorts/, youtu.be/)
+    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|shorts\/|watch\?.*v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = trimmed.match(regex);
+    if (match && match[1]) {
+      return match[1];
+    }
+
     return null;
   };
 
@@ -237,7 +303,8 @@ export default function YouTubeToolsHub() {
 
       if (!res.ok) throw new Error('Failed to audit video stats.');
       const data = await res.json();
-      const parsed = JSON.parse(data.result);
+      const parsed = parseCleanJson(data.result, null);
+      if (!parsed) throw new Error('Failed to parse stats JSON');
       setStatsResult(parsed);
     } catch (err) {
       // Fallback in case of parsing/network block
@@ -345,7 +412,8 @@ export default function YouTubeToolsHub() {
       });
       if (!res.ok) throw new Error('Title generation failed.');
       const data = await res.json();
-      const parsed = JSON.parse(data.result);
+      const parsed = parseCleanJson(data.result, []);
+      if (!parsed || parsed.length === 0) throw new Error('Failed to parse titles JSON');
       setTitleResult(parsed);
     } catch (err) {
       setTitleResult([
@@ -381,7 +449,9 @@ export default function YouTubeToolsHub() {
       });
       if (!res.ok) throw new Error('Thumbnail ideas generation failed.');
       const data = await res.json();
-      setThumbnailResultIdeas(JSON.parse(data.result));
+      const parsed = parseCleanJson(data.result, []);
+      if (!parsed || parsed.length === 0) throw new Error('Failed to parse thumbnail ideas JSON');
+      setThumbnailResultIdeas(parsed);
     } catch (err) {
       setThumbnailResultIdeas([
         { bg: "High-contrast dark room with split neon red and blue background lights", fg: "Extreme close-up of a shocked face pointing slightly to the right side of the canvas", text: "IT FINALLY HAPPENED", psych: "Uses curiosity gap and emotional expression to invite high click frequency." }
@@ -414,7 +484,9 @@ export default function YouTubeToolsHub() {
       });
       if (!res.ok) throw new Error('Viral research failed.');
       const data = await res.json();
-      setViralResult(JSON.parse(data.result));
+      const parsed = parseCleanJson(data.result, []);
+      if (!parsed || parsed.length === 0) throw new Error('Failed to parse viral topics JSON');
+      setViralResult(parsed);
     } catch (err) {
       setViralResult([
         { idea: `The Ultimate ${viralNiche} Speedrun Challenge`, hook: "Show the final countdown timer inside the first 2 seconds", trend: "High viewer appetite for fast-paced skill progression formats", retentionTip: "Use side-by-side progression charts to anchor continuous eyes." }
@@ -447,7 +519,9 @@ export default function YouTubeToolsHub() {
       });
       if (!res.ok) throw new Error('Competitor tracker error.');
       const data = await res.json();
-      setCompetitorResult(JSON.parse(data.result));
+      const parsed = parseCleanJson(data.result, null);
+      if (!parsed) throw new Error('Failed to parse competitor JSON');
+      setCompetitorResult(parsed);
     } catch (err) {
       setCompetitorResult({
         frequency: "2 videos per week (mostly uploaded on Tuesdays and Fridays)",
