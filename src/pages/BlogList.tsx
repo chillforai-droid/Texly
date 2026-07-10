@@ -5,6 +5,7 @@ import { getBlogs } from '../utils/blogStorage';
 import { translateBlogs } from '../services/translationService';
 import { Calendar, User, Clock, ArrowRight, ChevronLeft, ChevronRight, Filter, Search, Mail, Sparkles } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import AdPlaceholder from '../components/AdPlaceholder';
 
 const POSTS_PER_PAGE = 6;
 
@@ -182,6 +183,11 @@ const BlogList: React.FC = () => {
         </div>
       </section>
 
+      {/* Spot 1: Premium Blog Hub Banner */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <AdPlaceholder slot="Featured Sponsored Content" format="auto" />
+      </div>
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         {isLoading ? (
           <div className="flex justify-center items-center py-40">
@@ -266,6 +272,11 @@ const BlogList: React.FC = () => {
               </div>
             )}
 
+            {/* Spot 2: Featured Post Separator */}
+            <div className="mb-12">
+              <AdPlaceholder slot="Advertisement" format="auto" />
+            </div>
+
             {/* Blog Grid */}
             <div id="blog-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
               
@@ -318,6 +329,11 @@ const BlogList: React.FC = () => {
                   </article>
                 ))}
               
+            </div>
+
+            {/* Spot 3: Recommended Content Native Widget */}
+            <div className="mb-16">
+              <AdPlaceholder slot="Recommended For You" format="native" />
             </div>
 
             {/* Pagination Controls */}

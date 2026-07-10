@@ -4,6 +4,7 @@ import { ALL_TOOLS, Tool } from '../data/tools';
 import { ArrowLeft, Sparkles, AlertCircle, Wrench, BookOpen } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import SEO from '../components/SEO';
+import AdPlaceholder from '../components/AdPlaceholder';
 import AIToolSEOContent from '../components/AIToolSEOContent';
 import RatingSystem from '../components/RatingSystem';
 import CommentSection from '../components/CommentSection';
@@ -210,6 +211,11 @@ export default function ToolDetail() {
           </p>
         </div>
 
+        {/* Spot 1: Top Responsive Banner */}
+        <div className="mb-6">
+          <AdPlaceholder slot="Sponsored Ad" format="auto" />
+        </div>
+
         {/* Dynamic Tool Playground area */}
         <div className="mb-12">
           <Suspense fallback={
@@ -221,12 +227,27 @@ export default function ToolDetail() {
           </Suspense>
         </div>
 
+        {/* Spot 1.5: 160x300 Vertical Banner Ad (exactly below the tool buttons and inputs) */}
+        <div className="my-8">
+          <AdPlaceholder slot="Featured Sponsor" format="160x300" />
+        </div>
+
+        {/* Spot 2: Square Rectangle Banner Ad */}
+        <div className="my-8">
+          <AdPlaceholder slot="Advertisement" format="300x250" />
+        </div>
+
         {/* Dynamic detailed SEO article/guides with schema validation */}
         {shouldRenderSEOGuide && (
           <div className="mb-12 border-t border-slate-200 dark:border-zinc-900 pt-12">
             <AIToolSEOContent toolId={tool.id} />
           </div>
         )}
+
+        {/* Spot 3: Native Recommendation Widget */}
+        <div className="my-8">
+          <AdPlaceholder slot="Recommended Content" format="native" />
+        </div>
 
         {/* Rating & Comments */}
         <div className="mb-12 border-t border-slate-200 dark:border-zinc-900 pt-12 space-y-6">

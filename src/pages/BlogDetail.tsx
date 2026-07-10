@@ -304,7 +304,7 @@ const BlogDetail: React.FC = () => {
 
         {/* Ad Slot 1 */}
         <div className="mb-16">
-          <AdPlaceholder slot="Top of Article" />
+          <AdPlaceholder slot="Advertisement" format="300x250" />
         </div>
 
         {/* Table of Contents */}
@@ -369,7 +369,7 @@ const BlogDetail: React.FC = () => {
 
         {/* Ad Slot 2 */}
         <div className="my-16">
-          <AdPlaceholder slot="Bottom of Article" />
+          <AdPlaceholder slot="Recommended For You" format="native" />
         </div>
 
         {/* Related Tools Section */}

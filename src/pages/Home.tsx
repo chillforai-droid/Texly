@@ -11,6 +11,7 @@ import {
 import { ALL_TOOLS, CATEGORIES } from '../data/tools';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
+import AdPlaceholder from '../components/AdPlaceholder';
 import { useLanguage } from '../context/LanguageContext';
 import { BASE_URL } from '../config';
 import CategoryModal from '../components/CategoryModal';
@@ -323,6 +324,11 @@ const HomePage = () => {
 
       <div className="max-w-6xl mx-auto px-4">
 
+        {/* Spot 1: Premium Top Banner */}
+        <div className="my-6">
+          <AdPlaceholder slot="Featured Sponsor" format="auto" />
+        </div>
+
         {/* ═══ TRENDING ═══ */}
         <section className="mb-10 sm:mb-16">
           <div className="flex items-center justify-between mb-8">
@@ -449,6 +455,11 @@ const HomePage = () => {
           </div>
         </section>
 
+        {/* Spot 2: Content Separator Banner */}
+        <div className="my-8">
+          <AdPlaceholder slot="Sponsored Links" format="auto" />
+        </div>
+
         {/* ═══ AI SECTION ═══ */}
         <section className="mb-10 sm:mb-16 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border border-slate-800 text-white shadow-2xl relative" style={{ background: 'linear-gradient(135deg, #090d16 0%, #0f1126 50%, #170d2e 100%)' }}>
           <div className="relative p-4 sm:p-8">
@@ -568,6 +579,11 @@ const HomePage = () => {
             </div>
           </section>
         )}
+
+        {/* Spot 3: Native Recommended Content widget */}
+        <div className="my-8">
+          <AdPlaceholder slot="You May Also Like" format="native" />
+        </div>
 
         {/* ═══ TOOLS GRID ═══ */}
         <section className="mb-10 sm:mb-16">

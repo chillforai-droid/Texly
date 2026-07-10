@@ -517,7 +517,7 @@ Return ONLY the final text, no explanations.`;
 
           {/* ── Ad ── */}
           <div className="my-8">
-            <AdPlaceholder slot="ai-text-suite-mid" />
+            <AdPlaceholder slot="ai-text-suite-mid" format="160x300" />
           </div>
 
           {/* ── How It Works ── */}

@@ -43,6 +43,8 @@ import Navbar from './components/Navbar';
 import GlobalNotificationBanner from './components/GlobalNotificationBanner';
 import Footer from './components/Footer';
 import CategoryModal from './components/CategoryModal';
+import AdPlaceholder from './components/AdPlaceholder';
+import InterstitialAd from './components/InterstitialAd';
 import CookieBanner from './components/CookieBanner';
 import ErrorBoundary, { RouteErrorBoundary } from './components/ErrorBoundary';
 import { shouldReduceAnimations, isSamsungTV } from './utils/browserCompat';
@@ -504,6 +506,11 @@ function AppContent() {
       <GlobalNotificationBanner />
 
       <Navbar />
+
+      {/* Global Top Banner ad (Auto-responsive leaderboard/banner) */}
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 mt-24 mb-4">
+        <AdPlaceholder slot="Featured Partner" format="auto" />
+      </div>
 
       {/* ── Routes ─────────────────────────────────────────────────────────── */}
       <main className="flex-grow">
@@ -1215,8 +1222,14 @@ function AppContent() {
         }
       />
 
+      {/* Global Bottom native recommendation ad */}
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 my-8">
+        <AdPlaceholder slot="Recommended Content" format="native" />
+      </div>
+
       <Footer />
       <CookieBanner />
+      <InterstitialAd />
 
       {/* Deferred AI Assistant – loads after interaction, skipped on TVs */}
       <DeferredTexlyAI />
